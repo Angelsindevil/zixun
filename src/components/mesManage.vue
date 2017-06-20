@@ -2,29 +2,15 @@ i<template>
   <div class="message">
     <div class="rightBar">
       <p>
-        消息中心
+        系统维护-消息管理
       </p>
-      <!-- <div class="switchBtn">
-        <select name="" id="">
-        </select>
-        <div>
-          <img src="../../static/img/arrow.png" alt="">
-        </div>
-      </div> -->
-      <!-- <div class="admin_ui_select">
-        <select id="themeBox">
-          <option value="">全部消息</option>
-          <option value="">已读消息</option>
-          <option value="">未读消息</option>
-        </select>
-      </div> -->
-      <el-select v-model="value" placeholder="" @change="optionChangeHandler" class="selectStyle">
-        <el-option
-          v-for="item in options"
-          :label="item.label"
-          :value="item.value">
-        </el-option>
-      </el-select>
+      <el-button class="btn_position" @click="showMesBox">发送新消息<i class="el-icon-plus el-icon--right"></i></el-button>
+      <el-input
+        placeholder="搜索消息标题"
+        icon="search"
+        v-model="input2"
+        class="input_position" :on-icon-click="handleInputClick" @keyup.13="handleInputClick">
+      </el-input>
     </div>
     <div class="rightContent">
       <table>
@@ -75,6 +61,7 @@ export default {
           {name:"Bar"}, 
           {name:"Baz"},
            ],
+        input2:'',
         options: [{
           value: '1',
           label: '全部消息'
@@ -95,7 +82,12 @@ export default {
     },
     optionChangeHandler:function(){
 
-    }
+    },
+    handleInputClick:function(){},
+    showMesBox(){
+      $(".mask1").addClass("showBtn");
+      $(".mesBox").addClass("showBtn");
+    },
   },
    created: function () {
       $('.M-box').pagination({
@@ -165,12 +157,26 @@ export default {
         }
       }
       tr:after{
+        // content: '';
+        // position: absolute;
+        // left: 20px;
+        // right: 20px;
+        // height: 1px;
+        // background-color: #ccc;
         content: '';
         position: absolute;
         left: 20px;
         right: 20px;
-        height: 1px;
-        background-color: #ccc;
+        border-bottom: 2px dashed #e4e4e4;
+      }
+      tr:first-child{
+        &:after{
+          content: '';
+          position: absolute;
+          left: 20px;
+          right: 20px;
+          border-bottom:none;
+        }
       }
       .readAlready{
         color:#ccc;
@@ -222,7 +228,27 @@ export default {
     width: 120px;
     position: absolute;
     right: 10px;
+    // top: 12px;
+    font-size: 12px;
+  }
+
+  .input_position{
+    width: 150px;
+    position: absolute;
+    right: 10px;
     top: 12px;
-    font-size: 13px;
+    font-size: 12px;
+    input{
+      background-color: #fafafa!important;
+    }
+  }
+  .btn_position{
+    position: absolute;
+    right:180px;
+    top:12px;
+    color:#0099FF;
+    font-size: 12px;
+    background-color: #fafafa!important;
+    padding:11px 15px;
   }
 </style>

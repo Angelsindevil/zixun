@@ -34,8 +34,10 @@
       </div>
     </div>
     <hello></hello>
-    <div class="mask mask1" @click="showBox"></div>
+    <!-- <div class="mask mask1" @click="showBox"></div> -->
+    <div class="mask mask1"></div>
     <div class="mask mask2"></div>
+
     <div class="alertBox alertStyle">
         <div class="alertTop">报告顺序确认<span @click="hideBox"><img src="../static/img/cancel.png"></span></div>
         <div class="alertContent">
@@ -59,7 +61,6 @@
       <div class="alertTop">信息批示<span @click="hidePSBox"><img src="../static/img/cancel.png"></span></div>
       <div class="alertContent">
         <el-button class="article_btn" @click="showAllArticle();showCommonBox()"><img src="../static/img/report.png" alt="">批示文章：<span>{{currentRow}}</span></el-button>
-        <!-- <p class="ps_article"><img src="../static/img/report.png" alt="">批示文章：国家“双一流”实施方案正式出台，预计2017年上半年公布入围名单</p> -->
         <div class="editContainer">
           <p>输入批示内容</p>
           <div class="editBox">
@@ -197,6 +198,100 @@
         <span @click="hideMultiBox" class="bg_cancle">取消</span>    
       </div>
     </div>
+    <div class="mesBox alertStyle">
+      <div class="alertTop">新增消息<span @click="hideMesBox"><img src="../static/img/cancel.png"></span></div>
+      <div class="alertContent">
+        <el-form ref="form" :model="form" label-width="85px">
+          <el-form-item label="消息标题：">
+            <el-input v-model="form.title"></el-input>
+          </el-form-item>
+          <el-form-item label="消息内容：">
+            <el-input type="textarea" v-model="form.area"></el-input>
+          </el-form-item>
+          <el-form-item label="接收人：">
+            <el-input
+              placeholder="请选择"
+              icon="menu"
+              v-model="form.accept"
+              @click="solvePeople();showCommonBox()"
+              @focus="solvePeople();showCommonBox()"
+              >
+            </el-input>
+          </el-form-item>
+          <el-form-item label="发送人：">
+            <el-input v-model="form.send"></el-input>
+          </el-form-item>
+        </el-form>
+      </div>
+      <div class="alertBottom">
+        <span class="bg_green" @click="hideMesBox">确定</span> 
+        <span @click="hideMesBox" class="bg_cancle">取消</span> 
+      </div>
+    </div>
+    <div class="userBox alertStyle" style="height:300px;">
+      <div class="alertTop">新增消息<span @click="hideUserBox"><img src="../static/img/cancel.png"></span></div>
+      <div class="alertContent">
+        <el-form ref="form" :model="form" label-width="85px">
+          <el-row :gutter="20">
+            <el-col :span="6">
+               <el-form-item label="所属组织：">
+                <el-input
+                  placeholder="请选择"
+                  icon="menu"
+                  v-model="form.accept"
+                  @click="solvePeople();showCommonBox()"
+                  @focus="solvePeople();showCommonBox()"
+                  >
+                </el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="6">
+              <el-form-item label="用户账号：">
+                <el-input v-model="form.send"></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row :gutter="20">
+            <el-col :span="6">
+              <el-form-item label="用户姓名：">
+                <el-input v-model="form.send"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="6">
+              <el-form-item label="角色权限：">
+                <!-- <el-input
+                  placeholder="请选择"
+                  icon="menu"
+                  v-model="form.accept"
+                  @click="solvePeople();showCommonBox()"
+                  @focus="solvePeople();showCommonBox()"
+                  >
+                </el-input> -->
+                <el-select v-model="value2" placeholder="" @change="optionChangeHandler">
+                  <el-option
+                    v-for="item in options"
+                    :label="item.label"
+                    :value="item.value">
+                  </el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row :gutter="20">
+            <el-col :span="6">
+              <el-form-item label="状态：">
+                <span>正常</span> 
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <!-- 这应该是编辑的时候才有的字段 -->
+        </el-form>
+      </div>
+      <div class="alertBottom">
+        <span class="bg_green" @click="hideUserBox">确定</span> 
+        <span @click="hideUserBox" class="bg_cancle">取消</span> 
+      </div>
+    </div>
   </div>
 </template>
 
@@ -231,12 +326,33 @@
 //           '</el-table-column>',
 // })
 import Hello from './components/Hello.vue'
+import reportBox from './components/reportBox.vue'
 export default {
   name: 'app',
   components: {
-    Hello},
+    Hello,reportBox},
   data () {
     return {
+      options: [{
+        value: '0',
+        label: '系统管理员'
+      }, {
+        value: '1',
+        label: '内容管理员'
+      }, {
+        value: '3',
+        label: '批示用户'
+      }, {
+        value: '4',
+        label: '普通用户'
+      }],
+      value2: '1',
+      form: {
+        title: '',
+        area: '',
+        accept: '',
+        send: '',
+      },
       // currentView:BComponent,
       type:[
       {value:'0',
@@ -342,8 +458,18 @@ export default {
       $(".mask2,.multiBox").removeClass("showBtn");
       $(".mask1").addClass("showBtn");
     },
+    showMultiBox:function(){
+      $(".articleBox").addClass("showBtn");
+      $(".printPs").removeClass("showBtn");
+    },
     hideBox:function(){
       $(".mask1,.alertBox").removeClass("showBtn");
+    },
+    hideMesBox:function(){
+      $(".mask1,.mesBox").removeClass("showBtn");
+    },
+    hideUserBox:function(){
+      $(".mask1,.userBox").removeClass("showBtn");
     },
     hidePSBox:function(){
       $(".mask1,.psBox").removeClass("showBtn");
@@ -487,7 +613,10 @@ export default {
         this.input3+=val[i].value+' ';
       }
       // this.multipleSelection = val;
-    }
+    },
+    optionChangeHandler(val){
+
+    },
   },
   // created: function(){
   //   editor.render()
@@ -523,7 +652,7 @@ var editor =  new tinymce.Editor('tinymce', {
       { title: 'Test template 2', content: 'Test 2' }
   ],
   content_css: [
-      '../static/css/tinymce.css'
+      './static/css/tinymce.css'
   ],
   file_browser_callback: function(field_name, url, type, win) {
       if(type=='image') 
@@ -553,6 +682,7 @@ var editor =  new tinymce.Editor('tinymce', {
 <style lang="less">
 @import '../static/less/init.less';
 @import '../static/less/tinymce.less';
+@import '../static/less/alertStyle.less';
 body{
   margin:0;
   position: relative;
@@ -700,303 +830,5 @@ body{
     }
     .after;
   }
-}
-.alertStyle{
-  display: none;
-  background-color: #fff;
-  width: 720px;
-  // position: absolute;
-  position: fixed;
-  height: 550px;
-  margin-left:50%;
-  margin-top:-275px;
-  top:50%;
-  left:-360px;
-  // border: 1px solid #f2f2f2;
-  z-index: 3;
-  border-radius:10px;
-  // .veryCenter;
-  .alertTop{
-    height: 65px;
-    background-color: #0099ff;
-    line-height: 65px;
-    position: relative;
-    padding:0 20px;
-    color:#fff;
-    width:100%;
-    box-sizing:border-box;
-    border-top-left-radius: 10px;
-    border-top-right-radius:10px;
-    font-size:18px;
-    img{
-      display:inline-block;
-      width:25px;
-      height:25px;
-      position: absolute;
-      right:20px;
-      top:20px;
-      cursor:pointer;
-    }
-  }
-  .ps_article{
-    background-color: #f1f1f1;
-    border:1px solid #eee;
-    border-radius:3px;
-    padding:15px 10px;
-    font-size: 14px;
-    color:#000;
-    img{
-      display:inline-block;
-      width:20px;
-      height:20px;
-      vertical-align: middle;
-      margin-right:10px;
-    }
-  }
-  .alertContent{
-    padding:20px;
-    .editContainer{
-      border:1px solid #ccc;
-      border-bottom:none;
-      border-top-left-radius:3px;
-      border-top-right-radius:3px;
-      margin-top:20px;
-      // border-radius:3px;
-      p{
-        border-top-left-radius: 3px;
-        border-top-right-radius: 3px;
-        background-color: #f1f1f1;
-        border-bottom:1px solid #ccc;
-        font-size: 14px;
-        color:#000;
-        padding:10px;
-      }
-    }
-  }
-  .alertBottom{
-    height:60px;
-    // border:1px solid #eee;
-    padding:0 20px;
-    border-bottom-left-radius:10px;
-    border-bottom-right-radius:10px;
-    position: absolute;
-    right: 0px;
-    bottom: 0px;
-    .after;
-    span{
-      vertical-align:middle;
-      display:inline-block;
-      margin:0 10px;
-      height:35px;
-      line-height:35px;
-      width: 130px;
-      float:right;
-      font-size: 15px;
-      color:#fff;
-      text-align: center;
-      border-radius:5px;
-      cursor:pointer;
-      img{
-        display:inline-block;
-        width:20px;
-        height:20px;
-        vertical-align:middle;
-        margin-right:10px;
-      }
-    }
-    span:nth-child(1){
-      margin-right:0;
-    }
-    .bg_blue{
-      background-color: #0099FF;
-    }
-    .bg_cancle{
-      background-color: #ccc;
-    }
-    .bg_red{
-      background-color: #CA3D40;
-    }
-    .bg_green{
-      background-color: #00CC99;
-    }
-  }
-}
-.psBox .alertBottom{
-  position: relative;
-  >div:first-child{
-    display:none;
-  }
-  >div:nth-child(2n){
-    position: absolute;
-    right: 20px;
-    bottom: 20px;
-  }
-}
-.alertStyle_{
-  height:600px;
-  margin-top:-300px;
-  .alertBottom{
-    position: relative;
-    >div:nth-child(2n){
-      position: absolute;
-      right:20px;
-      top:10px;
-    }
-    >div:first-child{
-      display:block;
-      position: absolute;
-      left:20px;
-      top:10px;
-      >span:first-child{
-        float: none;
-        background-color: #0099ff;
-        width:110px;
-        margin-left:0;
-        >img{
-          display:inline-block;
-          vertical-align:middle;
-        }
-      }
-      >span:nth-child(2n){
-        font-size: 14px;
-        color:#5e5e5e;
-        width:auto;
-        float: none;
-        text-decoration: underline;
-        >span{
-          width:auto;
-          float: none;
-          color:#0099ff;
-          text-decoration:none;
-          margin-right:5px;
-        }
-      }
-    }
-    .bg_blue{
-      display:none;
-    }
-  } 
-}
-.alertBox{
-  height: 420px;
-  margin-top:-210px;
-}
-.mask {
-  height: 100%;
-  width: 100%;
-  display: none;
-  background: rgba(0, 0, 0, 0.5);
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 2;
-}
-.showBtn{
-  display:block!important;
-}
-.dragItem{
-  width: 100%;
-  margin-top: 10px;
-  border: 1px solid #ccc;
-  background-color: #fff;
-  border-radius: 8px;
-  position: relative;
-  cursor:move;
-  .title_bar{
-    font-size:16px;
-    padding:20px;
-    position: relative;
-    border-bottom:1px solid #eee;
-  }
-  img{
-    display:inline-block;
-    width: 30px;
-    height: 30px;
-    margin-right: 6px;
-    vertical-align:middle;
-  }
-  .removeItem{
-    position: absolute;
-    right:20px;
-    cursor:pointer;
-  }
-  span{
-    vertical-align:middle;
-  }
-  span:first-child{
-    font-size:16px;
-    color:#333;
-  }
-  span:last-child{
-    font-size:14px;
-    color:#333;
-  }
-}
-.article_btn{
-  width:100%;
-  text-align: left!important;
-  img{
-    display:inline-block;
-    width:20px;
-    height:20px;
-    vertical-align: middle;
-    margin-right:10px;
-  }
-}
-.el-table__header,.el-table__body{
-  width:100%!important;
-}
-.el-table th,.el-table td{
-  text-align: center!important;
-  font-weight: normal!important;
-}
-.mask2{
-  z-index:4;
-}
-.el-radio__label{
-  display:none;
-}
-.el-pagination{
-  text-align: right;
-  padding: 20px 0!important;
-}
-.el-autocomplete{
-  width: 100%;
-  margin-bottom: 20px;
-}
-.el-row {
-  margin-bottom: 20px;
-  .el-col-6{
-    width:30%;
-  }
-  &:last-child {
-    margin-bottom: 0;
-  }
-}
-.alertContent .el-row--flex{
-  margin-top:20px;
-  display:none;
-}
-.typeChoose{
-  padding-left:50px;
-}
-.typeChoose_{
-  padding-left:65px;
-  width:auto!important;
-}
-.typeLabel{
-  display:inline-block;
-  position: absolute;
-  top:10px;
-}
-.show_row{
-  display:flex!important;
-}
-.alertContent .el-table__body-wrapper{
-  height: 280px;
-  position: relative;
-}
-.articleBox{
-  z-index:5;
 }
 </style>

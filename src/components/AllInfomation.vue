@@ -121,10 +121,10 @@ export default {
         label: '全部内容'
       }, {
         value: '2',
-        label: '已收录'
+        label: '国家动态'
       }, {
         value: '3',
-        label: '未收录'
+        label: '地方动态'
       }],
       value: '1',
     }

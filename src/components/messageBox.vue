@@ -169,8 +169,16 @@ export default {
         position: absolute;
         left: 20px;
         right: 20px;
-        height: 1px;
-        background-color: #ccc;
+        border-bottom: 2px dashed #e4e4e4;
+      }
+      tr:first-child{
+        &:after{
+          content: '';
+          position: absolute;
+          left: 20px;
+          right: 20px;
+          border-bottom:none;
+        }
       }
       .readAlready{
         color:#ccc;
@@ -223,6 +231,6 @@ export default {
     position: absolute;
     right: 10px;
     top: 12px;
-    font-size: 13px;
+    font-size: 12px;
   }
 </style>

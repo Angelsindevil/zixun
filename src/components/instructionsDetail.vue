@@ -78,6 +78,7 @@ export default {
       console.log("1");
       $(".mask1").addClass("showBtn");
       $(".psBox").addClass("showBtn");
+      $(".printPs").removeClass("showBtn");
       $(".psBox").find(".article_btn").attr("disabled",true).addClass("is-disabled");
     },
     showSelect:function(){

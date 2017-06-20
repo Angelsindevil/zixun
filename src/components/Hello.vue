@@ -44,12 +44,12 @@
               <span>3</span> 
               </router-link>
           </li>
-          <!-- <li @click="changeColor" class="clickStyle">
-              <router-link to="/feedback">
-              反馈中心
-              <span>3</span> 
+          <li @click="changeColor" class="clickStyle">
+              <router-link to="/mesManage">
+              消息管理
+              <!-- <span>3</span>  -->
               </router-link>
-          </li> -->
+          </li>
           <li @click="changeColor" class="clickStyle">
               <router-link to="/messageBox">
               系统消息
@@ -69,7 +69,7 @@
               </router-link>
           </li>
           <li @click="changeColor" class="clickStyle">
-              <router-link to="">
+              <router-link to="/userManage">
               用户管理
               </router-link>
           </li>
