@@ -60,3 +60,6 @@ input {
 body {
   font-family: 'Lantinghei SC', 'Microsoft Yahei' !important;
 }
+*{
+  box-sizing: border-box;
+}

@@ -1,5 +1,5 @@
 <template>
-	<div class="userBox alertStyle" style="height:300px;">
+	<div class="userBox alertStyle">
       <div class="alertTop">新增消息<span @click="hideUserBox"><img src="../../static/img/cancel.png"></span></div>
       <div class="alertContent">
         <el-form ref="form" :model="form" label-width="85px">
@@ -59,8 +59,14 @@
         </el-form>
       </div>
       <div class="alertBottom">
-        <span class="bg_green" @click="hideUserBox">确定</span> 
-        <span @click="hideUserBox" class="bg_cancle">取消</span> 
+        <span class="leftBot">
+          <span class="user-wf"><img src="../../static/img/zhuxiao.png">注销</span>   
+          <span class="user-dele"><img src="../../static/img/alert-delete.png">删除</span> 
+        </span>
+        <span class="rightBot">
+          <span class="bg_green" @click="hideUserBox">确定</span> 
+          <span @click="hideUserBox" class="bg_cancle">取消</span> 
+        </span>
       </div>
     </div>
 </template>
@@ -82,7 +88,6 @@
 		      value: '4',
 		      label: '普通用户'
 		    }],
-		    value2: '1',
 		    form: {
 		      org:'',
 		      account: '',
@@ -90,35 +95,6 @@
 		      level: '1',
 		      state:'正常'
 		    },
-		    input2:'',
-		    input3:'',
-		    radio: 0,
-		    radio1:0,
-		    radio2:0,
-		    state2:'',
-		    isSelect:false,
-		    titleName:'文章选择',
-		    phtext:'请输入文章标题',
-		    labeltext:'文章标题',
-		    // restaurants: [],
-		    commonData:[],
-		    allpsData:[
-		      {value:'张三',i:0},
-		      {value:'李四',i:1},
-		      {value:'赵五',i:2},
-		      {value:'王六',i:3},
-		      {value:'关七',i:4},
-		      {value:'李四1',i:5},
-		      {value:'李四2',i:6},
-		      {value:'李四3',i:7},
-		      {value:'李四4',i:8},
-		      {value:'李四5',i:9},
-		      {value:'李四6',i:10},
-		      {value:'李四7',i:11},
-		      {value:'李四8',i:12},
-		      {value:'李四9',i:13},
-		    ],
-		    psData:[],
 		  }
 		},
 		methods:{

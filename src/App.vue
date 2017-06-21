@@ -13,9 +13,36 @@
           </el-input> -->
         </p>
         <p>
-          <router-link to="/messageBox"><img src="../static/img/message.png" alt=""></router-link>
-          <img src="../static/img/user.png" alt="">
-          <span>3</span>
+          <span>
+            <router-link to="/messageBox">
+              <img src="../static/img/message.png" alt="">
+              <span class="red-dot">3</span>
+            </router-link>
+            <el-dropdown @command="showLoginBox">
+              <span class="el-dropdown-link">
+                <img src="../static/img/user.png" alt="">
+              </span>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item>用户名</el-dropdown-item>
+                <el-dropdown-item>修改密码</el-dropdown-item>
+                <el-dropdown-item command="a">退出登录</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+          </span>
+          <!-- <router-link to="/messageBox"><img src="../static/img/message.png" alt=""></router-link>
+          <span>
+              <el-dropdown>
+              <span class="el-dropdown-link">
+                <img src="../static/img/user.png" alt="">
+              </span>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item>用户名</el-dropdown-item>
+                <el-dropdown-item>修改密码</el-dropdown-item>
+                <router-link to='/loginPage'><el-dropdown-item>退出登录</el-dropdown-item></router-link>
+              </el-dropdown-menu>
+            </el-dropdown>
+          </span>
+          <span>3</span> -->
         </p>
       </div>
     </div>
@@ -39,7 +66,11 @@
     <articleBox></articleBox>
     <multiBox></multiBox>
     <userBox></userBox>
+    <orgBox></orgBox>
     <peopleBox></peopleBox>
+    <mesBox></mesBox>
+    <unitBox></unitBox>
+    <loginBox></loginBox>
     <div class="mask mask1"></div>
     <div class="mask mask2"></div>
   </div>
@@ -52,16 +83,25 @@ import psBox from './components/psBox.vue'
 import articleBox from './components/articleBox.vue'
 import multiBox from './components/multiBox.vue'
 import userBox from './components/userBox.vue'
+import orgBox from './components/orgBox.vue'
+import mesBox from './components/mesBox.vue'
+import unitBox from './components/unitBox.vue'
+import loginBox from './components/loginBox.vue'
 import peopleBox from './components/peopleBox.vue'
 export default {
   name: 'app',
   components: {
-    Hello,reportBox,psBox,articleBox,multiBox,userBox,peopleBox},
+    Hello,reportBox,psBox,articleBox,multiBox,userBox,peopleBox,mesBox,orgBox,unitBox,loginBox},
   data () {
     return {
     }
   },
   methods:{
+    showLoginBox(command){
+      if(command=="a"){
+        $(".loginBox,.mask1").addClass("showBtn");
+      }
+    },
   },
   mounted() {
   }
@@ -70,7 +110,7 @@ export default {
 
 <style lang="less">
 @import '../static/less/init.less';
-@import '../static/less/tinymce.less';
+@import '../static/less/tinymce.less'; 
 @import '../static/less/alertStyle.less';
 body{
   margin:0;
@@ -173,22 +213,41 @@ body{
         float:left;
         margin-top:8px;
       }
-      img:nth-child(1){
-        margin-right:15px;
-      }
-      span{
-        display:inline-block;
-        background-color: #ff6666;
-        width:16px;
-        height:16px;
-        text-align: center;
-        color:#fff;
-        font-size:10px;
-        border-radius: 50%;
-        line-height: 16px;
+      // img:nth-child(1){
+      //   margin-right:15px;
+      // }
+      >span:last-child{
+        // float:right;
         position: absolute;
-        left: 20px;
-        top: 25px;
+        right: 0px;
+        width: 90px;
+        >a{
+          display: inline-block;
+          margin-right: 20px;
+        }
+        >img:first-child{
+          margin-right:30px;
+          position: absolute;
+          right: 40px;
+          top: 13px;
+        }
+        .red-dot{
+          display:inline-block;
+          background-color: #ff6666;
+          width:16px;
+          height:16px;
+          text-align: center;
+          color:#fff;
+          font-size:10px;
+          border-radius: 50%;
+          line-height: 16px;
+          position: absolute;
+          left: 20px;
+          top: 5px;
+        }
+        .el-dropdown{
+          cursor: pointer;
+        }
       }
     }
     .after;
@@ -219,5 +278,9 @@ body{
     }
     .after;
   }
+}
+.el-dropdown-menu a,.el-dropdown-menu .el-dropdown-menu__item{ 
+  color:#333;
+  font-size: 14px;
 }
 </style>

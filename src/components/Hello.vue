@@ -12,6 +12,28 @@
         <ul>
           <li class="noClickStyle">
               <router-link to="">
+                <img src="../../static/img/platform.png" alt="">内容管理
+              </router-link>
+          </li>
+          <li @click="changeColor" class="clickStyle">
+              <router-link to="/contentManage">
+              内容筛选
+              </router-link>
+          </li>
+          <li @click="changeColor" class="clickStyle">
+              <router-link to="/contentAdd">
+              新增内容
+              </router-link>
+          </li>
+          <li @click="changeColor" class="clickStyle">
+              <router-link to="/contentPublish">
+              已发布内容
+              </router-link>
+          </li>
+        </ul>
+        <ul>
+          <li class="noClickStyle">
+              <router-link to="">
                 <img src="../../static/img/platform.png" alt="">资讯数据
               </router-link>
           </li>
@@ -63,14 +85,19 @@
               </router-link>
           </li>
           <li @click="changeColor" class="clickStyle">
-              <router-link to="/managementCenter">
-              <span>2</span> 
-              内容管理
+              <router-link to="/orgManage">
+              组织信息
               </router-link>
           </li>
           <li @click="changeColor" class="clickStyle">
               <router-link to="/userManage">
               用户管理
+              </router-link>
+          </li>
+          <li @click="changeColor" class="clickStyle">
+              <router-link to="/managementCenter">
+              <span>2</span> 
+              批示管理
               </router-link>
           </li>
         </ul>

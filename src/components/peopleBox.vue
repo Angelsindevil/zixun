@@ -33,8 +33,10 @@
       </el-table>
     </div>
     <div class="alertBottom">
-      <span class="bg_green" @click="hideArtBox(),submit()">确定</span> 
-      <span @click="hideArtBox" class="bg_cancle">取消</span>    
+      <span class="rightBot">
+        <span class="bg_green" @click="hideArtBox(),submit()">确定</span> 
+        <span @click="hideArtBox" class="bg_cancle">取消</span>  
+      </span>  
     </div>
   </div>
 </template>

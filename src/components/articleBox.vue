@@ -1,7 +1,7 @@
 <template>
   <!-- 文章选择弹窗 -->
   <div class="articleBox alertStyle">
-    <div class="alertTop">{{titleName}}<span @click="hideArtBox"><img src="../../static/img/cancel.png"></span></div>
+    <div class="alertTop"><span>{{titleName}}</span><span @click="hideArtBox"><img src="../../static/img/cancel.png"></span></div>
     <div class="alertContent">
       <el-autocomplete
         class="inline-input"
@@ -33,8 +33,10 @@
       </el-table>
     </div>
     <div class="alertBottom">
-      <span class="bg_green" @click="hideArtBox">确定</span> 
-      <span @click="hideArtBox" class="bg_cancle">取消</span>    
+      <span class="rightBot">
+        <span class="bg_green" @click="hideArtBox(),submit()">确定</span> 
+        <span @click="hideArtBox" class="bg_cancle">取消</span>    
+      </span>
     </div>
   </div>
 </template>
@@ -96,6 +98,7 @@
           }
         ],
         tableData:[],
+        articleObj:{},
         currentRow:'国家“111计划”基地5年评估一次，运行良好可滚动支持',
       }
     },
@@ -155,7 +158,8 @@
             this.input2=val.value;
             // this.radio2=val.i;
           }
-          this.radio=0;
+          this.radio=val.i;
+          this.articleObj=val;
         }
       },
       handlePreData:function(val1){
@@ -165,6 +169,9 @@
         // var val2=val1.slice(0,6);
         // return val2;
         return val1;
+      },
+      submit(){
+        this.$store.dispatch('changeArtObj',{articleObj:this.articleObj}).then(function(resp){});
       },
     },
     mounted() {

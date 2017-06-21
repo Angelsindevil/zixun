@@ -178,36 +178,14 @@ export default {
         el.addClass("grey").find("span").text("已收录");
         el.find("img").attr("src","./static/img/plus_grey.png");
       }
-    }
+    },
+    goSomewhere(e){
+      var ele=e.currentTarget;
+      e.preventDefault();
+      window.open($(ele).text());
+    },
   }
 }
-// var store = {
-//   debug: true,
-//   state: {
-//     message: 'Hello!'
-//   },
-//   includeThis_(e){
-//     e.stopPropagation();
-//     var el=$(e.target).closest(".includeBtn");
-//     var class_=el.hasClass('red');
-//     if(class_){
-//       el.removeClass("grey red").find("span").text("收录");
-//       el.find("img").attr("src","../../static/img/plus.png");
-//     }
-//     else{
-//       el.addClass("grey").find("span").text("已收录");
-//       el.find("img").attr("src","../../static/img/plus_grey.png");
-//     }
-//   }
-//   // setMessageAction (newValue) {
-//   //   this.debug && console.log('setMessageAction triggered with', newValue)
-//   //   this.state.message = newValue
-//   // },
-//   // clearMessageAction () {
-//   //   this.debug && console.log('clearMessageAction triggered')
-//   //   this.state.message = 'clearMessageAction triggered'
-//   // }
-// }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
@@ -313,6 +291,15 @@ export default {
         display:inline-block;
         width:33.3%;
       }
+      // >span:first-child{
+      //   width:60%;
+      // }
+      // >span:nth-child(2){
+      //   width:20%;
+      // }
+      // >span:last-child{
+      //   width:20%;
+      // }
     }
   }
   // .rightContent:last-child{

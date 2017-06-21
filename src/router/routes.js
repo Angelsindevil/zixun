@@ -11,6 +11,10 @@ import test from '../components/test'
 import managementCenter from '../components/managementCenter'
 import userManage from '../components/userManage'
 import instructionsDetail from '../components/instructionsDetail'
+import contentManage from '../components/contentManage'
+import contentPublish from '../components/contentPublish'
+import contentAdd from '../components/contentAdd'
+import orgManage from '../components/orgManage'
 const routes = [
   { path: '/', component:AllInfomation},
   {path: '/consultation', component: AllInfomation},
@@ -25,6 +29,10 @@ const routes = [
   {path:'/feedback',component:feedback},
   {path:'/managementCenter',component:managementCenter},
   {path:'/userManage',component:userManage},
+  {path:'/contentManage',component:contentManage},
+  {path:'/contentPublish',component:contentPublish},
+  {path:'/contentAdd',component:contentAdd},
+  {path:'/orgManage',component:orgManage},
   {path:'/test',component:test}
 ]
 export default routes

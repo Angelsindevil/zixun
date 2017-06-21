@@ -25,8 +25,10 @@
       </el-form>
     </div>
     <div class="alertBottom">
-      <span class="bg_green" @click="hideMesBox">确定</span> 
-      <span @click="hideMesBox" class="bg_cancle">取消</span> 
+      <span class="rightBot">
+        <span class="bg_green" @click="hideMesBox">确定</span> 
+        <span @click="hideMesBox" class="bg_cancle">取消</span> 
+      </span>
     </div>
   </div>
 </template>
@@ -53,6 +55,10 @@
         this.state2='';
         $(".mask2").addClass("showBtn");
         $(".mask1").removeClass("showBtn");
+      },
+      solvePeople:function(){
+        $(".multiBox").addClass("showBtn");
+        $(".printPs").removeClass("showBtn");
       },
     },
     mounted() {
