@@ -1,6 +1,6 @@
 <template>
 	<div class="userBox alertStyle">
-      <div class="alertTop">新增消息<span @click="hideUserBox"><img src="../../static/img/cancel.png"></span></div>
+      <div class="alertTop">用户编辑<span @click="hideUserBox"><img src="../../static/img/cancel.png"></span></div>
       <div class="alertContent">
         <el-form ref="form" :model="form" label-width="85px">
           <el-row :gutter="20">
@@ -48,7 +48,7 @@
               </el-form-item>
             </el-col>
           </el-row>
-          <el-row :gutter="20">
+          <el-row :gutter="20" class="stateRow">
             <el-col :span="6">
               <el-form-item label="状态：">
                 <span>{{form.state}}</span> 
@@ -64,13 +64,14 @@
           <span class="user-dele"><img src="../../static/img/alert-delete.png">删除</span> 
         </span>
         <span class="rightBot">
-          <span class="bg_green" @click="hideUserBox">确定</span> 
+          <span class="bg_green" @click="hideUserBox(),operateUser()" >确定</span> 
           <span @click="hideUserBox" class="bg_cancle">取消</span> 
         </span>
       </div>
     </div>
 </template>
 <script>
+  import {mapGetters} from 'vuex'
 	export default {
 		name: 'app',
 		data () {
@@ -95,34 +96,124 @@
 		      level: '1',
 		      state:'正常'
 		    },
+        userid:'',
+        orgid:'',
 		  }
 		},
+    computed: {
+      ...mapGetters({
+        userState: 'userState',
+      })
+    },
+    watch:{
+      userState:{
+        handler: function (val, oldVal) {//监听学校和指标数组，只要学科id没有变化，则不变化
+          if(Object.keys(val).length!=0){
+            console.log("111");
+            console.log(val);
+            var level=this.levelJudge(val.level); 
+            // this.$set()
+            this.form.org=val.org;
+            this.form.account=val.account;
+            this.form.name=val.name;
+            this.form.level=level;
+            this.form.state=val.state;
+            this.userid=val.id;
+            this.orgid=val.orgid;
+          }
+          else{//表示新增
+            this.form={
+              org:'',
+              account: '',
+              name: '',
+              level: '1',
+              state:'正常',
+            };
+            this.userid="";
+            this.orgid="";
+          }
+        },
+        deep:true,
+        immediate: true,
+      }
+    },
 		methods:{
+      levelJudge(value){
+        if(value=='系统管理员'){
+          return "0";
+        }
+        else if(value=='内容管理员'){
+          return "1";
+        }
+        else if(value=='批示用户'){
+          return "2";
+        }
+        else if(value=='普通用户'){
+          return "3";
+        }
+        else{}
+      },
 		  hideUserBox:function(){
-		    $(".mask1,.userBox").removeClass("showBtn");
+		    $(".mask1,.userBox").removeClass("showBtn userBoxAdd");
 		  },
 		  showCommonBox:function(){
 		    this.state2='';
 		    $(".mask2").addClass("showBtn");
 		    $(".mask1").removeClass("showBtn");
-		    // $(".articleBox").addClass("showBtn");
 		  },
 		  solvePeople:function(){
-		    this.commonData=this.allpsData;
-		    this.titleName='处理人选择';
-		    this.phtext="请输入处理人姓名";
-		    this.labeltext="人员姓名";
-		    this.isSelect=true;
-		    $(".multiBox").addClass("showBtn");
-		    $(".printPs").removeClass("showBtn");
-		    // this.currentView=AComponent;
+		    $(".unitBox").addClass("showBtn");
 		  },
 		  optionChangeHandler(val){
-
 		  },
+      operateUser(){
+        if(this.userid==""){
+          $.when(addUsers()).done(function(data){
+            if(data.state==0){
+              var res=data.data;
+            }
+          })
+        }
+        function addUsers(orgid,account,username,level){
+          var ajax = $.ajax({
+                url: "/api/user/saveUser",
+                type: "POST",
+                data:{
+                  "orgid":orgid,
+                  "account":account,
+                  "username":username,
+                  "level":level
+                }
+
+            });
+            return ajax;
+        }
+        function editUsers(id,orgid,account,username,level,password){
+          var ajax = $.ajax({
+                url: "/api/user/updateUser",
+                type: "POST",
+                data:{
+                  "id":id,
+                  "orgid":orgid,
+                  "account":account,
+                  "username":username,
+                  "level":level,
+                  "password":password,
+                }
+
+            });
+            return ajax;
+        }
+
+
+
+
+
+      },
 		},
 		mounted() {
-		}
-
+		},
+    created(){
+    }
 	}
 </script>

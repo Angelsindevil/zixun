@@ -9,3 +9,6 @@ export const changeArtObj= (state,payload) => {//将参数mes赋值给state的�
 	state.articleObj.value=payload.articleObj.value;
 	state.articleObj.i=payload.articleObj.i;
 }
+export const changeUserState= (state,payload) => {//将参数mes赋值给state的变量subjectid 
+	state.userState=payload.userState;
+}

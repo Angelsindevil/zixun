@@ -13,7 +13,8 @@ const state = {
 	articleObj:{
 		value:'国家“111计划”基地5年评估一次，运行良好可滚动支持',
 		radio:0,
-	}
+	},
+	userState:{},
 }
 const store = new Vuex.Store({
   state,

@@ -50,12 +50,19 @@ i<template>
           label="操作"
           width="100">
           <template scope="scope">
-            <el-button type="text" size="small">编辑</el-button>
+            <el-button type="text" size="small" :data-id="scope.row.id" :data-state="propsArr[scope.row.index]" @click="showUserBox_">编辑</el-button>
           </template>
         </el-table-column>  
-      </el-table>    
+      </el-table>  
     </div>
-    <div class="M-box"></div>
+    <div class="block">
+        <el-pagination
+          layout="prev, pager, next"
+          :total="totalItem"
+          :page-size="10"
+          @current-change="handleCurrentChange">
+        </el-pagination>
+      </div>  
   </div>
 </template>
 <script>
@@ -83,24 +90,30 @@ export default {
           label: '未读消息'
         }],
         value: '1',
+        totalItem:1,
         tableData: [
         {
-          index: '1',
+          index: 0,
           org: '校长办公室',
           account: 'PK_admin',
           name: '张三',
           state:'正常',
-          level: '学校管理员',
+          level: '系统管理员',
+          id:'01',
+          orgid:'03',
         }, 
         {
-          index: '2',
+          index: 1,
           org: '数据与信息中心',
           account:'TH_edit',
           name: '李四',
           state:'正常',
           level: '内容管理员',
+          id:'02',
+          orgid:'04',
         }, 
-      ]
+      ],
+      propsArr:[],
       }
   },
   methods: {
@@ -114,19 +127,75 @@ export default {
     handleInputClick:function(){},
     showUserBox(){
       $(".mask1").addClass("showBtn");
+      $(".userBox").addClass("showBtn userBoxAdd");
+      // $(".userBox").removeAttr("data-id");
+      // $(".userBox").removeAttr("data-state");
+      this.$store.dispatch('changeUserState',{"userState":{}}).then(function(resp){});
+      $(".userBox .user-wf").removeClass("showBtn");
+      $(".userBox .user-dele").removeClass("showBtn");
+      $(".userBox .stateRow").removeClass("showBtn");
+    },
+    showUserBox_(e){
+      var ele=e.currentTarget;
+      var id=$(ele).attr("data-id");
+      var state=JSON.parse($(ele).attr("data-state"));
+      $(".mask1").addClass("showBtn");
       $(".userBox").addClass("showBtn");
+      // $(".userBox").attr("data-id",id);
+      // $(".userBox").attr("data-state",state);
+      $(".userBox .user-wf").addClass("showBtn");
+      $(".userBox .user-dele").addClass("showBtn");
+      $(".userBox .stateRow").addClass("showBtn");
+      this.$store.dispatch('changeUserState',{"userState":state}).then(function(resp){});
+    },
+    levelJudge(value){
+      if(value=='0'){
+        return "系统管理员";
+      }
+      else if(value=='1'){
+        return "内容管理员";
+      }
+      else if(value=='2'){
+        return "批示用户";
+      }
+      else if(value=='3'){
+        return "普通用户";
+      }
+      else{}
+    },
+    handleCurrentChange(val){
+      console.log(val);
     },
   },
    created: function () {
-      $('.M-box').pagination({
-          totalData:100,
-          showData:10,
-          coping:true,
-          homePage:'首页',
-          endPage:'末页',
-          prevContent:'上页',
-          nextContent:'下页'
-      });
+
+      this.propsArr=this.tableData.map(function(value){
+        return JSON.stringify(value);
+      })//测试
+
+      $.when(getAllUsers()).done(function(data){
+        if(data.state==0){
+          var res=data.data;
+          this.totalItem=res.length;
+          this.tableData=res.map(function(value,index){
+            var val=levelJudge(value.level);
+            console.log(val);
+            return {
+              "index":index,
+              "org": value.organization,
+              "account":value.account,
+              "name": value.username,
+              "state":value.status,
+              "level":val,
+              "id":value.id,//用户id
+              "orgid":value.orgid,
+            }
+          })
+        }
+        this.propsArr=this.tableData.map(function(value){
+          return JSON.stringify(value);
+        })
+      })
    }
 }
 </script>
