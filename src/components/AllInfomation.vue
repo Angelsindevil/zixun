@@ -1,8 +1,10 @@
 <template>
+  <!-- 动态资讯列表 -->
   <div class="test">
     <div class="rightBar">
       <p>信息平台-全部信息：
-        <span>今日更新<span>136</span>篇，今日收录<span>12</span>篇</span>
+        <!-- <span>今日更新<span>136</span>篇，今日收录<span>12</span>篇</span> -->
+        <span>今日更新<span>{{totalNum}}</span>篇，今日收录<span>{{todayNum}}</span>篇</span>
       </p>
       <el-select v-model="value" placeholder="" @change="optionChangeHandler" class="selectStyle">
         <el-option
@@ -19,89 +21,91 @@
           </select>
       </div> -->
     </div>
-    <div class="rightContent_">
-      <span class="includeBtn" @click="includeThis" @mouseover="canceInclude" @mouseout="includeThis_"><img src="../../static/img/plus.png" alt=""><span>收录</span></span>
-      <router-link to="/articleDetail">
-        <div class="rightContent">
-          <p class="title_bar">
-            <span>山东大学实施学科高峰计划，未来五年50亿元投入学科建设<span>
-          </p>       
-          <p class="title_content">
-            教育部、国家外国专家局日前印发《高等学校学科创新引智计划实施与管理办法》（以下简称《办法》）。《办法》明确，“高等学校学科创新引智计划”（简称“111计划”）基地5年进行一次周期性评估，评估工作由“111专委会”教育部、国家外国专家局日前印发
-          </p>
-          <p class="title_bottom">
-            <span>
-              <span>来源：<span>山东大学新闻网</span></span>
-              <span>类别：<span>国家动态</span></span>
-              <!-- <span>作者：<span>丁灵</span></span> -->
-              <span>时间：<span>2014-06-11</span>&nbsp;&nbsp;<span>09:00</span></span>
-            </span> 
-          </p>
-        </div>
-      </router-link>
-    </div>
-    <div class="rightContent_">
-      <span class="includeBtn" @click="includeThis" @mouseover="canceInclude" @mouseout="includeThis_"><img src="../../static/img/plus.png" alt=""><span>收录</span></span>
-      <router-link to="/articleDetail">
-        <div class="rightContent">
-          <p class="title_bar">
-            <span>山东大学实施学科高峰计划，未来五年50亿元投入学科建设<span>
-          </p>       
-          <p class="title_content">
-            教育部、国家外国专家局日前印发《高等学校学科创新引智计划实施与管理办法》（以下简称《办法》）。《办法》明确，“高等学校学科创新引智计划”（简称“111计划”）基地5年进行一次周期性评估，评估工作由“111专委会”教育部、国家外国专家局日前印发
-          </p>
-          <p class="title_bottom">
-            <span>
-              <span>来源：<span>山东大学新闻网</span></span>
-              <span>类别：<span>国家动态</span></span>
-              <!-- <span>作者：<span>丁灵</span></span> -->
-              <span>时间：<span>2014-06-11</span>&nbsp;&nbsp;<span>09:00</span></span>
-            </span> 
-          </p>
-        </div>
-      </router-link>
-    </div>
-    <div class="rightContent_">
-      <span class="includeBtn" @click="includeThis" @mouseover="canceInclude" @mouseout="includeThis_"><img src="../../static/img/plus.png" alt=""><span>收录</span></span>
-      <router-link to="/articleDetail">
-        <div class="rightContent">
-          <p class="title_bar">
-            <span>山东大学实施学科高峰计划，未来五年50亿元投入学科建设<span>
-          </p>       
-          <p class="title_content">
-            教育部、国家外国专家局日前印发《高等学校学科创新引智计划实施与管理办法》（以下简称《办法》）。《办法》明确，“高等学校学科创新引智计划”（简称“111计划”）基地5年进行一次周期性评估，评估工作由“111专委会”教育部、国家外国专家局日前印发
-          </p>
-          <p class="title_bottom">
-            <span>
-              <span>来源：<span>山东大学新闻网</span></span>
-              <span>类别：<span>国家动态</span></span>
-              <!-- <span>作者：<span>丁灵</span></span> -->
-              <span>时间：<span>2014-06-11</span>&nbsp;&nbsp;<span>09:00</span></span>
-            </span> 
-          </p>
-        </div>
-      </router-link>
-    </div>
-    <div class="rightContent_">
-      <span class="includeBtn" @click="includeThis" @mouseover="canceInclude" @mouseout="includeThis_"><img src="../../static/img/plus.png" alt=""><span>收录</span></span>
-      <router-link to="/articleDetail">
-        <div class="rightContent">
-          <p class="title_bar">
-            <span>山东大学实施学科高峰计划，未来五年50亿元投入学科建设<span>
-          </p>       
-          <p class="title_content">
-            教育部、国家外国专家局日前印发《高等学校学科创新引智计划实施与管理办法》（以下简称《办法》）。《办法》明确，“高等学校学科创新引智计划”（简称“111计划”）基地5年进行一次周期性评估，评估工作由“111专委会”教育部、国家外国专家局日前印发
-          </p>
-          <p class="title_bottom">
-            <span>
-              <span>来源：<span>山东大学新闻网</span></span>
-              <span>类别：<span>国家动态</span></span>
-              <!-- <span>作者：<span>丁灵</span></span> -->
-              <span>时间：<span>2014-06-11</span>&nbsp;&nbsp;<span>09:00</span></span>
-            </span> 
-          </p>
-        </div>
-      </router-link>
+    <div class="contentBox">
+      <div class="rightContent_">
+        <span class="includeBtn" @click="includeThis" @mouseover="canceInclude" @mouseout="includeThis_"><img src="../../static/img/plus.png" alt=""><span>收录</span></span>
+        <router-link :to="{ path: 'articleDetail', query: { id: '001' }}">
+          <div class="rightContent">
+            <p class="title_bar">
+              <span>山东大学实施学科高峰计划，未来五年50亿元投入学科建设<span>
+            </p>       
+            <p class="title_content">
+              教育部、国家外国专家局日前印发《高等学校学科创新引智计划实施与管理办法》（以下简称《办法》）。《办法》明确，“高等学校学科创新引智计划”（简称“111计划”）基地5年进行一次周期性评估，评估工作由“111专委会”教育部、国家外国专家局日前印发
+            </p>
+            <p class="title_bottom">
+              <span>
+                <span>来源：<span>山东大学新闻网</span></span>
+                <span>类别：<span>国家动态</span></span>
+                <!-- <span>作者：<span>丁灵</span></span> -->
+                <span>时间：<span>2014-06-11</span></span>
+              </span> 
+            </p>
+          </div>
+        </router-link>
+      </div>
+      <div class="rightContent_">
+        <span class="includeBtn" @click="includeThis" @mouseover="canceInclude" @mouseout="includeThis_"><img src="../../static/img/plus.png" alt=""><span>收录</span></span>
+        <router-link to="/articleDetail">
+          <div class="rightContent">
+            <p class="title_bar">
+              <span>山东大学实施学科高峰计划，未来五年50亿元投入学科建设<span>
+            </p>       
+            <p class="title_content">
+              教育部、国家外国专家局日前印发《高等学校学科创新引智计划实施与管理办法》（以下简称《办法》）。《办法》明确，“高等学校学科创新引智计划”（简称“111计划”）基地5年进行一次周期性评估，评估工作由“111专委会”教育部、国家外国专家局日前印发
+            </p>
+            <p class="title_bottom">
+              <span>
+                <span>来源：<span>山东大学新闻网</span></span>
+                <span>类别：<span>国家动态</span></span>
+                <!-- <span>作者：<span>丁灵</span></span> -->
+                <span>时间：<span>2014-06-11</span>&nbsp;&nbsp;<span>09:00</span></span>
+              </span> 
+            </p>
+          </div>
+        </router-link>
+      </div>
+      <div class="rightContent_">
+        <span class="includeBtn" @click="includeThis" @mouseover="canceInclude" @mouseout="includeThis_"><img src="../../static/img/plus.png" alt=""><span>收录</span></span>
+        <router-link to="/articleDetail">
+          <div class="rightContent">
+            <p class="title_bar">
+              <span>山东大学实施学科高峰计划，未来五年50亿元投入学科建设<span>
+            </p>       
+            <p class="title_content">
+              教育部、国家外国专家局日前印发《高等学校学科创新引智计划实施与管理办法》（以下简称《办法》）。《办法》明确，“高等学校学科创新引智计划”（简称“111计划”）基地5年进行一次周期性评估，评估工作由“111专委会”教育部、国家外国专家局日前印发
+            </p>
+            <p class="title_bottom">
+              <span>
+                <span>来源：<span>山东大学新闻网</span></span>
+                <span>类别：<span>国家动态</span></span>
+                <!-- <span>作者：<span>丁灵</span></span> -->
+                <span>时间：<span>2014-06-11</span>&nbsp;&nbsp;<span>09:00</span></span>
+              </span> 
+            </p>
+          </div>
+        </router-link>
+      </div>
+      <div class="rightContent_">
+        <span class="includeBtn" @click="includeThis" @mouseover="canceInclude" @mouseout="includeThis_"><img src="../../static/img/plus.png" alt=""><span>收录</span></span>
+        <router-link to="/articleDetail">
+          <div class="rightContent">
+            <p class="title_bar">
+              <span>山东大学实施学科高峰计划，未来五年50亿元投入学科建设<span>
+            </p>       
+            <p class="title_content">
+              教育部、国家外国专家局日前印发《高等学校学科创新引智计划实施与管理办法》（以下简称《办法》）。《办法》明确，“高等学校学科创新引智计划”（简称“111计划”）基地5年进行一次周期性评估，评估工作由“111专委会”教育部、国家外国专家局日前印发
+            </p>
+            <p class="title_bottom">
+              <span>
+                <span>来源：<span>山东大学新闻网</span></span>
+                <span>类别：<span>国家动态</span></span>
+                <!-- <span>作者：<span>丁灵</span></span> -->
+                <span>时间：<span>2014-06-11</span>&nbsp;&nbsp;<span>09:00</span></span>
+              </span> 
+            </p>
+          </div>
+        </router-link>
+      </div>
     </div>
     <div class="rightBottom">
       <p>
@@ -117,35 +121,46 @@ export default {
   data () {
     return {
       options: [{
-        value: '1',
+        value: 0,
         label: '全部内容'
       }, {
-        value: '2',
+        value: 1,
         label: '国家动态'
       }, {
-        value: '3',
+        value: 2,
         label: '地方动态'
       }],
-      value: '1',
+      value: 0,
+      userid:'',
+      totalNum:'',
+      todayNum:'',
+      keyword:'',
     }
   },
+  watch: { 
+    // this.$route(to, from) { 
+    //   console.log("11");
+    //    // 对路由变化作出响应... 
+    // }
+    '$route': 'searchThis'
+  },
   methods:{
-    doThis:function(){
-
+    searchThis:function(){
+      this.keyword = this.$route.query.keyword;
+      var that=this;
+      if(this.keyword!=''&&this.keyword!=undefined){
+        console.log(this.keyword);
+        $.when(searchArticle(that.keyword)).done(function(data){
+          if(data.state=="0"){
+            this.insertData(data);
+          }
+          else{
+            alert(data.data);
+          }
+        })
+      }
     },
     optionChangeHandler(val){
-        // if(val=='2'){
-        //   this.articlesFilter=this.articles.filter(this.filterCallback_1);
-        // }
-        // else if(val=='1'){
-        //   this.articlesFilter=this.articles
-        // }
-        // else if(val=='3'){
-        //   this.articlesFilter=this.articles.filter(this.filterCallback_2);
-        // }
-        // else if(val=='4'){
-        //   this.articlesFilter=this.articles.filter(this.filterCallback_3); 
-        // }
     },
     includeThis_:function(e){
       var el=$(e.target).closest(".includeBtn");
@@ -166,7 +181,6 @@ export default {
       }
     },
     includeThis:function(e){
-      // store.includeThis_(e);
       e.stopPropagation();
       var el=$(e.target).closest(".includeBtn");
       var class_=el.hasClass('red');
@@ -184,7 +198,67 @@ export default {
       e.preventDefault();
       window.open($(ele).text());
     },
-  }
+    insertData(data){
+      var that=this;
+      $('.contentBox').empty();
+        var res=data.data;
+        that.totalNum=res.updateNum;
+        that.todayNum=res.IncludeNum;
+        for(var i=0;i<res.list.length;i++){
+          var item=$('<div class="rightContent_">'+
+            '<span class="includeBtn" @click="includeThis" @mouseover="canceInclude" @mouseout="includeThis_"><img src="../../static/img/plus.png" alt=""><span>收录</span></span>'+
+            // '<router-link to="/articleDetail">'+
+            '<router-link to="{ path: \"articleDetail\", query: {id:'+res.list[i].articleId+'}}">'+
+              '<div class="rightContent">'+
+                '<p class="title_bar">'+
+                  '<span>'+res.list[i].title+'<span>'+
+                '</p>'+     
+                '<p class="title_content">'+
+                  res.list[i].summary+
+                '</p>'+
+                '<p class="title_bottom">'+
+                  '<span>'+
+                    '<span>来源：<span>'+res.list[i].source+'</span></span>'+
+                    '<span>类别：<span>'+res.list[i].type+'</span></span>'+
+                    '<span>时间：<span>'+res.list[i].date+'</span></span>'+
+                  '</span>'+ 
+                '</p>'+
+              '</div>'+
+            '</router-link>'+
+          '</div>');
+          $('.contentBox').append(item);
+        }
+    },
+  },
+  mounted(){
+    var that=this;
+    $.when(getAllArticles(this.userid)).done(function(data){
+      if(data.state=="0"){
+        this.insertData(data);
+      }
+      else{
+        alert(data.data);
+      }
+    })
+    $.when(getArticleType()).done(function(data){
+      if(data.state=="0"){
+        var res=data.data;
+        that.options=res.map(function(value,index){
+          return {
+            "value":index+1,
+            "label":value,
+          }
+        })
+        that.options.splice(0,0,{value:0,label:"全部内容"});
+      }
+      else{
+        alert(data.data);
+      }
+    })
+  },
+  created: function() {
+    this.searchThis();
+  },
 }
 </script>
 

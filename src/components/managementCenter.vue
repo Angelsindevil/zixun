@@ -1,4 +1,5 @@
 <template>
+  <!-- 批示管理中心 -->
   <div class="test">
     <div class="rightBar">
       <p>平台管理-管理中心：
@@ -92,7 +93,8 @@ export default {
     showPSBox:function(){
       $(".mask1").addClass("showBtn");
       $(".psBox").addClass("showBtn");
-      $(".psBox").find(".article_btn").attr("disabled",false).removeClass("is-disabled");;
+      $(".psBox").find(".article_btn").attr("disabled",false).removeClass("is-disabled");
+      this.$store.dispatch('changeAlertBox',{"type":'0'}).then(function(resp){});
     },
     handleInputClick() {
       console.log("1");

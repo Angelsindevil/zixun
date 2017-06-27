@@ -11,7 +11,7 @@
         :trigger-on-focus="false"
         @select="handleSelect"
       ><el-button slot="append" icon="search"></el-button></el-autocomplete>
-      <el-table
+      <!-- <el-table
         class="article_table"
         :data="commonData"
         highlight-current-row
@@ -29,7 +29,22 @@
           prop="value"
           :label="labeltext"
           width="80%">
-        </el-table-column>
+        </el-table-column> -->
+        <div class="treeBox">
+          <!-- <div class="treeHeader">
+            <span>展开</span>
+            <span>单位名称</span> 
+            <span>选择</span>
+          </div> -->
+          <el-tree
+          :data="data2"
+          show-checkbox
+          node-key="id"
+          :default-expanded-keys="[2, 3]"
+          :default-checked-keys="[5]"
+          :props="defaultProps">
+          </el-tree>
+        </div>
       </el-table>
     </div>
     <div class="alertBottom">
@@ -54,23 +69,62 @@
         labeltext:'单位名称',
         // restaurants: [],
         commonData:[],
-        alltableData:[
-          {value:'张三',i:0},
-          {value:'李四',i:1},
-          {value:'赵五',i:2},
-          {value:'王六',i:3},
-          {value:'关七',i:4},
-          {value:'李四1',i:5},
-          {value:'李四2',i:6},
-          {value:'李四3',i:7},
-          {value:'李四4',i:8},
-          {value:'李四5',i:9},
-          {value:'李四6',i:10},
-          {value:'李四7',i:11},
-          {value:'李四8',i:12},
-          {value:'李四9',i:13},
-        ],
-        peopleObj:{},
+        // alltableData:[
+        //   {value:'张三',i:0},
+        //   {value:'李四',i:1},
+        //   {value:'赵五',i:2},
+        //   {value:'王六',i:3},
+        //   {value:'关七',i:4},
+        //   {value:'李四1',i:5},
+        //   {value:'李四2',i:6},
+        //   {value:'李四3',i:7},
+        //   {value:'李四4',i:8},
+        //   {value:'李四5',i:9},
+        //   {value:'李四6',i:10},
+        //   {value:'李四7',i:11},
+        //   {value:'李四8',i:12},
+        //   {value:'李四9',i:13},
+        // ],
+        // peopleObj:{},
+        data2: [{
+          id: 1,
+          label: '一级 1',
+          children: [{
+            id: 4,
+            label: '二级 1-1',
+            children: [{
+              id: 9,
+              label: '三级 1-1-1'
+            }, {
+              id: 10,
+              label: '三级 1-1-2'
+            }]
+          }]
+        }, {
+          id: 2,
+          label: '一级 2',
+          children: [{
+            id: 5,
+            label: '二级 2-1'
+          }, {
+            id: 6,
+            label: '二级 2-2'
+          }]
+        }, {
+          id: 3,
+          label: '一级 3',
+          children: [{
+            id: 7,
+            label: '二级 3-1'
+          }, {
+            id: 8,
+            label: '二级 3-2'
+          }]
+        }],
+        defaultProps: {
+          children: 'children',
+          label: 'label'
+        }
       }
     },
     methods:{
@@ -133,9 +187,9 @@
         }
       },
       handlePreData:function(val1){
-        for (var i=0;i<val1.length;i++) {
-          val1[i].i=i;
-        }
+        // for (var i=0;i<val1.length;i++) {
+        //   val1[i].i=i;
+        // }
         // var val2=val1.slice(0,6);
         // return val2;
         return val1;

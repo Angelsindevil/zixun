@@ -15,6 +15,7 @@ const state = {
 		radio:0,
 	},
 	userState:{},
+	type:'',//0-批示,1-分发,2-反馈
 }
 const store = new Vuex.Store({
   state,

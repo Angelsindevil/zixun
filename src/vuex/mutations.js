@@ -12,3 +12,6 @@ export const changeArtObj= (state,payload) => {//将参数mes赋值给state的�
 export const changeUserState= (state,payload) => {//将参数mes赋值给state的变量subjectid 
 	state.userState=payload.userState;
 }
+export const changeAlertBox= (state,payload) => {//将参数mes赋值给state的变量subjectid 
+	state.type=payload.type;
+}

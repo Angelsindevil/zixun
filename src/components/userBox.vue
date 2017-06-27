@@ -60,8 +60,8 @@
       </div>
       <div class="alertBottom">
         <span class="leftBot">
-          <span class="user-wf"><img src="../../static/img/zhuxiao.png">注销</span>   
-          <span class="user-dele"><img src="../../static/img/alert-delete.png">删除</span> 
+          <span class="user-wf" @click="cancelUser"><img src="../../static/img/zhuxiao.png">注销</span>   
+          <span class="user-dele" @click="deleteUser"><img src="../../static/img/alert-delete.png">删除</span> 
         </span>
         <span class="rightBot">
           <span class="bg_green" @click="hideUserBox(),operateUser()" >确定</span> 
@@ -109,8 +109,6 @@
       userState:{
         handler: function (val, oldVal) {//监听学校和指标数组，只要学科id没有变化，则不变化
           if(Object.keys(val).length!=0){
-            console.log("111");
-            console.log(val);
             var level=this.levelJudge(val.level); 
             // this.$set()
             this.form.org=val.org;
@@ -168,48 +166,34 @@
 		  },
       operateUser(){
         if(this.userid==""){
-          $.when(addUsers()).done(function(data){
+          $.when(addUsers(this.orgid,this.form.account,this.form.name,this.form.level)).done(function(data){
             if(data.state==0){
               var res=data.data;
             }
           })
         }
-        function addUsers(orgid,account,username,level){
-          var ajax = $.ajax({
-                url: "/api/user/saveUser",
-                type: "POST",
-                data:{
-                  "orgid":orgid,
-                  "account":account,
-                  "username":username,
-                  "level":level
-                }
-
-            });
-            return ajax;
+        else{
+          $.when(addUsers(this.userid,this.orgid,this.form.account,this.form.name,this.form.level)).done(function(data){
+            if(data.state==0){
+              var res=data.data;
+            }
+          })
         }
-        function editUsers(id,orgid,account,username,level,password){
-          var ajax = $.ajax({
-                url: "/api/user/updateUser",
-                type: "POST",
-                data:{
-                  "id":id,
-                  "orgid":orgid,
-                  "account":account,
-                  "username":username,
-                  "level":level,
-                  "password":password,
-                }
-
-            });
-            return ajax;
-        }
-
-
-
-
-
       },
+      cancelUser(){
+        $.when(cancelUsers(this.userid)).done(function(data){
+          if(data.state==0){
+            var res=data.data;
+          }
+        })
+      },
+      deleteUser(){
+        $.when(deleteUsers(this.userid)).done(function(data){
+          if(data.state==0){
+            var res=data.data;
+          }
+        })
+      }
 		},
 		mounted() {
 		},

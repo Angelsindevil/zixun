@@ -1,11 +1,11 @@
 <template>
   <div class="article">
     <div class="title_bar">
-      <p>湖南：每年遴选30名院士推荐名单，重点培养45岁以下人才！
+      <p>{{title}}
       <span>
-        <span>来源：<span>山东大学新闻网</span></span>
-        <span>类别：<span>国家动态</span></span>
-        <span>时间：<span>2014-06-11</span>&nbsp;&nbsp;<span>09:00</span></span>
+        <span>来源：<span>{{source}}</span></span>
+        <span>类别：<span>{{type}}</span></span>
+        <span>时间：<span>{{date}}</span></span>
       </span> 
       </p>
       <span class="includeBtn" @click="includeThis" @mouseover="canceInclude" @mouseout="includeThis_"><img src="../../static/img/plus.png" alt=""><span>收录</span></span>
@@ -13,8 +13,9 @@
     <div class="content_bar">
       <div class="article_content">
         <p>
-         今天上午，湖南省科协第十次全省代表大会闭幕。会议中《湖南省科协事业发展“十三五”规划纲要》（下称《规划》)获通过，明确了我省科协事业“十三五”期间的发展目标和主要任务。“十二五”是我省科协事业快速发展、成效明显的五年。《全民科学素质行动计划纲要》深入实施，全省公民具备科学素质比例达到5.14%，比“十一五”末提高2.96个百分点。根据《规划》，“十三五”时期我省将健全科协组织、创新创业服务和科学普及三大体系，并建设科技工作者之家、科普主题公园、科技传播中心等三大服务平台。同时，实施科技人才托举、创新驱动助力、科普惠民提升和精准扶贫科技助力等四大工程，打造“科技湘军”“科普湖南”“湖湘智库”“湖南智造”四大品牌建设。力争到“十三五”末，基本形成符合科技创新规律和湖南发展需要的科协事业发展体制机制。《规划》还提出，我省将继续深入实施《全民科学素质行动计划纲要(20162020年)》，创新科普机制，形成全方位联合协作的社会化科普大格局，力争到“十三五”末，全省公民具备科学素质
-      </p>
+         <!-- 今天上午，湖南省科协第十次全省代表大会闭幕。会议中《湖南省科协事业发展“十三五”规划纲要》（下称《规划》)获通过，明确了我省科协事业“十三五”期间的发展目标和主要任务。“十二五”是我省科协事业快速发展、成效明显的五年。《全民科学素质行动计划纲要》深入实施，全省公民具备科学素质比例达到5.14%，比“十一五”末提高2.96个百分点。根据《规划》，“十三五”时期我省将健全科协组织、创新创业服务和科学普及三大体系，并建设科技工作者之家、科普主题公园、科技传播中心等三大服务平台。同时，实施科技人才托举、创新驱动助力、科普惠民提升和精准扶贫科技助力等四大工程，打造“科技湘军”“科普湖南”“湖湘智库”“湖南智造”四大品牌建设。力争到“十三五”末，基本形成符合科技创新规律和湖南发展需要的科协事业发展体制机制。《规划》还提出，我省将继续深入实施《全民科学素质行动计划纲要(20162020年)》，创新科普机制，形成全方位联合协作的社会化科普大格局，力争到“十三五”末，全省公民具备科学素质 -->
+         {{content}}
+        </p>
       </div>
     </div>
   </div>
@@ -24,6 +25,14 @@ export default {
   name: 'article',
   data () {
     return {
+      id:'',
+      content:'',
+      source:'',
+      title:'',
+      date:'',
+      type:'',
+      isInclude:'',
+      isInstructions:'',
     }
   },
   methods:{
@@ -53,17 +62,51 @@ export default {
       e.stopPropagation();
       var el=$(e.target).closest(".includeBtn");
       var class_=el.hasClass('red');
-      if(class_){
-        el.removeClass("grey red").find("span").text("收录");
-        el.find("img").attr("src","./static/img/plus.png");
+      if(class_){//取消收录
+        $.when(canceled(this.id)).done(function(data){
+          if(data.state=="0"){
+            el.removeClass("grey red").find("span").text("收录");
+            el.find("img").attr("src","./static/img/plus.png");
+          }
+          else{
+            alert(data.data);
+          }
+        })
       }
-      else{
-        el.addClass("grey").find("span").text("已收录");
-        el.find("img").attr("src","./static/img/plus_grey.png");
+      else{////收录
+        $.when(included(this.id)).done(function(data){
+          if(data.state=="0"){
+            el.addClass("grey").find("span").text("已收录");
+            el.find("img").attr("src","./static/img/plus_grey.png");
+          }
+          else{
+            alert(data.data);
+          }
+        })
       }
+    },
+  },
+  created: function() {
+    this.id = this.$route.query.id;
+    console.log(this.id);
+    if(this.id!=''){
+      $.when(getArticleDetail(this.id)).done(function(data){
+        if(data.state=="0"){
+          var res=data.data;
+          this.content=res.content;
+          this.date=res.date;
+          this.type=res.type;
+          this.source=res.source;
+          this.title=res.title;
+          this.isInclude=res.isInclude;
+          this.isInstructions=res.isInstructions;
+        }
+        else{
+          alert(data.data);
+        }
+      })
     }
-  }
-
+  },
 }
 </script>
 

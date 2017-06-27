@@ -40,14 +40,14 @@
         </p>
       </div>
     </div>
-    <el-dropdown trigger="click" class="psBtn_new" @command="showSelect();showPSBox()">
+    <el-dropdown trigger="click" class="psBtn_new" @command="showSelect">
       <el-button>
         批示处理<i class="el-icon-caret-bottom el-icon--right"></i>
       </el-button>
       <el-dropdown-menu slot="dropdown">
-        <el-dropdown-item>分发</el-dropdown-item>
-        <el-dropdown-item>反馈</el-dropdown-item>
-        <el-dropdown-item>关闭</el-dropdown-item>
+        <el-dropdown-item command="ff">分发</el-dropdown-item>
+        <el-dropdown-item command="fk">反馈</el-dropdown-item>
+        <el-dropdown-item command="gb">关闭</el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
     <!-- <el-button @click="showPSBox" icon="edit" class="psBtn_new">再次批示</el-button> -->
@@ -58,8 +58,11 @@
       </p>
     </div> -->
     <div class="rightBottom">
-      <p>
+      <p class="duringPs">
       距离接收到领导批示3个小时，流程还未结束
+      </p>
+       <p class="endPs">
+      超过24个小时无新批示和反馈，流程已结束
       </p>
     </div>
   </div>
@@ -70,20 +73,37 @@ export default {
   name: 'instructionsDetail',
   data () {
     return {
-      
+      instructionsId:"",
     }
   },
   methods:{
-    showPSBox:function(){
-      console.log("1");
-      $(".mask1").addClass("showBtn");
-      $(".psBox").addClass("showBtn");
-      $(".printPs").removeClass("showBtn");
-      $(".psBox").find(".article_btn").attr("disabled",true).addClass("is-disabled");
-    },
-    showSelect:function(){
-      $(".el-row").addClass("show_row");
-      $(".psBox").addClass("alertStyle_");
+    showSelect:function(command){
+      if(command!='gb'){
+        $(".mask1").addClass("showBtn");
+        $(".psBox").addClass("showBtn");
+        $(".printPs").removeClass("showBtn");
+        $(".el-row").addClass("show_row");
+        $(".psBox").addClass("alertStyle_");
+        $(".psBox").find(".article_btn").attr("disabled",true).addClass("is-disabled");
+      }
+      console.log(command);
+      if(command=="ff"){
+        this.$store.dispatch('changeAlertBox',{"type":'1'}).then(function(resp){});
+      }
+      else if(command=="fk"){
+        this.$store.dispatch('changeAlertBox',{"type":'2'}).then(function(resp){});
+      }
+      else if(command=="gb"){
+        $.when(closeInstructions(this.instructionsId)).done(function(data){
+          if(data.state=='0'){
+            alert("流程已关闭");
+            window.location.hash="#/managementCenter";
+          }
+          else{
+            alert(data.data);
+          }
+        })
+      }
     }
   }
 }

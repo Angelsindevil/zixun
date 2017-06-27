@@ -4,8 +4,8 @@
       <div class="topContent">
         <p><span>H</span><span>I</span><span>N</span>高教信息平台<span>pro</span></p>
         <p>
-          <input type="text" placeholder="输入关键词，搜索你想要的">
-          <a href="">
+          <input type="text" v-model="keyword" placeholder="输入关键词，搜索你想要的" @keyup.enter="doSearch">
+          <a @click="doSearch">
             <img src="../static/img/search.png">
           </a>
           <!-- <el-input placeholder="输入关键词，搜索你想要的" v-model="input5">
@@ -94,6 +94,7 @@ export default {
     Hello,reportBox,psBox,articleBox,multiBox,userBox,peopleBox,mesBox,orgBox,unitBox,loginBox},
   data () {
     return {
+      keyword:'',
     }
   },
   methods:{
@@ -102,6 +103,18 @@ export default {
         $(".loginBox,.mask1").addClass("showBtn");
       }
     },
+    doSearch(){
+      // this.$router.push({path:'consultation',query: { keyword: encodeURI(this.keyword) }});
+      this.$router.push({path:'consultation',query: { keyword: this.keyword }});
+      // var that=this;
+      // $.when(searchArticle(that.keyword)).done(function(data){
+      //   if(data.state=="0"){
+      //   }
+      //   else{
+      //     alert(data.data);
+      //   }
+      // })
+    }
   },
   mounted() {
   }

@@ -6,38 +6,41 @@
       <div class="editContainer">
         <p>输入批示内容</p>
         <div class="editBox">
-          <textarea id="tinymce"></textarea>
+          <textarea id="tinymce_new"></textarea>
           <input type="file" name="" class="file_" id="my_form" style="display:none;">
         </div>
       </div>
       <el-row type="flex" class="row-bg" justify="space-between">
         <el-col :span="6"><div class="grid-content bg-purple">
           <span class="typeLabel">类型：</span>
-          <el-select v-model="value" placeholder="请选择" class="typeChoose">
+          <el-select v-model="value" placeholder="请选择" class="typeChoose" disabled>
             <el-option
-              v-for="item in type"
+              v-for="item in typeOptions"
               :label="item.label"
               :value="item.value">
             </el-option>
           </el-select>
         </div></el-col>
-        <el-col :span="6"><div class="grid-content bg-purple-light" @click="psPeople();showCommonBox()">
+        <el-col :span="6"><div class="grid-content bg-purple-light" @click="psPeople">
           <span class="typeLabel">批示人：</span>
           <el-input
             placeholder="请选择"
             icon="menu"
             v-model="input2"
             class="typeChoose_"
+            :disabled="psDisabled"
             >
           </el-input>
         </div></el-col>
-        <el-col :span="6"><div class="grid-content bg-purple" @click="solvePeople();showCommonBox()">
+        <el-col :span="6"><div class="grid-content bg-purple" @click="solvePeople">
           <span class="typeLabel">处理人：</span>
           <el-input
             placeholder="请选择"
             icon="menu"
             v-model="input3"
-            class="typeChoose_">
+            class="typeChoose_"
+            :disabled="clDisabled"
+            >
           </el-input>
         </div></el-col>
       </el-row>
@@ -60,18 +63,20 @@
      name: 'app',
   data () {
     return {
-      type:[
+      typeOptions:[
       {value:'0',
       label:'批示'},
       {value:'1',
-      label:'批示1'},
+      label:'分发'},
       {value:'2',
-      label:'批示2'},
+      label:'反馈'},
       ],
       value:'0',
       input2:'',
       input3:'',
       state2:'',
+      psDisabled:false,
+      clDisabled:false,
       currentRow:'国家“111计划”基地5年评估一次，运行良好可滚动支持',
     }
   },
@@ -80,6 +85,7 @@
       selectArr: 'selectArr',
       peopleObj:'peopleObj',
       articleObj:'articleObj',
+      type:'type',
     })
   },
   watch:{
@@ -115,6 +121,26 @@
       deep:true,
       immediate: true,
     },
+    type:{
+      handler: function (val, oldVal) {//监听学校和指标数组，只要学科id没有变化，则不变化
+        console.log(val);
+        this.value=val;
+        this.psDisabled=true;//判断不是系统管理员
+        if(val=='0'){//批示弹窗
+          // tinymce.get('tinymce').setContent('<p style="line-height:2">请发展规划处等抓紧时间研究国家双一流方案的细则和教育部有关部门的解读<br><span style="color:#FF6600">（如批示是由纸质材料批示，则由数据与信息中心发起流程并人工输入）</span></p>');
+        }
+        else if(val=='1'){//分发弹窗
+          this.clDisabled=false;
+        }
+        else if(val=='2'){//反馈弹窗
+          this.clDisabled=true;
+        }
+        else{
+        }
+      },
+      deep:true,
+      immediate: true,
+    },
   },
   methods:{
     hidePSBox:function(){
@@ -132,69 +158,80 @@
       $(".mask1").removeClass("showBtn");
     },
     psPeople:function(){
-      $(".peopleBox").addClass("showBtn");
-      $(".printPs").removeClass("showBtn");
+      if(!this.psDisabled){
+        $(".peopleBox").addClass("showBtn");
+        $(".printPs").removeClass("showBtn");
+        $(".mask2").addClass("showBtn");
+        $(".mask1").removeClass("showBtn");
+      }
     },
     solvePeople:function(){
-      $(".multiBox").addClass("showBtn");
-      $(".printPs").removeClass("showBtn");
+      if(!this.clDisabled){
+        $(".multiBox").addClass("showBtn");
+        $(".printPs").removeClass("showBtn");
+        $(".mask2").addClass("showBtn");
+        $(".mask1").removeClass("showBtn");
+      }
     },
   },
-    mounted() {
-      tinymce.remove();
-      tinymce.init(obj);
-      // editor_ps.render();
-      // tinymce.get('tinymce').setContent('请发展规划处等抓紧时间研究国家双一流方案的细则，特别是教育部有关部门的解读（如批示是由纸质材料批示，则由数据与信息中心发起流程并人工输入）');
-    }
+  mounted() {
+    // tinymce.init(obj);
+    // editor.render();
+    // tinymce.get('tinymce').setContent('请发展规划处等抓紧时间研究国家双一流方案的细则，特别是教育部有关部门的解读（如批示是由纸质材料批示，则由数据与信息中心发起流程并人工输入）');
+  },
+  created(){
+    // tinymce.remove('textarea'); 
+    // tinymce.init(obj);
   }
-  var obj={
-      selector: '#tinymce',
-      height: 200,
-      theme: 'modern',
-      language: 'zh_CN',
-      menubar: false,
-      plugins: [
-          'advlist autolink lists link image charmap print preview hr anchor pagebreak',
-          // 'searchreplace wordcount visualblocks visualchars code fullscreen',dsd
-          'insertdatetime media nonbreaking save table contextmenu directionality',
-          'emoticons template paste textcolor colorpicker textpattern imagetools'
-      ],
-      toolbar1: 'insertfile undo redo | fontsizeselect styleselect | bold italic | alignleft aligncenter alignright | bullist numlist | link image print | preview',
-      // toolbar2: 'print preview media | forecolor backcolor | example',
-      setup: function(ed) {
-      },
-      fontsize_formats: "12px 14px 18px 24px 36px 48px 60px 72px 84px 96px 108px 120px",
-      image_advtab: true,
-      relative_url: false,
-      templates: [
-          { title: 'Test template 1', content: 'Test 1' },
-          { title: 'Test template 2', content: 'Test 2' }
-      ],
-      content_css: [
-          './static/css/tinymce.css'
-      ],
-      file_browser_callback: function(field_name, url, type, win) {
-          if(type=='image') 
-          {
-              $('#my_form').click();
-              $("#my_form").on("change", function(e){
-                  type_arr=[];
-                  var file = e.target.files; //获取图片资源
-                  for(var i=0; i< file.length; i++){
-                      var formData = new FormData();  
-                      formData.append("file" , file[i]);
-                      $.when(getImgUrl(formData)).done(function(data){
-                          if(data.state==0){
-                              var order=data.order;
-                              var photo_=order[0].file;
-                              win.document.getElementById(field_name).value = photo_;
-                          }
-                      })
-                  }
-              });
-          };
+}
+  // var obj={
+  //     selector: '#tinymce_new',
+  //     height: 200,
+  //     theme: 'modern',
+  //     language: 'zh_CN',
+  //     menubar: false,
+  //     plugins: [
+  //         'advlist autolink lists link image charmap print preview hr anchor pagebreak',
+  //         // 'searchreplace wordcount visualblocks visualchars code fullscreen',dsd
+  //         'insertdatetime media nonbreaking save table contextmenu directionality',
+  //         'emoticons template paste textcolor colorpicker textpattern imagetools'
+  //     ],
+  //     toolbar1: 'insertfile undo redo | fontsizeselect styleselect | bold italic | alignleft aligncenter alignright | bullist numlist | link image print | preview',
+  //     // toolbar2: 'print preview media | forecolor backcolor | example',
+  //     setup: function(ed) {
+  //     },
+  //     fontsize_formats: "12px 14px 18px 24px 36px 48px 60px 72px 84px 96px 108px 120px",
+  //     image_advtab: true,
+  //     relative_url: false,
+  //     templates: [
+  //         { title: 'Test template 1', content: 'Test 1' },
+  //         { title: 'Test template 2', content: 'Test 2' }
+  //     ],
+  //     content_css: [
+  //         './static/css/tinymce.css'
+  //     ],
+  //     file_browser_callback: function(field_name, url, type, win) {
+  //         if(type=='image') 
+  //         {
+  //             $('#my_form').click();
+  //             $("#my_form").on("change", function(e){
+  //                 type_arr=[];
+  //                 var file = e.target.files; //获取图片资源
+  //                 for(var i=0; i< file.length; i++){
+  //                     var formData = new FormData();  
+  //                     formData.append("file" , file[i]);
+  //                     $.when(getImgUrl(formData)).done(function(data){
+  //                         if(data.state==0){
+  //                             var order=data.order;
+  //                             var photo_=order[0].file;
+  //                             win.document.getElementById(field_name).value = photo_;
+  //                         }
+  //                     })
+  //                 }
+  //             });
+  //         };
 
-      },
-    }
-  var editor =  new tinymce.Editor('tinymce',obj, tinymce.EditorManager);
+  //     },
+  //   }
+  // var editor =  new tinymce.Editor('tinymce_new',obj, tinymce.EditorManager);
 </script>

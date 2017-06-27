@@ -86,70 +86,18 @@ export default {
     optionChangeHandler(){},
   },
   mounted() {
-    // tinymce.remove();
-    // editor.render();
-    tinymce.init(obj);
-    // tinymce.get('tinymce').setContent('请发展规划处等抓紧时间研究国家双一流方案的细则，特别是教育部有关部门的解读（如批示是由纸质材料批示，则由数据与信息中心发起流程并人工输入）');
   },
   created(){
-    tinymce.remove();
   }
 }
-var obj={
-      selector: '#tinymce',
-      height: 200,
-      theme: 'modern',
-      language: 'zh_CN',
-      menubar: false,
-      plugins: [
-          'advlist autolink lists link image charmap print preview hr anchor pagebreak',
-          // 'searchreplace wordcount visualblocks visualchars code fullscreen',dsd
-          'insertdatetime media nonbreaking save table contextmenu directionality',
-          'emoticons template paste textcolor colorpicker textpattern imagetools'
-      ],
-      toolbar1: 'insertfile undo redo | fontsizeselect styleselect | bold italic | alignleft aligncenter alignright | bullist numlist | link image print | preview',
-      // toolbar2: 'print preview media | forecolor backcolor | example',
-      setup: function(ed) {
-      },
-      fontsize_formats: "12px 14px 18px 24px 36px 48px 60px 72px 84px 96px 108px 120px",
-      image_advtab: true,
-      relative_url: false,
-      templates: [
-          { title: 'Test template 1', content: 'Test 1' },
-          { title: 'Test template 2', content: 'Test 2' }
-      ],
-      content_css: [
-          './static/css/tinymce.css'
-      ],
-      file_browser_callback: function(field_name, url, type, win) {
-          if(type=='image') 
-          {
-              $('#my_form').click();
-              $("#my_form").on("change", function(e){
-                  type_arr=[];
-                  var file = e.target.files; //获取图片资源
-                  for(var i=0; i< file.length; i++){
-                      var formData = new FormData();  
-                      formData.append("file" , file[i]);
-                      $.when(getImgUrl(formData)).done(function(data){
-                          if(data.state==0){
-                              var order=data.order;
-                              var photo_=order[0].file;
-                              win.document.getElementById(field_name).value = photo_;
-                          }
-                      })
-                  }
-              });
-          };
-
-      },
-    }
-var editor =  new tinymce.Editor('tinymce',obj, tinymce.EditorManager);
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="less">
   .contentAdd{
+    .rightContent{
+      border:1px solid #eee;
+    }
     .rightBar{
       position: relative;
       .btn_position{
