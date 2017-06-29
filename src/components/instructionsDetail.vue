@@ -66,8 +66,8 @@
         </div>
       </div> -->
     </div>
-    <el-dropdown trigger="click" class="psBtn_new" @command="showSelect" :disabled="dropDownState">
-      <el-button>
+    <el-dropdown trigger="click" class="psBtn_new" @command="showSelect">
+      <el-button :disabled="dropDownState">
         批示处理<i class="el-icon-caret-bottom el-icon--right"></i>
       </el-button>
       <el-dropdown-menu slot="dropdown">

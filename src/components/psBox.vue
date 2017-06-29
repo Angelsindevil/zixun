@@ -268,9 +268,9 @@
       if(this.level=="0"){//系统管理员无论反馈和分发 都弹窗 而且都默认选中自己
         if(this.value=='1'){//分发
           $(".multiBox").addClass("showBtn");
-        $(".printPs").removeClass("showBtn");
-        $(".mask2").addClass("showBtn");
-        $(".mask1").removeClass("showBtn");
+          $(".printPs").removeClass("showBtn");
+          $(".mask2").addClass("showBtn");
+          $(".mask1").removeClass("showBtn");
         }
         // else if(this.value=='2'){//反馈
         // }
