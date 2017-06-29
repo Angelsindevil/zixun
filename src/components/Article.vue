@@ -9,7 +9,7 @@
         <span>时间：<span>{{date}}</span></span>
       </span> 
       </p>
-      <span class="includeBtn" :data-state="isInstructions" :data-id="id" :data-pid="instructionId" :data-title="title" :data-i="number" @click="includeThis" @mouseover="canceInclude" @mouseout="includeThis_"><img src="../../static/img/plus.png" alt=""><span>{{btnState}}</span></span>
+      <span class="includeBtn" :class="isInstructions=='0'?'':'grey'" :data-state="isInstructions" :data-id="id" :data-pid="instructionId" :data-title="title" :data-i="number" @click="includeThis" @mouseover="canceInclude" @mouseout="includeThis_"><img src="../../static/img/plus.png" alt="" v-show="isInstructions=='0'?true:false"><span>{{isInstructions=='0'?'批示':'批示中'}}</span></span>
     </div>
     <div class="content_bar">
       <div class="article_content">
@@ -36,6 +36,7 @@ export default {
       number:'',
       isInstructions:'',
       btnState:'批示',
+      instructionId:'',
     }
   },
   methods:{
@@ -198,6 +199,7 @@ export default {
           that.title=res.title;
           that.isInclude=res.isInclude;
           that.isInstructions=res.isInstructions;
+          that.instructionId=res.instructionId;
         }
         else{
           alert(data.data);

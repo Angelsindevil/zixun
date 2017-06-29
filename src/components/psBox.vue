@@ -266,10 +266,15 @@
     },
     solvePeople:function(){//处理人弹窗  反馈还是分发
       if(this.level=="0"){//系统管理员无论反馈和分发 都弹窗 而且都默认选中自己
-        $(".multiBox").addClass("showBtn");
+        if(this.value=='1'){//分发
+          $(".multiBox").addClass("showBtn");
         $(".printPs").removeClass("showBtn");
         $(".mask2").addClass("showBtn");
         $(".mask1").removeClass("showBtn");
+        }
+        // else if(this.value=='2'){//反馈
+        // }
+        else{}
         this.$store.dispatch('changeClrObj',{clrId:this.psObj[1]}).then(function(resp){});
       }
       else{}

@@ -81,6 +81,8 @@
         ],
         tableData:[],
         articleObj:{
+          value:'',
+          id:'',
         },
         // currentRow:'国家“111计划”基地5年评估一次，运行良好可滚动支持',
         currentRow:'',
@@ -203,6 +205,8 @@
             }
           })
           that.currentRow=that.commonData[0].value;
+          that.articleObj.value=that.commonData[0].value;
+          that.articleObj.id=that.commonData[0].id;
         }
         else{
           alert(data.data);

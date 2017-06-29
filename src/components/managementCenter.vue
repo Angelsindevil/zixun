@@ -41,7 +41,7 @@
       <div class="title_content">
         <ul>
           <li v-for="(item,index) in articlesFilter">
-            <span>批示内容：<span>{{item.title}}</span>  - <span>{{item.date}}</span></span>
+            <span class="ellipsis" style="display:block;padding-right:250px">批示内容：<span>{{item.title}}</span>  - <span>{{item.date}}</span></span>
             <span class="includeBtn_" :class="(item.rowState!=0)?'orange':'grey'"><span>{{item.btn_con}}</span></span>
             <!-- <router-link to="/instructionsDetail"><span class="includeBtn"><span>查看</span><img src="../../static/img/arrow_blue.png" alt=""></span></router-link> -->
             <!-- <el-tag type="primary" class="label_style">有新反馈</el-tag> -->
