@@ -1,20 +1,21 @@
 <template>
   <div class="article">
     <div class="title_bar">
-      <p>{{title}}
+      <p style="padding-right:110px">
+      <span class="ellipsis" style="display:block;font-size: 18px;color: #222;padding-top:0">{{title}}</span>
       <span>
         <span>来源：<span>{{source}}</span></span>
         <span>类别：<span>{{type}}</span></span>
         <span>时间：<span>{{date}}</span></span>
       </span> 
       </p>
-      <span class="includeBtn" @click="includeThis" @mouseover="canceInclude" @mouseout="includeThis_"><img src="../../static/img/plus.png" alt=""><span>收录</span></span>
+      <span class="includeBtn" :data-state="isInstructions" :data-id="id" :data-pid="instructionId" :data-title="title" :data-i="number" @click="includeThis" @mouseover="canceInclude" @mouseout="includeThis_"><img src="../../static/img/plus.png" alt=""><span>{{btnState}}</span></span>
     </div>
     <div class="content_bar">
       <div class="article_content">
-        <p>
+        <p v-html="content">
          <!-- 今天上午，湖南省科协第十次全省代表大会闭幕。会议中《湖南省科协事业发展“十三五”规划纲要》（下称《规划》)获通过，明确了我省科协事业“十三五”期间的发展目标和主要任务。“十二五”是我省科协事业快速发展、成效明显的五年。《全民科学素质行动计划纲要》深入实施，全省公民具备科学素质比例达到5.14%，比“十一五”末提高2.96个百分点。根据《规划》，“十三五”时期我省将健全科协组织、创新创业服务和科学普及三大体系，并建设科技工作者之家、科普主题公园、科技传播中心等三大服务平台。同时，实施科技人才托举、创新驱动助力、科普惠民提升和精准扶贫科技助力等四大工程，打造“科技湘军”“科普湖南”“湖湘智库”“湖南智造”四大品牌建设。力争到“十三五”末，基本形成符合科技创新规律和湖南发展需要的科协事业发展体制机制。《规划》还提出，我省将继续深入实施《全民科学素质行动计划纲要(20162020年)》，创新科普机制，形成全方位联合协作的社会化科普大格局，力争到“十三五”末，全省公民具备科学素质 -->
-         {{content}}
+         <!-- {{content}} -->
         </p>
       </div>
     </div>
@@ -32,74 +33,171 @@ export default {
       date:'',
       type:'',
       isInclude:'',
+      number:'',
       isInstructions:'',
+      btnState:'批示',
     }
   },
   methods:{
     doThis:function(){
 
     },
+    // includeThis_:function(e){
+    //   var el=$(e.target).closest(".includeBtn");
+    //   var class_=el.hasClass('grey');
+    //   if(class_){
+    //     el.removeClass("red").addClass("grey").find("span").text("已收录");
+    //     el.find("img").attr("src","./static/img/plus_grey.png");
+    //   }
+    //   else{
+    //   }
+    // },
+    // canceInclude:function(e){
+    //   var el=$(e.target).closest(".includeBtn");
+    //   var class_=el.hasClass('grey');
+    //   if(class_){
+    //     el.addClass("red").find("span").text("取消收录");
+    //     el.find("img").attr("src","./static/img/reduce.png");
+    //   }
+    // },
+    // includeThis:function(e){
+    //   // store.includeThis_(e);
+    //   e.stopPropagation();
+    //   var el=$(e.target).closest(".includeBtn");
+    //   var class_=el.hasClass('red');
+    //   if(class_){//取消收录
+    //     $.when(canceled(this.id)).done(function(data){
+    //       if(data.state=="0"){
+    //         el.removeClass("grey red").find("span").text("收录");
+    //         el.find("img").attr("src","./static/img/plus.png");
+    //       }
+    //       else{
+    //         alert(data.data);
+    //       }
+    //     })
+    //   }
+    //   else{////收录
+    //     $.when(included(this.id)).done(function(data){
+    //       if(data.state=="0"){
+    //         el.addClass("grey").find("span").text("已收录");
+    //         el.find("img").attr("src","./static/img/plus_grey.png");
+    //       }
+    //       else{
+    //         alert(data.data);
+    //       }
+    //     })
+    //   }
+    // },
     includeThis_:function(e){
       var el=$(e.target).closest(".includeBtn");
       var class_=el.hasClass('grey');
-      if(class_){
-        el.removeClass("red").addClass("grey").find("span").text("已收录");
-        el.find("img").attr("src","./static/img/plus_grey.png");
+      if(!this.btnState=='批示'){
+        // var state=el.attr("data-state");
+        // if(state=="false"){//文章不在批示中，可新增批示
+        //   this.showPSBox();
+        // }
+        // else{
+        //   el.find("span").text("已批示");
+        //   el.addClass("grey");
+        //   el.find("img").remove();
+        // }
+        if(class_){
+          el.removeClass("red").addClass("grey").find("span").text("已收录");
+          el.find("img").attr("src","./static/img/plus_grey.png");
+        }
+        else{
+        }
+      }
+      // else{
+      //   if(class_){
+      //     el.removeClass("red").addClass("grey").find("span").text("已收录");
+      //     el.find("img").attr("src","./static/img/plus_grey.png");
+      //   }
+      //   else{
+      //   }
+      // }
+    },
+    canceInclude:function(e){
+      if(!this.btnState=='批示'){
+        var el=$(e.target).closest(".includeBtn");
+        var class_=el.hasClass('grey');
+        if(class_){
+          el.addClass("red").find("span").text("取消收录");
+          el.find("img").attr("src","./static/img/reduce.png");
+        }
       }
       else{
       }
     },
-    canceInclude:function(e){
-      var el=$(e.target).closest(".includeBtn");
-      var class_=el.hasClass('grey');
-      if(class_){
-        el.addClass("red").find("span").text("取消收录");
-        el.find("img").attr("src","./static/img/reduce.png");
-      }
+    showPSBox:function(){
+      $(".mask1").addClass("showBtn");
+      $(".psBox").addClass("showBtn");
+      $(".psBox").find(".article_btn").attr("disabled",false).removeClass("is-disabled");
+      this.$store.dispatch('changeAlertBox',{"type":'0'}).then(function(resp){});
     },
     includeThis:function(e){
-      // store.includeThis_(e);
-      e.stopPropagation();
-      var el=$(e.target).closest(".includeBtn");
-      var class_=el.hasClass('red');
-      if(class_){//取消收录
-        $.when(canceled(this.id)).done(function(data){
-          if(data.state=="0"){
-            el.removeClass("grey red").find("span").text("收录");
-            el.find("img").attr("src","./static/img/plus.png");
-          }
-          else{
-            alert(data.data);
-          }
-        })
+      if(!this.btnState=='批示'){
+        e.stopPropagation();
+        var el=$(e.target).closest(".includeBtn");
+        var class_=el.hasClass('red');
+        if(class_){
+          el.removeClass("grey red").find("span").text("收录");
+          el.find("img").attr("src","./static/img/plus.png");
+        }
+        else{
+          el.addClass("grey").find("span").text("已收录");
+          el.find("img").attr("src","./static/img/plus_grey.png");
+        }
       }
-      else{////收录
-        $.when(included(this.id)).done(function(data){
-          if(data.state=="0"){
-            el.addClass("grey").find("span").text("已收录");
-            el.find("img").attr("src","./static/img/plus_grey.png");
-          }
-          else{
-            alert(data.data);
-          }
-        })
+      else{//批示功能
+        var el=$(e.target).closest(".includeBtn");
+        var class_=el.hasClass('grey');
+        var state=el.attr("data-state");
+        var title=$(el).attr("data-title");
+        var id=$(el).attr("data-id");
+        var pid=$(el).attr("data-pid");
+        var i=$(el).attr("data-i");
+        var articleObj={
+          value:title,
+          radio:i,
+          id:id,
+        };
+        var psObj={
+          "value":title,//表示在文章列表或者详情页跳转
+          "id":id,
+        }
+        console.log(state);
+        if(state=="0"){//文章不在批示中，可新增批示
+          this.$store.dispatch('changeNewArticle',{newArcticle:articleObj}).then(function(resp){});
+          this.$store.dispatch('changePsShow',{psShow:psObj}).then(function(resp){});
+          // this.$store.dispatch('changeArtObj',{articleObj:this.articleObj}).then(function(resp){});
+          this.showPSBox();
+        }
+        else{
+          el.find("span").text("已批示");
+          el.addClass("grey");
+          el.find("img").remove();
+          this.$router.push({path:'instructionsDetail',query: {id:pid}});
+        }
       }
     },
   },
   created: function() {
     this.id = this.$route.query.id;
+    this.number=this.$route.query.index;
+    var that=this;
     console.log(this.id);
     if(this.id!=''){
-      $.when(getArticleDetail(this.id)).done(function(data){
+      $.when(getArticleDetail(that.id)).done(function(data){
         if(data.state=="0"){
           var res=data.data;
-          this.content=res.content;
-          this.date=res.date;
-          this.type=res.type;
-          this.source=res.source;
-          this.title=res.title;
-          this.isInclude=res.isInclude;
-          this.isInstructions=res.isInstructions;
+          that.content=res.content;
+          that.date=res.time;
+          that.type=res.type;
+          that.source=res.source;
+          that.title=res.title;
+          that.isInclude=res.isInclude;
+          that.isInstructions=res.isInstructions;
         }
         else{
           alert(data.data);

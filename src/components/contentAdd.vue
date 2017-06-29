@@ -42,10 +42,37 @@
              >
             </el-date-picker>
           </el-form-item>
-          <el-form-item label="正文：">
+          <el-form-item label="正文：" class="item_new">
             <div class="editBox">
-              <textarea id="tinymce"></textarea>
+              <!-- <textarea id="tinymce"></textarea>
               <input type="file" name="" class="file_" id="my_form" style="display:none;">
+               -->
+                <div id="toolbar">
+                  <span class="ql-formats">
+                    <select class="ql-size">
+                      <option value="10px">12px</option>
+                      <option value="13px" selected>14px</option>
+                      <option value="18px">16px</option>
+                      <option value="32px">18px</option>
+                    </select>
+                  </span>
+                  <span class="ql-formats">
+                    <button class="ql-bold"></button>
+                    <button class="ql-italic"></button>
+                    <button class="ql-underline"></button>
+                  </span>
+                  <span class="ql-formats">
+                    <button class="ql-list" value="ordered" type="button"></button>
+                    <button class="ql-list" value="bullet" type="button"></button>
+                    <select class="ql-align">
+                      <option selected=""></option>
+                      <option value="center"></option>
+                      <option value="right"></option>
+                      <option value="justify"></option>
+                    </select>
+                  </span>
+                </div>
+               <div id="editor"></div>
             </div>
           </el-form-item>
         </el-form>
@@ -86,6 +113,12 @@ export default {
     optionChangeHandler(){},
   },
   mounted() {
+    var quill = new Quill('#editor', {
+      modules: {
+        toolbar: '#toolbar',
+      },
+      theme: 'snow'
+    });
   },
   created(){
   }
@@ -95,6 +128,9 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="less">
   .contentAdd{
+    .ql-editor{
+      height:400px!important;
+    }
     .rightContent{
       border:1px solid #eee;
     }
@@ -115,10 +151,13 @@ export default {
       padding:20px;
     }
     .editBox{
-      border:1px solid rgba(0,0,0,0.2);
-      border-bottom:none;
+      // border:1px solid rgba(0,0,0,0.2);
+      // border-bottom:none;
       iframe{
         height:450px!important;
+      }
+      #editor{
+        min-height:400px;
       }
       // border-radius:5px;
 
@@ -197,6 +236,11 @@ export default {
     }
     .bg_cancle{
       background-color: #ccc;
+    }
+  }
+  .item_new{
+    .el-form-item__content{
+      line-height:1;
     }
   }
 </style>

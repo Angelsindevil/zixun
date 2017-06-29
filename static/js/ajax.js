@@ -1,7 +1,9 @@
 //以下用户管理
+var url="http://192.168.2.108:9000";
+// var url="";
 function getAllUsers(){
 	var ajax = $.ajax({
-        url: "/api/user/fetchAllUser",
+        url: url+"/api/user/fetchAllUser",
         type: "POST",
         data:{}
 
@@ -10,7 +12,7 @@ function getAllUsers(){
 }
 function addUsers(orgid,account,username,level){
 	var ajax = $.ajax({
-        url: "/api/user/saveUser",
+        url:url+ "/api/user/saveUser",
         type: "POST",
         data:{
         	"orgid":orgid,
@@ -18,13 +20,12 @@ function addUsers(orgid,account,username,level){
         	"username":username,
         	"level":level
         }
-
     });
     return ajax;
 }
 function editUsers(id,orgid,account,username,level){
 	var ajax = $.ajax({
-        url: "/api/user/updateUser",
+        url: url+"/api/user/updateUser",
         type: "POST",
         data:{
         	"id":id,
@@ -39,7 +40,7 @@ function editUsers(id,orgid,account,username,level){
 }
 function cancelUsers(id){
 	var ajax = $.ajax({
-        url: "/api/user/cancelUser",
+        url: url+"/api/user/cancelUser",
         type: "POST",
         data:{
         	"id":id,
@@ -50,7 +51,7 @@ function cancelUsers(id){
 }
 function deleteUsers(id){
 	var ajax = $.ajax({
-        url: "/api/user/deleteUser",
+        url: url+"/api/user/deleteUser",
         type: "POST",
         data:{
         	"id":id,
@@ -61,12 +62,15 @@ function deleteUsers(id){
 }
 
 //资讯相关
-function getAllArticles(userid){
+function getAllArticles(userid,method,type){
     var ajax = $.ajax({
-        url: "/api/user/deleteUser",
+        url: url+"/api/article/getList",
+        // contentType: 'application/json;charset=UTF-8',
         type: "POST",
         data:{
             "userid":userid,
+            "method":method,
+            "type":type,
         }
 
     });
@@ -74,7 +78,7 @@ function getAllArticles(userid){
 }
 function getArticleType(){
     var ajax = $.ajax({
-        url: "/api/user/deleteUser",
+        url: url+"/api/article/getType",
         type: "POST",
         data:{
         }
@@ -84,7 +88,7 @@ function getArticleType(){
 }
 function getArticleDetail(id){//获取文章详情
     var ajax = $.ajax({
-        url: "/api/user/deleteUser",
+        url: url+"/api/article/getContent",
         type: "POST",
         data:{
             "id":id,
@@ -95,7 +99,7 @@ function getArticleDetail(id){//获取文章详情
 }
 function canceled(id){//取消收录
     var ajax = $.ajax({
-        url: "/api/user/deleteUser",
+        url: url+"/api/user/deleteUser",
         type: "POST",
         data:{
             "id":id,
@@ -106,7 +110,7 @@ function canceled(id){//取消收录
 }
 function included(id){//收录
     var ajax = $.ajax({
-        url: "/api/user/deleteUser",
+        url: url+"/api/user/deleteUser",
         type: "POST",
         data:{
             "id":id,
@@ -117,7 +121,7 @@ function included(id){//收录
 }
 function searchArticle(keyword){//收录
     var ajax = $.ajax({
-        url: "/api/user/deleteUser",
+        url: url+"/api/article/searchArticle",
         type: "POST",
         data:{
             "keyword":keyword,
@@ -129,12 +133,54 @@ function searchArticle(keyword){//收录
 
 
 //批示相关
-function closeInstructions(instructionsId){//收录
+function closeInstructions(instructionId){//关闭批示
     var ajax = $.ajax({
-        url: "/api/user/deleteUser",
+        url: url+"/api/article/close",
         type: "POST",
         data:{
-            "instructionsId":instructionsId,
+            "instructionId":instructionId,
+        }
+
+    });
+    return ajax;
+}
+function getInstructionsList(userId){//获取批示列表
+    var ajax = $.ajax({
+        url: url+"/api/article/fetchAllInstruction",
+        type: "POST",
+        data:{
+            "userId":userId,
+        }
+
+    });
+    return ajax;
+}
+function addInstruction(formData){//新增批示
+    var ajax = $.ajax({
+        url: url+"/api/article/saveInstruction",
+        type: "POST",
+        data: formData,
+        processData: false,
+        contentType: false,
+    });
+    return ajax;
+}
+function addFeedback(formData){//新增反馈／分发
+    var ajax = $.ajax({
+        url: url+"/api/article/feedBackAndDis",
+        type: "POST",
+        data: formData,
+        processData: false,
+        contentType: false,
+    });
+    return ajax;
+}
+function getInstructionFlow(instructionId){//获取批示流程
+    var ajax = $.ajax({
+        url: url+"/api/article/viewInstructionDetial",
+        type: "POST",
+        data:{
+            "instructionId":instructionId,
         }
 
     });

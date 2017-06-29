@@ -15,14 +15,14 @@
         class="article_table"
         :data="commonData"
         highlight-current-row
-        @current-change="handleTableCurrentChange"
+        @row-click="handleTableCurrentChange"
         style="width: 100%">
         <el-table-column
           label="选择"
           width="20%"
           >
           <template scope="scope">
-            <el-radio class="radio" v-model="radio" :label="scope.row.i"></el-radio>
+            <el-radio class="radio" v-model="radio" :label="scope.row.radio"  :data-id="scope.row.id"></el-radio>
           </template>
         </el-table-column>
         <el-table-column
@@ -41,6 +41,7 @@
   </div>
 </template>
 <script>
+  import {mapGetters} from 'vuex'
   export default {
      name: 'app',
     data () {
@@ -55,52 +56,57 @@
         // restaurants: [],
         commonData:[],
         alltableData: [
-          {
-            value: '国家“111计划”基地5年评估一次，运行良好可滚动支持',
-            i:0
-          }, {
-            value: '江苏省公布十三五期间重点学科名单，21所高校313个学科入选',
-            i:1
-          }, {
-            value: '山东大学实施学科高峰计划，未来五年50亿元投入学科建设',
-            i:2
-          }, {
-            value: '国家“双一流”实施方案正式出台，预计2017年上半年公布入围名单',
-            i:3
-          },
-          {
-            value: '测试文章1',
-            i:4
-          },
-          {
-            value: '测试文章2',
-            i:5
-          },
-          {
-            value: '测试文章3',
-            i:6
-          },
-          {
-            value: '测试文章4',
-            i:7
-          },
-          {
-            value: '测试文章5',
-            i:8
-          },
-          {
-            value: '测试文章6',
-            i:9
-          },
-          {
-            value: '测试文章7',
-            i:10
-          }
+          // {
+          //   value: '国家“111计划”基地5年评估一次，运行良好可滚动支持',
+          //   i:0,
+          //   id:'01',
+          // }, {
+          //   value: '江苏省公布十三五期间重点学科名单，21所高校313个学科入选',
+          //   i:1,
+          //   id:'02',
+          // }, {
+          //   value: '山东大学实施学科高峰计划，未来五年50亿元投入学科建设',
+          //   i:2,
+          //   id:'03',
+          // }, {
+          //   value: '国家“双一流”实施方案正式出台，预计2017年上半年公布入围名单',
+          //   i:3,
+          //   id:'04',
+          // },
+          // {
+          //   value: '测试文章1',
+          //   i:4,
+          //   id:'05',
+          // },
         ],
         tableData:[],
-        articleObj:{},
-        currentRow:'国家“111计划”基地5年评估一次，运行良好可滚动支持',
+        articleObj:{
+        },
+        // currentRow:'国家“111计划”基地5年评估一次，运行良好可滚动支持',
+        currentRow:'',
+        userid:'001',
+        method:'dynamic',
+        type:'全部内容',
       }
+    },
+    computed: {
+      ...mapGetters({
+        newArcticle: 'newArcticle',
+      })
+    },
+    watch:{
+      newArcticle:{
+        handler: function (val, oldVal) {//监听学校和指标数组，只要学科id没有变化，则不变化
+          console.log(val);//用来渲染从文章列表或者文章详情点击进入的批示弹窗 选取文章的时候 事先渲染选中值
+          this.radio=parseInt(val.radio);
+          this.articleObj={
+            value:val.value,
+            id:val.id,
+          }
+        },
+        deep:true,
+        immediate: true,
+      },
     },
     methods:{
       hideArtBox:function(){
@@ -149,6 +155,8 @@
         $(selector).find(".alertContent .el-table__body-wrapper").scrollTop(height)
       },
       handleTableCurrentChange(val){//点击具体表格中的条目
+        console.log("11");
+        console.log(val);
         if(val){
           if(this.commonData==this.alltableData){
             this.currentRow=val.value;
@@ -159,7 +167,13 @@
             // this.radio2=val.i;
           }
           this.radio=val.i;
-          this.articleObj=val;
+          // this.articleObj=val;
+          this.articleObj={
+            value:val.value,
+            // radio:val.i,
+            id:val.id,
+            // flag:'0',
+          }
         }
       },
       handlePreData:function(val1){
@@ -175,7 +189,25 @@
       },
     },
     mounted() {
-      this.commonData=this.handlePreData(this.alltableData);
+      // this.commonData=this.handlePreData(this.alltableData);
+      var that=this;
+      $.when(getAllArticles(this.userid,this.method,this.type)).done(function(data){
+        if(data.state=="0"){
+          var res=data.data;
+          var list=res.list;
+          that.commonData=list.map(function(value,index){
+            return {
+              value:value.title,
+              radio:index,
+              id:value.id,
+            }
+          })
+          that.currentRow=that.commonData[0].value;
+        }
+        else{
+          alert(data.data);
+        }
+      })
     }
 
   }

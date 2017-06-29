@@ -38,7 +38,8 @@
               </router-link>
           </li>
           <li @click="changeColor" class="clickStyle">
-              <router-link to="/consultation">
+              <!-- <router-link to="/consultation"> -->
+              <router-link :to="{ path: 'dynamicArticle', query: {type:'dynamic'}}">
               动态资讯
               </router-link>
           </li>
@@ -48,7 +49,8 @@
               </router-link>
           </li> -->
           <li @click="changeColor" class="clickStyle">
-              <router-link to="/consultation">
+              <!-- <router-link to="/consultation"> -->
+              <router-link :to="{ path: 'manualArticle', query: {type:'manual'}}">
               校内信息
               </router-link>
           </li>
@@ -60,7 +62,8 @@
               </router-link>
           </li>
           <li @click="changeColor" class="clickStyle">
-              <router-link to="/instructions">
+              <!-- <router-link to="/instructions"> -->
+              <router-link to="/managementCenter">
               <!-- <el-badge :value="3" :max="10" class="item">我的批示</el-badge> -->
               批示内容
               <span>3</span> 
@@ -180,6 +183,7 @@ export default {
     width:1100px;
     margin:auto;
     padding-top: 20px;
+    padding-bottom: 80px;
     .leftMenu{
       margin-bottom:80px;
       background-color: #001726;

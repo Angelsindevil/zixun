@@ -5,17 +5,40 @@ import * as getters from './getters'
 import * as actions from './actions'
 Vue.use(Vuex)
 const state = {
-	selectArr:[],
+	selectArr:{
+		name:[],
+		id:[]
+	},
 	peopleObj:{
 		value:'',
 		radio:0,
 	},
 	articleObj:{
-		value:'国家“111计划”基地5年评估一次，运行良好可滚动支持',
-		radio:0,
+		value:'',
+		// radio:0,
+		id:'',
+		// flag:'',
 	},
+	psShow:{
+		value:'',
+		id:'',
+	},
+	// psShow:'',
+	newArcticle:{
+		value:'',
+		radio:0,
+		id:'',
+	},
+	clearAll:'',
 	userState:{},
 	type:'',//0-批示,1-分发,2-反馈
+	psBox:{
+		type:'',
+		psObj:[],
+		title:'',
+		instructionId:'',
+	},
+	clrId:'',
 }
 const store = new Vuex.Store({
   state,

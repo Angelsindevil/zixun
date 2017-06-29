@@ -17,6 +17,7 @@
     <div class="rightContent">
       <div class="title_bar">
         <p><img src="../../static/img/edit_reporter.png" alt="">我的批示</p>
+        <el-button type="success" class="button_style" @click="showPSBox">发起新流程</el-button>
       </div>
       <div class="title_content">
         <ul>
@@ -61,7 +62,13 @@ export default {
     }
   },
   methods:{
-    handleInputClick:function(){}
+    handleInputClick:function(){},
+    showPSBox:function(){
+      $(".mask1").addClass("showBtn");
+      $(".psBox").addClass("showBtn");
+      $(".psBox").find(".article_btn").attr("disabled",false).removeClass("is-disabled");
+      this.$store.dispatch('changeAlertBox',{"type":'0'}).then(function(resp){});
+    },
   }
 }
 </script>

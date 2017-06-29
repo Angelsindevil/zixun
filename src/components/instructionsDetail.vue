@@ -5,42 +5,68 @@
         <span>批示流程详细信息</span>
       </p>
     </div>
-    <div class="rightContent">
-      <div class="title_bar">
-        <p><img src="../../static/img/edit_reporter.png" alt="">我的批示流程<span class="time">批示时间：<span>2017-01-26 19:35</span></span></p>
-        <p class="grey_font">
-          <span>批示文章：<span>国家“双一流”实施方案正式出台，预计2017年上半年公布名单</span> - <span>2017/01/26</span></span>
-          <!-- <router-link to="/articleDetail"><span class="includeBtn blue"><span>查看原文</span></span></router-link> -->
-          <router-link to="/articleDetail"><el-button type="primary" size="small" class="btn-pos">查看原文</el-button></router-link>
-        </p>
-        <p class="blue_font">
-          <span>批示内容：<span>请发展规划处等抓紧时间研究国家双一流方案的细则，特别是教育部有关部门的解读。</span></span>
-          <!-- <span class="includeBtn grey"><span>无附件</span></span> -->
-          <el-button type="text" :disabled="true" class="btn-pos btn-pos-1" size="small">无附件</el-button>
-        </p>
+    <div class="rightContent" v-for="(item,index) in articlesFilter">
+      <!-- <ul>
+        <li v-for="(item,index) in articlesFilter">
+          <div class="rightContent"> -->
+            <div class="title_bar">
+              <p><img src="../../static/img/edit_reporter.png" alt="">
+              {{item.type=='0'?'我的批示流程':(item.type=='1'?'数据与信息中心分发':(item.type=='2'?'发展规划处'+item.fkPeople+'反馈':''))}}
+              <span class="time">
+              {{item.type=='0'?'批示时间':(item.type=='1'?'分发时间':(item.type=='2'?'反馈时间':''))}}
+              ：<span>{{item.date}}</span></span></p>
+              <p class="grey_font" v-show="(item.type=='0'?true:false)">
+                <span>批示文章：<span>{{item.title}}</span> - <span>{{item.art_date}}</span></span>
+                <router-link :to="{ path: 'articleDetail', query: { id:item.articleId}}">
+                  <el-button type="primary" size="small" class="btn-pos">查看原文</el-button>
+                </router-link>
+              </p>
+              <p class="blue_font">
+                <span>
+                {{item.type=='0'?'批示内容':(item.type=='1'?'分发内容':(item.type=='2'?'反馈内容':''))}}
+                ：<span>{{item.content}}</span></span>
+                <!-- <span class="includeBtn grey"><span>无附件</span></span> -->
+                <a :href="item.link?item.link:false">
+                  <el-button type="text" :disabled="item.link?false:true" class="btn-pos btn-pos-1" size="small">{{item.link?'查看附件':'无附件'}}</el-button>
+                </a>
+              </p>
+            </div>
+          <!-- </div>
+        </li>
+      </ul> -->
+      <!-- <div class="rightContent">
+        <div class="title_bar">
+          <p><img src="../../static/img/edit_reporter.png" alt="">我的批示流程<span class="time">批示时间：<span>2017-01-26 19:35</span></span></p>
+          <p class="grey_font">
+            <span>批示文章：<span>国家“双一流”实施方案正式出台，预计2017年上半年公布名单</span> - <span>2017/01/26</span></span>
+            <router-link to="/articleDetail"><el-button type="primary" size="small" class="btn-pos">查看原文</el-button></router-link>
+          </p>
+          <p class="blue_font">
+            <span>批示内容：<span>请发展规划处等抓紧时间研究国家双一流方案的细则，特别是教育部有关部门的解读。</span></span>
+            <el-button type="text" :disabled="true" class="btn-pos btn-pos-1" size="small">无附件</el-button>
+          </p>
+        </div>
       </div>
-    </div>
-    <div class="rightContent">
-      <div class="title_bar">
-        <p><img src="../../static/img/edit_reporter.png" alt="">数据与信息中心分发<span class="time">分发时间：<span>2017-01-26 19:35</span></span></p>
-        <p class="blue_font">
-          <span>分发内容：<span>已分发至发展规划处张三处长处理</span></span>
-          <!-- <span class="includeBtn grey"><span>无附件</span></span> -->
-          <el-button type="text" :disabled="true" class="btn-pos btn-pos-1" size="small">无附件</el-button>
-        </p>
+      <div class="rightContent">
+        <div class="title_bar">
+          <p><img src="../../static/img/edit_reporter.png" alt="">数据与信息中心分发<span class="time">分发时间：<span>2017-01-26 19:35</span></span></p>
+          <p class="blue_font">
+            <span>分发内容：<span>已分发至发展规划处张三处长处理</span></span>
+            <el-button type="text" :disabled="true" class="btn-pos btn-pos-1" size="small">无附件</el-button>
+          </p>
+        </div>
       </div>
+      <div class="rightContent">
+        <div class="title_bar">
+          <p><img src="../../static/img/edit_reporter.png" alt="">发展规划处张三反馈<span class="time">反馈时间：<span>2017-01-26 19:35</span></span></p>
+          <p class="blue_font">
+            <span>反馈内容：<span>发展规划处联合教科院，对双一流政策进行了详细的多角度解读，内容见附件。</span></span>
+            <a href=""><el-button type="text" size="small" class="btn-pos btn-pos-1">查看附件</el-button></a>
+          </p>
+        </div>
+      </div> -->
     </div>
-    <div class="rightContent">
-      <div class="title_bar">
-        <p><img src="../../static/img/edit_reporter.png" alt="">发展规划处张三反馈<span class="time">反馈时间：<span>2017-01-26 19:35</span></span></p>
-        <p class="blue_font">
-          <span>反馈内容：<span>发展规划处联合教科院，对双一流政策进行了详细的多角度解读，内容见附件。</span></span>
-          <!-- <span class="includeBtn blue"><span>查看附件</span></span> -->
-          <el-button type="text" size="small" class="btn-pos btn-pos-1">查看附件</el-button>
-        </p>
-      </div>
-    </div>
-    <el-dropdown trigger="click" class="psBtn_new" @command="showSelect">
+    <el-dropdown trigger="click" class="psBtn_new" @command="showSelect" :disabled="dropDownState">
       <el-button>
         批示处理<i class="el-icon-caret-bottom el-icon--right"></i>
       </el-button>
@@ -58,11 +84,8 @@
       </p>
     </div> -->
     <div class="rightBottom">
-      <p class="duringPs">
-      距离接收到领导批示3个小时，流程还未结束
-      </p>
-       <p class="endPs">
-      超过24个小时无新批示和反馈，流程已结束
+      <p>
+      {{bottomTips}}  
       </p>
     </div>
   </div>
@@ -73,11 +96,40 @@ export default {
   name: 'instructionsDetail',
   data () {
     return {
-      instructionsId:"",
+      instructionId:"",
+      bottomTips:'',
+      psObj:[],
+      articleName:'',
+      dropDownState:false,
+      articlesFilter:[
+      // {
+      //     "type":'0',//批示模块
+      //     "articleId":'001',
+      //     "title":"国家双一流”实施方案正式出台，预计2017年上半年公布名单",
+      //     "art_date":' 2017/01/26',
+      //     "date":' 2017/01/26',
+      //     "content":"请发展规划处等抓紧时间研究国家双一流方案的细则，特别是教育部有关部门的解读。",
+      //     "link":'http://www.baidu.com',
+      // },
+      // {
+      //     "type":'1',//分发模块
+      //     "date":' 2017/01/26',
+      //     "content":"请发展规划处等抓紧时间研究国家双一流方案的细则，特别是教育部有关部门的解读。",
+      //     "link":'http://www.baidu.com',
+      // },
+      // {
+      //     "type":'2',//反馈模块
+      //     "fkPeople":'王五',
+      //     "date":' 2017/01/26',
+      //     "content":"请发展规划处等抓紧时间研究国家双一流方案的细则，特别是教育部有关部门的解读。",
+      // }
+      ],
     }
   },
   methods:{
     showSelect:function(command){
+      console.log("instructionId");
+      console.log(this.instructionId);
       if(command!='gb'){
         $(".mask1").addClass("showBtn");
         $(".psBox").addClass("showBtn");
@@ -88,13 +140,13 @@ export default {
       }
       console.log(command);
       if(command=="ff"){
-        this.$store.dispatch('changeAlertBox',{"type":'1'}).then(function(resp){});
+        this.$store.dispatch('changeAlertBox',{"type":'1',"psObj":this.psObj,'title':this.articleName,'instructionId':this.instructionId}).then(function(resp){});
       }
       else if(command=="fk"){
-        this.$store.dispatch('changeAlertBox',{"type":'2'}).then(function(resp){});
+        this.$store.dispatch('changeAlertBox',{"type":'2',"psObj":this.psObj,'title':this.articleName,'instructionId':this.instructionId}).then(function(resp){});
       }
       else if(command=="gb"){
-        $.when(closeInstructions(this.instructionsId)).done(function(data){
+        $.when(closeInstructions(this.instructionId)).done(function(data){
           if(data.state=='0'){
             alert("流程已关闭");
             window.location.hash="#/managementCenter";
@@ -105,6 +157,69 @@ export default {
         })
       }
     }
+  },
+  mounted() {
+    // this.instructionId = this.$route.query.id;
+    // console.log(this.instructionId);
+  },
+  created: function() {
+    this.instructionId = this.$route.query.id;
+    console.log(this.instructionId);
+    var that=this;
+    $.when(getInstructionFlow(this.instructionId)).done(function(data){
+      if(data.state=='0'){
+        var res=data.data;
+        if(res.isEnd=="0"){
+          that.dropDownState=true;
+          that.bottomTips='超过24个小时无新批示和反馈，流程已结束'
+        }
+        else if(res.hasPassed){
+          that.dropDownState=false;
+          that.bottomTips='距离接收到领导批示'+res.hasPassed+'个小时，流程还未结束'
+        }
+        else{}
+        that.articleName=res.results[0].title;
+        that.articlesFilter=res.results;
+        that.psObj=res.psPeople;
+        // for (var i=0;i<res.results.length;i++) {
+        //   if(res.results[i].type=='0'){
+        //     var insertItem=$('<div class="rightContent">'+
+        //               '<div class="title_bar">'+
+        //                 '<p>'+
+        //                 '<img src="../../static/img/edit_reporter.png" alt="">我的批示流程<span class="time">批示时间：<span>'+res.results[i].date+'</span></span></p>'+
+        //                 '<p class="grey_font">'+
+        //                 '<span>批示文章：<span>'+res.results[i].title+'</span> - <span>'+res.results[i].art_date+'</span></span>'+
+        //                 '<router-link to="{ path: \"articleDetail\", query: {id:'+res.list[i].articleId+'}}">'+
+        //                 '<el-button type="primary" size="small" class="btn-pos">查看原文</el-button>'+
+        //                 '</router-link>'+
+        //                 '</p>'+
+        //                 '<p class="blue_font">'+
+        //                   '<span>批示内容：<span>'+res.results[i].content+'</span></span>'+
+        //                 '</p>'+
+        //               '</div>'+
+        //             '</div>');
+        //     var linkItem;
+        //     if(res.results[i].link){
+        //       linkItem=$('<a href='+res.results[i].link+'><el-button type="text" size="small" class="btn-pos btn-pos-1">查看附件</el-button></a>');
+        //     }
+        //     else{
+        //       linkItem=$('<el-button type="text" :disabled="true" class="btn-pos btn-pos-1" size="small">无附件</el-button>');
+        //     }
+        //     insertItem.find(".blue_font").append(linkItem);
+        //   }
+        //   else if(res.results[i].type=='1'){
+            
+
+        //   }
+        //   else if(res.results[i].type=='2'){
+            
+        //   }
+        // }
+      }
+      else{
+        alert(data.data);
+      }
+    })
   }
 }
 </script>

@@ -14,6 +14,7 @@
 	        	<el-button slot="append" icon="search"></el-button>
 	        </el-autocomplete>
 		    <el-table
+		      ref="multipleTable"
 		      class="article_table"
 		      :data="commonData"
 		      highlight-current-row
@@ -41,6 +42,7 @@
 	</div>
 </template>
 <script>
+	import {mapGetters} from 'vuex'
 	export default {
 		name: 'app',
 	 	data () {
@@ -54,25 +56,53 @@
 	      labeltext:'人员姓名',
 	      commonData:[],
 	      alltableData:[
-	        {value:'张三',i:0},
-	        {value:'李四',i:1},
-	        {value:'赵五',i:2},
-	        {value:'王六',i:3},
-	        {value:'关七',i:4},
-	        {value:'李四1',i:5},
-	        {value:'李四2',i:6},
-	        {value:'李四3',i:7},
-	        {value:'李四4',i:8},
-	        {value:'李四5',i:9},
-	        {value:'李四6',i:10},
-	        {value:'李四7',i:11},
-	        {value:'李四8',i:12},
-	        {value:'李四9',i:13},
+	        // {value:'张三',i:0},
+	        // {value:'李四',i:1},
+	        // {value:'赵五',i:2},
+	        // {value:'王六',i:3},
+	        // {value:'关七',i:4},
+	        // {value:'李四1',i:5},
+	        // {value:'李四2',i:6},
+	        // {value:'李四3',i:7},
+	        // {value:'李四4',i:8},
+	        // {value:'李四5',i:9},
+	        // {value:'李四6',i:10},
+	        // {value:'李四7',i:11},
+	        // {value:'李四8',i:12},
+	        // {value:'李四9',i:13},
 	      ],
-	      selectArr:[],
+	      selectArr:{
+	      	name:[],
+	      	id:[]
+	      },
+	      multipleSelection: []
 	    }
 	  },
+	  computed: {
+	    ...mapGetters({
+	      selectArr: 'selectArr',
+	      clearAll:'clearAll'
+	    })
+	  },
+	  watch:{
+	    clearAll:{
+	      handler: function (val, oldVal) {//取消所有选择
+	      	console.log("execute");
+	      	this.$nextTick(function () {
+	      		$(".multiBox .el-table__body-wrapper").find("tbody tr").each(function(index,element){
+                  $(element).children('td').find('.el-checkbox__input').removeClass("is-checked");
+                  // $(element).children('td').eq(0).children('div').addClass("ellipsis");
+              	})
+		    })	
+	      },
+	      deep:true,
+	      immediate: true,
+	    },
+	  },
 	  methods:{
+	  	toggleSelection(rows) {
+	        this.$refs.multipleTable.clearSelection();
+	    },
 	    hideMultiBox:function(){
 	      $(".mask2,.multiBox").removeClass("showBtn");
 	      $(".mask1").addClass("showBtn");
@@ -136,10 +166,13 @@
 	      return val1;
 	    },
 	    handleSelectionChange(val) {//点击多选的条目
+	      this.multipleSelection = val;
 	      console.log(val);
-	      this.selectArr=[];
+	      this.selectArr.name.length=0;
+	      this.selectArr.id.length=0;
 	      for (var i=0;i<val.length;i++) {
-	        this.selectArr.push(val[i].value);
+	        this.selectArr.name.push(val[i].value);
+	        this.selectArr.id.push(val[i].id);
 	      }
 	    },
 	    submit(){
@@ -147,9 +180,23 @@
 	    	this.$store.dispatch('changeSelArr',{selectArr:this.selectArr}).then(function(resp){});
 	    },
 	  },
-	  mounted() {
-	    this.commonData=this.handlePreData(this.alltableData);
+	  // mounted() {
+	  //   this.commonData=this.handlePreData(this.alltableData);
+	  // },
+	  created(){
+	  	var that=this;
+	  	$.when(getAllUsers()).done(function(data){
+	        if(data.state==0){
+	          var res=data.data;
+	          that.commonData=res.map(function(value,index){
+	            return{
+	              value:value.username,
+	              i:index,
+	              id:value.id,
+	            }
+	          })
+	        }
+	    })
 	  }
-
 	}
 </script>

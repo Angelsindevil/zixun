@@ -41,6 +41,7 @@
   </div>
 </template>
 <script>
+  import {mapGetters} from 'vuex'
   export default {
     name: 'peopleBox',
     data () {
@@ -55,23 +56,29 @@
         // restaurants: [],
         commonData:[],
         alltableData:[
-          {value:'张三',i:0},
-          {value:'李四',i:1},
-          {value:'赵五',i:2},
-          {value:'王六',i:3},
-          {value:'关七',i:4},
-          {value:'李四1',i:5},
-          {value:'李四2',i:6},
-          {value:'李四3',i:7},
-          {value:'李四4',i:8},
-          {value:'李四5',i:9},
-          {value:'李四6',i:10},
-          {value:'李四7',i:11},
-          {value:'李四8',i:12},
-          {value:'李四9',i:13},
+          // {value:'张三',i:0,id:'01'},
+          // {value:'李四',i:1,id:'02'},
+          // {value:'赵五',i:2,id:'03'},
+          // {value:'王六',i:3,id:'04'},
+          // {value:'关七',i:4,id:'05'},
+          // {value:'李四1',i:5,id:'06'},
         ],
         peopleObj:{},
       }
+    },
+    computed: {
+      ...mapGetters({
+        clrId: 'clrId',
+      })
+    },
+    watch:{
+      clrId:{
+        handler: function (val, oldVal) {//监听学校和指标数组，只要学科id没有变化，则不变化
+          console.log(val);
+        },
+        deep:true,
+        immediate: true,
+      },
     },
     methods:{
       hideArtBox:function(){
@@ -124,7 +131,6 @@
         if(val){
           if(this.commonData==this.alltableData){
             this.currentRow=val.value;
-            // this.radio1=val.i;
           }
           else{
           }
@@ -145,7 +151,20 @@
       },
     },
     mounted() {
-      this.commonData=this.handlePreData(this.alltableData);
+      // this.commonData=this.handlePreData(this.alltableData);
+      var that=this;
+      $.when(getAllUsers()).done(function(data){
+        if(data.state==0){
+          var res=data.data;
+          that.commonData=res.map(function(value,index){
+            return{
+              value:value.name,
+              i:index,
+              id:value.id,
+            }
+          })
+        }
+      })
     }
   }
 </script>

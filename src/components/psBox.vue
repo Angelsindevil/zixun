@@ -2,12 +2,38 @@
   <div class="psBox alertStyle">
     <div class="alertTop">信息批示<span @click="hidePSBox"><img src="../../static/img/cancel.png"></span></div>
     <div class="alertContent">
-      <el-button class="article_btn" @click="showAllArticle();showCommonBox()"><img src="../../static/img/report.png" alt="">批示文章：<span>{{currentRow}}</span></el-button>
+      <el-button class="article_btn" @click="showAllArticle"><img src="../../static/img/report.png" alt="">批示文章：<span>{{currentRow}}</span></el-button>
       <div class="editContainer">
-        <p>输入批示内容</p>
+        <p class="ptitle">输入批示内容</p>
         <div class="editBox">
-          <textarea id="tinymce_new"></textarea>
-          <input type="file" name="" class="file_" id="my_form" style="display:none;">
+          <!-- <textarea id="tinymce_new"></textarea>
+          <input type="file" name="" class="file_" id="my_form" style="display:none;"> -->
+          <div id="toolbar_new">
+            <span class="ql-formats">
+              <select class="ql-size">
+                <option value="10px">12px</option>
+                <option value="13px" selected>14px</option>
+                <option value="18px">16px</option>
+                <option value="32px">18px</option>
+              </select>
+            </span>
+            <span class="ql-formats">
+              <button class="ql-bold"></button>
+              <button class="ql-italic"></button>
+              <button class="ql-underline"></button>
+            </span>
+            <span class="ql-formats">
+              <button class="ql-list" value="ordered" type="button"></button>
+              <button class="ql-list" value="bullet" type="button"></button>
+              <select class="ql-align">
+                <option selected=""></option>
+                <option value="center"></option>
+                <option value="right"></option>
+                <option value="justify"></option>
+              </select>
+            </span>
+          </div>
+          <div id="editor_new"></div>
         </div>
       </div>
       <el-row type="flex" class="row-bg" justify="space-between">
@@ -21,7 +47,7 @@
             </el-option>
           </el-select>
         </div></el-col>
-        <el-col :span="6"><div class="grid-content bg-purple-light" @click="psPeople">
+        <el-col :span="6"><div class="grid-content bg-purple-light">
           <span class="typeLabel">批示人：</span>
           <el-input
             placeholder="请选择"
@@ -47,11 +73,12 @@
     </div>
     <div class="alertBottom">
       <span class="leftBot">
-        <span class="blueBot"><img src="../../static/img/link.png" alt="">上传附件</span>
-        <span class="linkBot">附件：<span>双一流政策研究报告</span></span>
+        <span class="blueBot"><img src="../../static/img/link.png" alt=""><input type="file" name="" class="file_" @change="linkChange">上传附件</span>
+        <!-- <span class="linkBot" ref="linkBot"><span style='font-size:12px;margin:0'>{{linkName}}</span></span> -->
+        <span class="linkBot" ref="linkBot">{{linkName}}</span>
       </span>
       <span class="rightBot">
-        <span class="bg_green" @click="hidePSBox">确定</span> 
+        <span class="bg_green" @click="addPs()">确定</span> 
         <span class="bg_blue printPs"><img src="../../static/img/print.png" alt="">打印批示</span> 
         <span @click="hidePSBox" class="bg_cancle">取消</span> 
       </span>
@@ -60,8 +87,8 @@
 <script>
   import {mapGetters} from 'vuex'
   export default {
-     name: 'app',
-  data () {
+    name: 'app',
+    data () {
     return {
       typeOptions:[
       {value:'0',
@@ -74,10 +101,20 @@
       value:'0',
       input2:'',
       input3:'',
-      state2:'',
       psDisabled:false,
       clDisabled:false,
-      currentRow:'国家“111计划”基地5年评估一次，运行良好可滚动支持',
+      currentRow:'',
+      linkName:'',
+      file:'',
+      articleId:'',
+      instructionId:'',
+      quill:'',
+      userId:'d733ed4b5afd11e79ea400269e28ab11',
+      userName:'系统管理员',//想一想 先存哪里去 登录的时候存
+      level:'0',//权限 一开始就存下来的 登录的时候存
+      psObj:[],
+      clrArr:[],
+      fileFlag:false,
     }
   },
   computed: {
@@ -85,21 +122,30 @@
       selectArr: 'selectArr',
       peopleObj:'peopleObj',
       articleObj:'articleObj',
-      type:'type',
+      psBox:'psBox',
+      psShow:'psShow',
     })
   },
   watch:{
+    // newArcticle:{
+    //   handler: function (val, oldVal) {//监听学校和指标数组，只要学科id没有变化，则不变化
+
+    //   },
+    //   deep:true,
+    //   immediate: true,
+    // },
     selectArr:{
       handler: function (val, oldVal) {//监听学校和指标数组，只要学科id没有变化，则不变化
-        console.log(val);
         // for (var i=0;i<val.length;i++) {
         //   this.input3+=val[i]+' ';
         // }
+        console.log("selectArr");
+        console.log(val);
         if(val.length<2){
-          this.input3=val[0];
+          this.input3=val.name[0];
         }
         else{
-          this.input3=val[0]+'...';
+          this.input3=val.name[0]+'...';
         }
       },
       deep:true,
@@ -107,33 +153,78 @@
     },
     peopleObj:{
       handler: function (val, oldVal) {//监听学校和指标数组，只要学科id没有变化，则不变化
-        console.log(val);
         this.input2=val.value;
       },
       deep:true,
       immediate: true,
     },
-    articleObj:{
-      handler: function (val, oldVal) {//监听学校和指标数组，只要学科id没有变化，则不变化
-        console.log(val);
-        this.currentRow=val.value;
+    psShow:{
+      handler: function (val, oldVal) {//用于判断由文章列表或者文章详情点入的还是在批示那边新建批示流程
+        // this.quill.setContents('');
+        if(Object.keys(val).length!=0){//不为空对象，由文章列表或者文章详情点入
+          this.currentRow=val.value;
+          this.articleId=val.id;//需要有，当未点击打开文章的时候，需要有直接的id
+        }
       },
       deep:true,
       immediate: true,
     },
-    type:{
+    articleObj:{
+      handler: function (val, oldVal) {//文章选择后，相应的渲染
+        if(this.value=="0"){//分发和反馈的值应该是后台传过来的
+          console.log(val);
+          if(val.flag=='0'){
+
+          }
+          this.currentRow=val.value;
+          this.articleId=val.id;
+        }
+        else{
+        }
+      },
+      deep:true,
+      immediate: true,
+    },
+    psBox:{
       handler: function (val, oldVal) {//监听学校和指标数组，只要学科id没有变化，则不变化
+        console.log("psBox");
         console.log(val);
-        this.value=val;
+        if(val.psObj==undefined){
+          this.psObj=["系统管理员","d733ed4b5afd11e79ea400269e28ab11"];
+        }
+        else{
+          this.psObj=val.psObj;//先名字 后id 有用
+        }
+        this.instructionId=val.instructionId;
+        this.value=val.type;
+        this.input2=this.psObj[0];//弹窗不可点击。 有用
         this.psDisabled=true;//判断不是系统管理员
-        if(val=='0'){//批示弹窗
+        if(val.type=='0'){//批示弹窗
+          this.$nextTick(function(){
+            $(".blueBot").show();
+          })
           // tinymce.get('tinymce').setContent('<p style="line-height:2">请发展规划处等抓紧时间研究国家双一流方案的细则和教育部有关部门的解读<br><span style="color:#FF6600">（如批示是由纸质材料批示，则由数据与信息中心发起流程并人工输入）</span></p>');
         }
-        else if(val=='1'){//分发弹窗
-          this.clDisabled=false;
+        else if(val.type=='1'){//分发弹窗
+          this.currentRow=val.title;
+          if(this.level=='0'){//权限为管理员 分发处理人可选
+            this.clDisabled=false;
+            this.input3="";
+          }
+          else{}
+          this.$nextTick(function(){
+            $(".blueBot").hide();
+          })
         }
-        else if(val=='2'){//反馈弹窗
-          this.clDisabled=true;
+        else if(val.type=='2'){//反馈弹窗
+          this.currentRow=val.title;
+          if(this.level=='0'){//权限为管理员 反馈处理人可选
+            this.clDisabled=true;
+            this.input3=this.userName;
+          }
+          this.$nextTick(function(){
+            $(".blueBot").show();
+          })
         }
         else{
         }
@@ -144,20 +235,28 @@
   },
   methods:{
     hidePSBox:function(){
+      var that=this;
       $(".mask1,.psBox").removeClass("showBtn");
       $(".psBox").removeClass("alertStyle_");
       $(".el-row").removeClass("show_row");
+      that.fileFlag=false;
+      that.quill.setText('');
+      $(that.$refs.linkBot).text("");
     },
     showAllArticle:function(){
-      $(".articleBox").addClass("showBtn");
-      $(".printPs").addClass("showBtn");
+      if(this.value=='0'){
+        $(".articleBox").addClass("showBtn");
+        $(".printPs").addClass("showBtn");
+        $(".mask2").addClass("showBtn");
+        $(".mask1").removeClass("showBtn");
+      }
+      else{}
     },
     showCommonBox:function(){
-      this.state2='';
       $(".mask2").addClass("showBtn");
       $(".mask1").removeClass("showBtn");
     },
-    psPeople:function(){
+    psPeople:function(){//暂时不需要
       if(!this.psDisabled){
         $(".peopleBox").addClass("showBtn");
         $(".printPs").removeClass("showBtn");
@@ -165,21 +264,159 @@
         $(".mask1").removeClass("showBtn");
       }
     },
-    solvePeople:function(){
-      if(!this.clDisabled){
+    solvePeople:function(){//处理人弹窗  反馈还是分发
+      if(this.level=="0"){//系统管理员无论反馈和分发 都弹窗 而且都默认选中自己
         $(".multiBox").addClass("showBtn");
         $(".printPs").removeClass("showBtn");
         $(".mask2").addClass("showBtn");
         $(".mask1").removeClass("showBtn");
+        this.$store.dispatch('changeClrObj',{clrId:this.psObj[1]}).then(function(resp){});
       }
+      else{}
+      // if(!this.clDisabled){
+      //   $(".multiBox").addClass("showBtn");
+      //   $(".printPs").removeClass("showBtn");
+      //   $(".mask2").addClass("showBtn");
+      //   $(".mask1").removeClass("showBtn");
+      // }
     },
+    addPs:function(){ //新增批示 分发 反馈方法
+      var formData = new FormData();
+      var that=this;
+      console.log(this.fileFlag);
+      if(this.file!=''&&this.fileFlag){
+        console.log("true");
+        formData.append("file",this.file);
+      }
+      else{
+        console.log("false");
+        formData.append("file",'');
+      }
+      // if(this.instructionId!=""){
+      //   formData.append("instructionId",this.instructionId);
+      // }
+      console.log(this.instructionId);
+      var delta =this.quill.getText();
+      formData.append("content",delta);
+      formData.append("userId",this.userId);
+      if(this.value=='0'){//批示
+        formData.append("type",'0');
+        formData.append("articleId",this.articleId);
+        if(delta.length==1){
+          alert("请输入批示内容！");
+        }
+        else{
+          $.when(addInstruction(formData)).done(function(data){
+            if(data.state=='0'){
+              alert("新增批示成功！");
+              $(".mask1,.psBox").removeClass("showBtn");
+              $(".psBox").removeClass("alertStyle_");
+              $(".el-row").removeClass("show_row");
+              $(that.$refs.linkBot).text("");
+              that.fileFlag=false;
+              that.quill.setText('');
+              window.location.reload();
+            }
+            else{
+              alert(data.data);
+              that.fileFlag=false;
+              that.quill.setText('');
+              $(that.$refs.linkBot).text("");
+            }
+          })
+        }
+      }
+      else if(this.value=='1'){//分发
+        formData.append("type",'1');
+        formData.append("psPeople",this.psObj[1]);
+        formData.append("instructionId",this.instructionId);
+        if(this.selectArr.id&&this.selectArr.id.length>0){
+          formData.append("clPeople",this.selectArr.id);
+          if(delta.length==1){
+            alert("请输入分发内容！");
+          }
+          else{
+            $.when(addFeedback(formData)).done(function(data){
+              if(data.state=='0'){
+                alert("新增分发成功！");
+                $(".mask1,.psBox").removeClass("showBtn");
+                $(".psBox").removeClass("alertStyle_");
+                $(".el-row").removeClass("show_row");
+                that.fileFlag=false;
+                that.quill.setText('');
+                $(that.$refs.linkBot).text("");
+                // that.fileFlag=false;
+                // that.quill.setText('');
+                // $(that.$refs.linkBot).text("");
+                that.$store.dispatch('changeSelArr',{selectArr:{name:[],id:[]}}).then(function(resp){});
+                window.location.reload();
+              }
+              else{
+                alert(data.data);
+                that.fileFlag=false;
+                that.quill.setText('');
+                $(that.$refs.linkBot).text("");
+              }
+            })
+          }
+        }
+        else{
+          alert("还未选择处理人");
+        }
+      }
+      else if(this.value=='2'){// 反馈
+        formData.append("type",'2');
+        formData.append("psPeople",this.psObj[1]);
+        formData.append("instructionId",this.instructionId);
+        formData.append("clPeople",this.userId);
+        if(delta.length==1){
+          alert("请输入反馈内容！");
+        }
+        else{
+          $.when(addFeedback(formData)).done(function(data){
+            if(data.state=='0'){
+              alert("新增反馈成功！");
+              $(".mask1,.psBox").removeClass("showBtn");
+              $(".psBox").removeClass("alertStyle_");
+              $(".el-row").removeClass("show_row");
+              that.fileFlag=false;
+              that.quill.setText('');
+              $(that.$refs.linkBot).text("");
+              that.$store.dispatch('changeSelArr',{selectArr:{name:[],id:[]}}).then(function(resp){});
+              window.location.reload();
+            }
+            else{
+              alert(data.data);
+            }
+          })
+        }
+      }
+      else{}
+    },
+    linkChange:function(e){
+      var file = e.target.files; //获取图片资源
+      if(file[0]){
+        this.fileFlag=true;
+        this.file=file[0];
+        this.linkName=file[0].name;
+        $(this.$refs.linkBot).text(file[0].name);
+      }
+    }
   },
   mounted() {
+    this.quill = new Quill('#editor_new', {
+      modules: {
+        toolbar: '#toolbar_new',
+      },
+      theme: 'snow'
+    });
     // tinymce.init(obj);
     // editor.render();
     // tinymce.get('tinymce').setContent('请发展规划处等抓紧时间研究国家双一流方案的细则，特别是教育部有关部门的解读（如批示是由纸质材料批示，则由数据与信息中心发起流程并人工输入）');
   },
   created(){
+    // this.instructionId = this.$route.query.id;
+    // console.log(this.instructionId);
     // tinymce.remove('textarea'); 
     // tinymce.init(obj);
   }
@@ -235,3 +472,19 @@
   //   }
   // var editor =  new tinymce.Editor('tinymce_new',obj, tinymce.EditorManager);
 </script>
+<style lang="less">
+.psBox{
+  .file_{
+    opacity: 0;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 110px;
+    height: 32px;
+    cursor:pointer;
+  }
+  .ql-editor{
+    height:250px!important;
+  }
+}
+</style>

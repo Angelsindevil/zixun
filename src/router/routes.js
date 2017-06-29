@@ -17,7 +17,8 @@ import contentAdd from '../components/contentAdd'
 import orgManage from '../components/orgManage'
 const routes = [
   { path: '/', component:AllInfomation},
-  {path: '/consultation', component: AllInfomation},
+  {path: '/dynamicArticle', component: AllInfomation},
+  {path: '/manualArticle', component: AllInfomation},
   {path:'/articleDetail',component:Article},
   {path:'/IncludeList',component:IncludeList},
   {path:'/ReportList',component:reportList},

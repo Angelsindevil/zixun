@@ -1,6 +1,9 @@
 <template>
   <!-- 动态资讯列表 -->
-  <div class="test">
+  <div class="test allInfomations">
+    <div class="showTop" @click="showTop">
+      <img src="../../static/img/toTop.png" title="点击回到顶部">
+    </div>
     <div class="rightBar">
       <p>信息平台-全部信息：
         <!-- <span>今日更新<span>136</span>篇，今日收录<span>12</span>篇</span> -->
@@ -21,9 +24,33 @@
           </select>
       </div> -->
     </div>
-    <div class="contentBox">
-      <div class="rightContent_">
-        <span class="includeBtn" @click="includeThis" @mouseover="canceInclude" @mouseout="includeThis_"><img src="../../static/img/plus.png" alt=""><span>收录</span></span>
+    <div class="rightContent_" v-for="(item,index) in articlesAarry">
+     <!--  <ul>
+        <li v-for="(item,index) in articlesAarry">
+          <div class="rightContent_"> -->
+            <span class="includeBtn" :class="item.isInstructions=='0'?'':'grey'" :data-state="item.isInstructions" :data-pid="item.instructionId" :data-id="item.id" :data-title="item.title" :data-i="index" @click="includeThis" @mouseover="canceInclude" @mouseout="includeThis_" ref="includeBtn"><img src="../../static/img/plus.png" alt="" v-show="item.isInstructions=='0'?true:false"><span>{{item.isInstructions=='0'?'批示':'批示中'}}</span></span>
+            <router-link :to="{ path: 'articleDetail', query: { id:item.id,index:index}}">
+              <div class="rightContent">
+                <p class="title_bar" style="padding-right: 160px;">
+                  <span class="ellipsis" style="display:block">{{item.title}}<span>
+                </p>       
+                <p class="title_content" v-html="item.summary">
+                  <!-- {{item.summary}} -->
+                </p>
+                <p class="title_bottom">
+                  <span>
+                    <span>来源：<span>{{item.source}}</span></span>
+                    <span>类别：<span>{{item.type}}</span></span>
+                    <span>时间：<span>{{item.time}}</span></span>
+                  </span> 
+                </p>
+              </div>
+            </router-link>
+         <!--  </div> 
+        </li>    
+      </ul> -->
+      <!-- <div class="rightContent_">
+        <span class="includeBtn" data-state="true" @click="includeThis" @mouseover="canceInclude" @mouseout="includeThis_"><img src="../../static/img/plus.png" alt=""><span>{{btnState}}</span></span>
         <router-link :to="{ path: 'articleDetail', query: { id: '001' }}">
           <div class="rightContent">
             <p class="title_bar">
@@ -36,15 +63,14 @@
               <span>
                 <span>来源：<span>山东大学新闻网</span></span>
                 <span>类别：<span>国家动态</span></span>
-                <!-- <span>作者：<span>丁灵</span></span> -->
                 <span>时间：<span>2014-06-11</span></span>
               </span> 
             </p>
           </div>
         </router-link>
-      </div>
-      <div class="rightContent_">
-        <span class="includeBtn" @click="includeThis" @mouseover="canceInclude" @mouseout="includeThis_"><img src="../../static/img/plus.png" alt=""><span>收录</span></span>
+      </div> -->
+      <!-- <div class="rightContent_">
+        <span class="includeBtn" data-state="false" @click="includeThis" @mouseover="canceInclude" @mouseout="includeThis_"><img src="../../static/img/plus.png" alt=""><span>{{btnState}}</span></span>
         <router-link to="/articleDetail">
           <div class="rightContent">
             <p class="title_bar">
@@ -57,15 +83,14 @@
               <span>
                 <span>来源：<span>山东大学新闻网</span></span>
                 <span>类别：<span>国家动态</span></span>
-                <!-- <span>作者：<span>丁灵</span></span> -->
                 <span>时间：<span>2014-06-11</span>&nbsp;&nbsp;<span>09:00</span></span>
               </span> 
             </p>
           </div>
         </router-link>
-      </div>
-      <div class="rightContent_">
-        <span class="includeBtn" @click="includeThis" @mouseover="canceInclude" @mouseout="includeThis_"><img src="../../static/img/plus.png" alt=""><span>收录</span></span>
+      </div> -->
+     <!--  <div class="rightContent_">
+        <span class="includeBtn" @click="includeThis" @mouseover="canceInclude" @mouseout="includeThis_"><img src="../../static/img/plus.png" alt=""><span>{{btnState}}</span></span>
         <router-link to="/articleDetail">
           <div class="rightContent">
             <p class="title_bar">
@@ -78,15 +103,14 @@
               <span>
                 <span>来源：<span>山东大学新闻网</span></span>
                 <span>类别：<span>国家动态</span></span>
-                <!-- <span>作者：<span>丁灵</span></span> -->
                 <span>时间：<span>2014-06-11</span>&nbsp;&nbsp;<span>09:00</span></span>
               </span> 
             </p>
           </div>
         </router-link>
-      </div>
-      <div class="rightContent_">
-        <span class="includeBtn" @click="includeThis" @mouseover="canceInclude" @mouseout="includeThis_"><img src="../../static/img/plus.png" alt=""><span>收录</span></span>
+      </div> -->
+     <!--  <div class="rightContent_">
+        <span class="includeBtn" @click="includeThis" @mouseover="canceInclude" @mouseout="includeThis_"><img src="../../static/img/plus.png" alt=""><span>{{btnState}}</span></span>
         <router-link to="/articleDetail">
           <div class="rightContent">
             <p class="title_bar">
@@ -99,13 +123,12 @@
               <span>
                 <span>来源：<span>山东大学新闻网</span></span>
                 <span>类别：<span>国家动态</span></span>
-                <!-- <span>作者：<span>丁灵</span></span> -->
                 <span>时间：<span>2014-06-11</span>&nbsp;&nbsp;<span>09:00</span></span>
               </span> 
             </p>
           </div>
         </router-link>
-      </div>
+      </div> -->
     </div>
     <div class="rightBottom">
       <p>
@@ -116,25 +139,33 @@
 </template>
 
 <script>
+import scrollFun from '../../static/js/public.js'
 export default {
   name: 'test',
   data () {
     return {
-      options: [{
-        value: 0,
-        label: '全部内容'
-      }, {
-        value: 1,
-        label: '国家动态'
-      }, {
-        value: 2,
-        label: '地方动态'
-      }],
-      value: 0,
-      userid:'',
+      // options: [{
+      //   value:'全部内容' ,
+      //   label: '全部内容'
+      // }, {
+      //   value: '国家动态',
+      //   label: '国家动态'
+      // }, {
+      //   value: '地方动态',
+      //   label: '地方动态'
+      // }],
+      options: [],
+      value: '全部内容',
+      userid:'001',
       totalNum:'',
       todayNum:'',
       keyword:'',
+      btnState:'批示',
+      method:'dynamic',
+      type:'全部内容',
+      add:'',
+      articlesAarry:[
+      ],
     }
   },
   watch: { 
@@ -145,126 +176,279 @@ export default {
     '$route': 'searchThis'
   },
   methods:{
+    showTop(){
+      $(document).scrollTop(0);
+    },
     searchThis:function(){
+      console.log("111");
       this.keyword = this.$route.query.keyword;
+      this.add = this.$route.query.add;
+      this.method=this.$route.query.type;
+      console.log(this.method);
       var that=this;
       if(this.keyword!=''&&this.keyword!=undefined){
         console.log(this.keyword);
         $.when(searchArticle(that.keyword)).done(function(data){
           if(data.state=="0"){
-            this.insertData(data);
+            // that.$nextTick(function(){
+            //   $(".rightContent_").remove();
+            // })
+            that.insertData(data); 
           }
           else{
             alert(data.data);
           }
         })
       }
+      else{//this.add=='全部'以及其他所有可能
+        // if(this.add=='全部'){ 
+          $.when(getAllArticles(that.userid,that.method,that.type)).done(function(data){
+            if(data.state=="0"){
+              that.insertData(data);
+              // that.articlesAarry=data.data.list;
+              // console.log(that.articlesAarry);
+            }
+            else{
+              alert(data.data);
+            }
+          })
+        // }
+        // else{
+
+        // }
+      }
     },
     optionChangeHandler(val){
+      var that=this;
+      console.log("11");
+      $.when(getAllArticles(this.userid,this.method,val)).done(function(data){
+        if(data.state=="0"){
+          that.insertData(data);
+        }
+        else{
+          alert(data.data);
+        }
+      })
     },
     includeThis_:function(e){
       var el=$(e.target).closest(".includeBtn");
       var class_=el.hasClass('grey');
-      if(class_){
-        el.removeClass("red").addClass("grey").find("span").text("已收录");
-        el.find("img").attr("src","./static/img/plus_grey.png");
+      if(!this.btnState=='批示'){
+        // var state=el.attr("data-state");
+        // if(state=="false"){//文章不在批示中，可新增批示
+        //   this.showPSBox();
+        // }
+        // else{
+        //   el.find("span").text("已批示");
+        //   el.addClass("grey");
+        //   el.find("img").remove();
+        // }
+        if(class_){
+          el.removeClass("red").addClass("grey").find("span").text("已收录");
+          el.find("img").attr("src","./static/img/plus_grey.png");
+        }
+        else{
+        }
       }
-      else{
-      }
+      // else{
+      //   if(class_){
+      //     el.removeClass("red").addClass("grey").find("span").text("已收录");
+      //     el.find("img").attr("src","./static/img/plus_grey.png");
+      //   }
+      //   else{
+      //   }
+      // }
     },
     canceInclude:function(e){
-      var el=$(e.target).closest(".includeBtn");
-      var class_=el.hasClass('grey');
-      if(class_){
-        el.addClass("red").find("span").text("取消收录");
-        el.find("img").attr("src","./static/img/reduce.png");
+      if(!this.btnState=='批示'){
+        var el=$(e.target).closest(".includeBtn");
+        var class_=el.hasClass('grey');
+        if(class_){
+          el.addClass("red").find("span").text("取消收录");
+          el.find("img").attr("src","./static/img/reduce.png");
+        }
+      }
+      else{
       }
     },
     includeThis:function(e){
-      e.stopPropagation();
-      var el=$(e.target).closest(".includeBtn");
-      var class_=el.hasClass('red');
-      if(class_){
-        el.removeClass("grey red").find("span").text("收录");
-        el.find("img").attr("src","./static/img/plus.png");
+      if(!this.btnState=='批示'){
+        e.stopPropagation();
+        var el=$(e.target).closest(".includeBtn");
+        var class_=el.hasClass('red');
+        if(class_){
+          el.removeClass("grey red").find("span").text("收录");
+          el.find("img").attr("src","./static/img/plus.png");
+        }
+        else{
+          el.addClass("grey").find("span").text("已收录");
+          el.find("img").attr("src","./static/img/plus_grey.png");
+        }
       }
-      else{
-        el.addClass("grey").find("span").text("已收录");
-        el.find("img").attr("src","./static/img/plus_grey.png");
+      else{//批示功能
+        var el=$(e.target).closest(".includeBtn");
+        var class_=el.hasClass('grey');
+        var state=el.attr("data-state");
+        var title=$(el).attr("data-title");
+        var id=$(el).attr("data-id");
+        var pid=$(el).attr("data-pid");
+        var i=$(el).attr("data-i");
+        var articleObj={
+          value:title,
+          radio:i,
+          id:id,
+        };
+        var psObj={
+          "value":title,//表示在文章列表或者详情页跳转
+          "id":id,
+        }
+        console.log(state);
+        if(state=="0"){//文章不在批示中，可新增批示
+          this.$store.dispatch('changeNewArticle',{newArcticle:articleObj}).then(function(resp){});
+          this.$store.dispatch('changePsShow',{psShow:psObj}).then(function(resp){});
+          // this.$store.dispatch('changeArtObj',{articleObj:this.articleObj}).then(function(resp){});
+          this.showPSBox();
+        }
+        else{
+          el.find("span").text("已批示");
+          el.addClass("grey");
+          el.find("img").remove();
+          this.$router.push({path:'instructionsDetail',query: {id:pid}});
+        }
       }
+    },
+    copyArr(arr){
+      return arr.map((e)=>{
+          if(typeof e === 'object'){
+              return Object.assign({},e)
+          }else{
+              return e
+          }
+      })
     },
     goSomewhere(e){
       var ele=e.currentTarget;
       e.preventDefault();
       window.open($(ele).text());
     },
+    routerChange(id){
+      this.$router.push({path:'articleDetail', params: { id: id}})
+    },
+    showPSBox:function(){
+      $(".mask1").addClass("showBtn");
+      $(".psBox").addClass("showBtn");
+      $(".psBox").find(".article_btn").attr("disabled",false).removeClass("is-disabled");
+      this.$store.dispatch('changeAlertBox',{"type":'0'}).then(function(resp){});
+    },
     insertData(data){
       var that=this;
       $('.contentBox').empty();
         var res=data.data;
         that.totalNum=res.updateNum;
-        that.todayNum=res.IncludeNum;
+        that.todayNum=res.includeNum;
+        that.articlesAarry=that.copyArr(res.list);
+        // console.log(that.articlesAarry);
         for(var i=0;i<res.list.length;i++){
-          var item=$('<div class="rightContent_">'+
-            '<span class="includeBtn" @click="includeThis" @mouseover="canceInclude" @mouseout="includeThis_"><img src="../../static/img/plus.png" alt=""><span>收录</span></span>'+
-            // '<router-link to="/articleDetail">'+
-            '<router-link to="{ path: \"articleDetail\", query: {id:'+res.list[i].articleId+'}}">'+
-              '<div class="rightContent">'+
-                '<p class="title_bar">'+
-                  '<span>'+res.list[i].title+'<span>'+
-                '</p>'+     
-                '<p class="title_content">'+
-                  res.list[i].summary+
-                '</p>'+
-                '<p class="title_bottom">'+
-                  '<span>'+
-                    '<span>来源：<span>'+res.list[i].source+'</span></span>'+
-                    '<span>类别：<span>'+res.list[i].type+'</span></span>'+
-                    '<span>时间：<span>'+res.list[i].date+'</span></span>'+
-                  '</span>'+ 
-                '</p>'+
-              '</div>'+
-            '</router-link>'+
-          '</div>');
-          $('.contentBox').append(item);
+          // var item=$('<div class="rightContent_">'+
+          //   // '<span class="includeBtn" data-state=\"'+res.list[i].isInstructions+'\" @click=\"'+that.includeThis+'\" @mouseover=\"'+that.canceInclude+'\" @mouseout=\"'+that.includeThis_+'\"><img src="../../static/img/plus.png" alt=""><span>'+that.btnState+'</span></span>'+
+          //   "<span class=\"includeBtn\" data-state=\""+res.list[i].isInstructions+"\" @click=\"+that.includeThis+\" @mouseover=\"+that.canceInclude+\" @mouseout=\"+that.includeThis_+\">"+
+
+          //   "<img src=\"./static/img/plus.png\" alt=\"\"><span>"+that.btnState+"</span></span>"+  
+          //   // '<span class="includeBtn"><img src="../../static/img/plus.png" alt=""><span>'+that.btnState+'</span></span>'+
+          //   // '<router-link to="/articleDetail">'+
+
+          //   // "{ path: 'articleDetail', query: { id: '001' }}"
+          //   // "<ul class='mui-table-view' id='ul"+i+"'>" +
+
+          //   // '<router-link to="{ path: \'articleDetail\', query: {id:'+res.list[i].id+'}}">'+
+          //    // '<router-link :to="{ path: \'articleDetail\', query: {id:"\'"+id+"\'"}}">'+
+          //    // '<router-link :to="{path:\'articleDetail\',query:{id:\'"+res.list[i].id+"\'}}">'+
+          //    // "<router-link :to=\"{path:\'articleDetail\',query:{id:\'"+res.list[i].id+"\'}}\">"+
+          //    // "<router-link :to=\"{path:\'articleDetail\'"+res.list[i].id+"}\">"+
+          //     // '<div class="rightContent">'+ 
+          //     "<div class=\"rightContent\" @click=\"this.routerChange("+res.list[i].id+")\">"+
+          //       '<p class="title_bar">'+
+          //         '<span>'+res.list[i].title+'<span>'+
+          //       '</p>'+     
+          //       '<p class="title_content">'+
+          //         res.list[i].summary+
+          //       '</p>'+
+          //       '<p class="title_bottom">'+
+          //         '<span>'+
+          //           '<span>来源：<span>'+res.list[i].source+'</span></span>'+
+          //           '<span>类别：<span>'+res.list[i].type+'</span></span>'+
+          //           '<span>时间：<span>'+res.list[i].date+'</span></span>'+
+          //         '</span>'+ 
+          //       '</p>'+
+          //     '</div>'+
+          //   '</router-link>'+
+          // '</div>');
+          if(res.list[i].isInstructions){//文章在批示中 修改样式
+            // console.log("111");
+            // that.$nextTick(function(){
+            //   item.find(".includeBtn").children("span").text("批示中");
+            //   item.find(".includeBtn").addClass("grey");
+            //   item.find(".includeBtn").find("img").remove();
+            // })
+            // $(that.$refs.includeBtn).children("span").text("批示中");
+            // $(that.$refs.includeBtn).addClass("grey");
+            // $(that.$refs.includeBtn).find("img").remove();
+            // // item.find(".includeBtn").children("span").text("批示中");
+            // // item.find(".includeBtn").addClass("grey");
+            // // item.find(".includeBtn").find("img").remove();
+          }
+          else{}
+          // $('.contentBox').append(item);
         }
     },
   },
   mounted(){
+  },
+  created: function() {
+    this.keyword = this.$route.query.keyword;
+    this.add = this.$route.query.add;
+    this.method=this.$route.query.type;
     var that=this;
-    $.when(getAllArticles(this.userid)).done(function(data){
-      if(data.state=="0"){
-        this.insertData(data);
-      }
-      else{
-        alert(data.data);
-      }
-    })
+    if(this.keyword!=''&&this.keyword!=undefined){//有关键词的时候
+      this.searchThis();
+    }
+    else{
+      $.when(getAllArticles(that.userid,that.method,that.type)).done(function(data){
+        if(data.state=="0"){
+          that.insertData(data);
+          // that.articlesAarry=data.data.list;
+          // console.log(that.articlesAarry);
+        }
+        else{
+          alert(data.data);
+        }
+      })
+    }
     $.when(getArticleType()).done(function(data){
       if(data.state=="0"){
         var res=data.data;
         that.options=res.map(function(value,index){
           return {
-            "value":index+1,
+            // "value":index+1,
+            "value":value,
             "label":value,
           }
         })
-        that.options.splice(0,0,{value:0,label:"全部内容"});
+        that.options.splice(0,0,{value:"全部内容",label:"全部内容"});
       }
       else{
         alert(data.data);
       }
     })
-  },
-  created: function() {
-    this.searchThis();
+    scrollFun();
   },
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style lang="less" scoped>
+<style lang="less">
 @import '../../static/less/init.less';
+@import '../../static/css/animate.css';
   .test{
     margin-bottom:65px;
     >a{
@@ -272,185 +456,210 @@ export default {
       color: #000;
     }
   }
-  .rightBar{
-    height:60px;
-    width:100%;
-    background-color: #0099FF;
-    border-radius:8px;
-    position: relative;
-    p{
-      line-height: 60px;
-      padding-left: 20px;
-      color:#fff;
-      font-size: 16px;
-      span{
-        vertical-align: middle;
-        color:#E4E4E4;
-        // font-size: 18px;
-        // font-size: 16px;
+  .allInfomations{
+    .showTop{
+      cursor:pointer;
+      display:none;
+      position: fixed;
+      bottom:100px;
+      right:30px;
+      width:40px;
+      height:40px;
+      background-color: rgba(204,204,204,.8);
+      border-radius: 50%;
+      text-align: center;
+      box-shadow:0 0 10px #aaa;
+      img{
+        display: inline-block;
+          width: 22px;
+          height: 22px;
+          vertical-align: middle;
+          margin-top: 10px;
       }
     }
-  }
-  .includeBtn{
-    position: absolute;
-    right:30px;
-    top:18px;
-    width:100px;
-    height:30px;
-    display:inline-block;
-    border:1px solid #0099cc;
-    border-bottom-left-radius: 20px;
-    border-bottom-right-radius: 20px;
-    border-top-left-radius: 20px;
-    border-top-right-radius: 20px;
-    text-align: center;
-    // line-height: 30px;
-    // font-size: 16px;
-    line-height:32px;
-    font-size: 14px;
-    color: #0099cc;
-    // color:#4183F0;
-    cursor:pointer;
-    z-index:1;
-    img{
-      display:inline-block;
-      margin-bottom: -5px;
-      margin-right: 10px;
-      width: 25px;
-      height: 22px;
+    .showTop:hover,.showTop:active{
+      background-color: #b5b5b5;
     }
-  }
-  .rightContent_{
-    position:relative;
-  }
-  a{
-    color: #000;
-    display: block;
-  }
-  .rightContent{
-    width:100%;
-    margin-top:15px;
-    border:1px solid #eee;
-    background-color: #fff;
-    border-radius:5px;
-    .title_bar{
-      padding:20px 40px;
-      // font-size:20px;
-      font-size: 18px;
-      color:#222;
+    .rightBar{
+      height:60px;
+      width:100%;
+      background-color: #0099FF;
+      border-radius:8px;
       position: relative;
-      border-bottom:1px solid #eee;
-    }
-    .title_content{
-      margin:20px 40px;
-      line-height: 35px;
-      .mutilEllipsis(2);
-      // color:#000!important;
-      color:#666;
-      font-size: 14px;
-    }
-    .title_bottom{
-      padding:0 40px;
-    }
-    .title_bottom>span{
-      display: inline-block;
-      width: 100%;
-      border-top: 2px dashed #eee;
-      padding: 20px 0;
-      font-size:0;
-      >span{
-        color:#868686;
-        // font-size:14px;
-        font-size: 12px;
-        display:inline-block;
-        width:33.3%;
+      p{
+        line-height: 60px;
+        padding-left: 20px;
+        color:#fff;
+        font-size: 16px;
+        span{
+          vertical-align: middle;
+          color:#E4E4E4;
+          // font-size: 18px;
+          // font-size: 16px;
+        }
       }
-      // >span:first-child{
-      //   width:60%;
-      // }
-      // >span:nth-child(2){
-      //   width:20%;
-      // }
-      // >span:last-child{
-      //   width:20%;
-      // }
     }
-  }
-  // .rightContent:last-child{
-  //   margin-bottom:15px;
-  // }
-  .rightBottom{
-    cursor:pointer;
-    margin-top:15px;
-    height:50px;
-    text-align: center;
-    color:#fff;
-    background-color: #0099FF;
-    line-height:50px;
-    // font-size:18px;
-    font-size: 16px;
-    border-radius:5px;
-    margin-bottom:15px;
-    span{
-      vertical-align:middle;
-    }
-  }
-  .grey{
-    border-color:#C3C7D0!important;
-    color:#C3C7D0!important;
-  }
-  .red{
-    border-color:#FF6666!important;
-    color:#FF6666!important;
-    img{
-      width:15px!important;
-    }
-  }
-  .admin_ui_select {
-    position: absolute;
-    right: 10px;
-    top:15px;
-    display: inline-block;
-    width: 100px;
-    line-height: 1;
-    background-color: #B2E0FF;
-    border-radius:5px;
-  }
-  .admin_ui_select > select {
-      position: relative;
-      width: 100%;
-      height: 32px;
-      line-height:1;
-      padding: 6px 20px 6px 8px;
-      border: 1px solid #dddddd!important;
-      border-radius: 0;
-      appearance: none;
-      -moz-appearance: none;
-      -webkit-appearance: none;
-      background-color: transparent;
-      margin-bottom:0;
-      color:#797979;
-      border-radius:5px;
-      font-size:14px;
-  }
-  .admin_ui_select:before{
+    .includeBtn{
       position: absolute;
-      right: 8px;
-      top: 4px;
+      right:30px;
+      top:18px;
+      width:100px;
+      height:30px;
+      display:inline-block;
+      border:1px solid #0099cc;
+      border-bottom-left-radius: 20px;
+      border-bottom-right-radius: 20px;
+      border-top-left-radius: 20px;
+      border-top-right-radius: 20px;
+      text-align: center;
+      // line-height: 30px;
+      // font-size: 16px;
+      line-height:32px;
+      font-size: 14px;
+      color: #0099cc;
+      // color:#4183F0;
+      cursor:pointer;
+      z-index:1;
+      img{
+        display:inline-block;
+        margin-bottom: -5px;
+        margin-right: 10px;
+        width: 25px;
+        height: 22px;
+      }
+    }
+    .rightContent_{
+      position:relative;
+    }
+    a{
+      color: #000;
+      display: block;
+    }
+    .rightContent{
+      width:100%;
+      margin-top:15px;
+      border:1px solid #eee;
+      background-color: #fff;
+      border-radius:5px;
+      .title_bar{
+        padding:20px 40px;
+        // font-size:20px;
+        font-size: 18px;
+        color:#222;
+        position: relative;
+        border-bottom:1px solid #eee;
+      }
+      .title_content{
+        margin:20px 40px;
+        line-height: 35px;
+        .mutilEllipsis(2);
+        // color:#000!important;
+        color:#666;
+        font-size: 14px;
+      }
+      .title_bottom{
+        padding:0 40px;
+      }
+      .title_bottom>span{
+        display: inline-block;
+        width: 100%;
+        border-top: 2px dashed #eee;
+        padding: 20px 0;
+        font-size:0;
+        >span{
+          color:#868686;
+          // font-size:14px;
+          font-size: 12px;
+          display:inline-block;
+          width:33.3%;
+        }
+        // >span:first-child{
+        //   width:60%;
+        // }
+        // >span:nth-child(2){
+        //   width:20%;
+        // }
+        // >span:last-child{
+        //   width:20%;
+        // }
+      }
+    }
+    // .rightContent:last-child{
+    //   margin-bottom:15px;
+    // }
+    .rightBottom{
+      cursor:pointer;
+      margin-top:15px;
+      height:50px;
+      text-align: center;
+      color:#fff;
+      background-color: #0099FF;
+      line-height:50px;
+      // font-size:18px;
+      font-size: 16px;
+      border-radius:5px;
+      margin-bottom:15px;
+      span{
+        vertical-align:middle;
+      }
+    }
+    .grey{
+      border-color:#C3C7D0!important;
+      color:#C3C7D0!important;
+    }
+    .red{
+      border-color:#FF6666!important;
+      color:#FF6666!important;
+      img{
+        width:15px!important;
+      }
+    }
+    .admin_ui_select {
+      position: absolute;
+      right: 10px;
+      top:15px;
       display: inline-block;
-      font: normal normal normal 14px/1 FontAwesome;
-      font-size: inherit;
-      text-rendering: auto;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      content: "\f107";
-      color:#bbb;
-      font-size:25px;
-  }
-  .selectStyle{
-    position: absolute;
-    right: 15px;
-    top: 12px;
-    width: 120px;
+      width: 100px;
+      line-height: 1;
+      background-color: #B2E0FF;
+      border-radius:5px;
+    }
+    .admin_ui_select > select {
+        position: relative;
+        width: 100%;
+        height: 32px;
+        line-height:1;
+        padding: 6px 20px 6px 8px;
+        border: 1px solid #dddddd!important;
+        border-radius: 0;
+        appearance: none;
+        -moz-appearance: none;
+        -webkit-appearance: none;
+        background-color: transparent;
+        margin-bottom:0;
+        color:#797979;
+        border-radius:5px;
+        font-size:14px;
+    }
+    .admin_ui_select:before{
+        position: absolute;
+        right: 8px;
+        top: 4px;
+        display: inline-block;
+        font: normal normal normal 14px/1 FontAwesome;
+        font-size: inherit;
+        text-rendering: auto;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        content: "\f107";
+        color:#bbb;
+        font-size:25px;
+    }
+    .selectStyle{
+      position: absolute;
+      right: 15px;
+      top: 12px;
+      width: 120px;
+    }
   }
 </style>

@@ -6,4 +6,12 @@ export const articleObj=state=>state.articleObj//已选中文章
 
 export const userState=state=>state.userState//已选中文章
 
-export const type=state=>state.type//弹窗类型
+export const psBox=state=>state.psBox//弹窗类型
+
+export const clrId=state=>state.clrId//弹窗类型
+
+export const newArcticle=state=>state.newArcticle//弹窗类型
+
+export const psShow=state=>state.psShow//弹窗类型
+
+export const clearAll=state=>state.clearAll//弹窗类型

@@ -104,8 +104,13 @@ export default {
       }
     },
     doSearch(){
+      if(this.keyword==''){
+        this.$router.push({path:'dynamicArticle',query: { add: "全部" ,type:'dynamic'}});
+      }
+      else{
+        this.$router.push({path:'dynamicArticle',query: { keyword: this.keyword,type:'dynamic'}});
+      }
       // this.$router.push({path:'consultation',query: { keyword: encodeURI(this.keyword) }});
-      this.$router.push({path:'consultation',query: { keyword: this.keyword }});
       // var that=this;
       // $.when(searchArticle(that.keyword)).done(function(data){
       //   if(data.state=="0"){

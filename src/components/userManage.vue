@@ -172,13 +172,13 @@ export default {
       this.propsArr=this.tableData.map(function(value){
         return JSON.stringify(value);
       })//测试
-
+      var that=this;
       $.when(getAllUsers()).done(function(data){
         if(data.state==0){
           var res=data.data;
-          this.totalItem=res.length;
-          this.tableData=res.map(function(value,index){
-            var val=levelJudge(value.level);
+          that.totalItem=res.length;
+          that.tableData=res.map(function(value,index){
+            var val=that.levelJudge(value.level);
             console.log(val);
             return {
               "index":index,
@@ -192,7 +192,7 @@ export default {
             }
           })
         }
-        this.propsArr=this.tableData.map(function(value){
+        that.propsArr=that.tableData.map(function(value){
           return JSON.stringify(value);
         })
       })
