@@ -4,12 +4,9 @@
       <p>报告中心-报告列表：
         <span>共计生成<span>136</span>篇报告</span>
       </p>
-      <!-- <div>
-        <input type="" name="" placeholder="搜索已生成的报告">
-      </div> -->
-      <!-- <div class="admin_ui_input">
-        <input type="" name="" placeholder="搜索已收录的内容">
-      </div> -->
+      <el-button class="btn_position">
+        <input type="file" name="" class="file_" @change="linkChange">上传报告
+      </el-button>
       <el-input
         placeholder="搜索已收录的内容"
         icon="search"
@@ -17,34 +14,71 @@
         class="input_position" :on-icon-click="handleInputClick" @keyup.13="handleInputClick">
       </el-input>
     </div>
-    <div class="rightContent">
-      <div class="title_bar">
-        <img src="../../static/img/multi-report.png" alt="">
-        <span><span>高等教育信息动态-20161208-V01</span>&nbsp;&nbsp;&nbsp;<span>生成日期：<span>2016/12/08 16：45</span></span></span>
-        <img src="../../static/img/delete.png" alt="" class="delete" @click="delete_">
-        <span class="includeBtn"><img src="../../static/img/download.png" alt=""><span>下载报告</span></span>
-      </div>
-    </div>
-    <div class="rightContent">
-      <div class="title_bar">
-        <img src="../../static/img/multi-report.png" alt="">
-        <span><span>高等教育信息动态-20161208-V02</span>&nbsp;&nbsp;&nbsp;<span>生成日期：<span>2016/12/08 16：45</span></span></span>
-        <img src="../../static/img/delete.png" alt="" class="delete" @click="delete_">
-        <span class="includeBtn"><img src="../../static/img/download.png" alt=""><span>下载报告</span></span>
-      </div>
-    </div>
-    <div class="rightContent">
-      <div class="title_bar">
-        <img src="../../static/img/multi-report.png" alt="">
-        <span><span>高等教育信息动态-20161208-V03</span>&nbsp;&nbsp;&nbsp;<span>生成日期：<span>2016/12/08 16：45</span></span></span>
-        <img src="../../static/img/delete.png" alt="" class="delete" @click="delete_">
-        <span class="includeBtn"><img src="../../static/img/download.png" alt=""><span>下载报告</span></span>
-      </div>
-    </div>  
-    <div class="rightBottom">
-      <p>
-      点击加载更多历史报告
-      </p>
+    <div class="reporterContainer">
+      <el-tabs v-model="activeName" @tab-click="handleClick">
+        <el-tab-pane label="系统报告" name="first">
+          <div class="rightContent">
+            <div class="title_bar">
+              <img src="../../static/img/multi-report.png" alt="">
+              <span><span>高等教育信息动态-20161208-V01</span>&nbsp;&nbsp;&nbsp;<span>生成日期：<span>2016/12/08 16：45</span></span></span>
+              <img src="../../static/img/delete.png" alt="" class="delete" @click="delete_">
+              <span class="includeBtn"><img src="../../static/img/download.png" alt=""><span>下载报告</span></span>
+            </div>
+          </div>
+          <div class="rightContent">
+            <div class="title_bar">
+              <img src="../../static/img/multi-report.png" alt="">
+              <span><span>高等教育信息动态-20161208-V02</span>&nbsp;&nbsp;&nbsp;<span>生成日期：<span>2016/12/08 16：45</span></span></span>
+              <img src="../../static/img/delete.png" alt="" class="delete" @click="delete_">
+              <span class="includeBtn"><img src="../../static/img/download.png" alt=""><span>下载报告</span></span>
+            </div>
+          </div>
+          <div class="rightContent">
+            <div class="title_bar">
+              <img src="../../static/img/multi-report.png" alt="">
+              <span><span>高等教育信息动态-20161208-V03</span>&nbsp;&nbsp;&nbsp;<span>生成日期：<span>2016/12/08 16：45</span></span></span>
+              <img src="../../static/img/delete.png" alt="" class="delete" @click="delete_">
+              <span class="includeBtn"><img src="../../static/img/download.png" alt=""><span>下载报告</span></span>
+            </div>
+          </div>  
+          <div class="rightBottom">
+            <p>
+            点击加载更多历史报告
+            </p>
+          </div>
+        </el-tab-pane>
+        <el-tab-pane label="手工报告" name="second">
+          <div class="rightContent">
+            <div class="title_bar">
+              <img src="../../static/img/multi-report.png" alt="">
+              <span><span>高等教育信息动态-20161208-V04</span>&nbsp;&nbsp;&nbsp;<span>生成日期：<span>2016/12/08 16：45</span></span></span>
+              <img src="../../static/img/delete.png" alt="" class="delete" @click="delete_">
+              <span class="includeBtn"><img src="../../static/img/download.png" alt=""><span>下载报告</span></span>
+            </div>
+          </div>
+          <div class="rightContent">
+            <div class="title_bar">
+              <img src="../../static/img/multi-report.png" alt="">
+              <span><span>高等教育信息动态-20161208-V05</span>&nbsp;&nbsp;&nbsp;<span>生成日期：<span>2016/12/08 16：45</span></span></span>
+              <img src="../../static/img/delete.png" alt="" class="delete" @click="delete_">
+              <span class="includeBtn"><img src="../../static/img/download.png" alt=""><span>下载报告</span></span>
+            </div>
+          </div>
+          <div class="rightContent">
+            <div class="title_bar">
+              <img src="../../static/img/multi-report.png" alt="">
+              <span><span>高等教育信息动态-20161208-V06</span>&nbsp;&nbsp;&nbsp;<span>生成日期：<span>2016/12/08 16：45</span></span></span>
+              <img src="../../static/img/delete.png" alt="" class="delete" @click="delete_">
+              <span class="includeBtn"><img src="../../static/img/download.png" alt=""><span>下载报告</span></span>
+            </div>
+          </div>  
+          <div class="rightBottom">
+            <p>
+            点击加载更多历史报告
+            </p>
+          </div>
+        </el-tab-pane>
+      </el-tabs>
     </div>
   </div>
 </template>
@@ -53,14 +87,27 @@ export default {
   name: 'report',
   data () {
     return {
-      input2:''
+      input2:'',
+      activeName: 'first',
     }
   },
   methods:{
     delete_:function(e){
       $(e.target).closest(".rightContent").remove();
     },
-    handleInputClick:function(){}
+    handleClick(tab, event) {
+      console.log(tab, event);
+    },
+    handleInputClick:function(){},
+    linkChange:function(e){
+      var file = e.target.files; //获取图片资源
+      if(file[0]){
+        this.fileFlag=true;
+        this.file=file[0];
+        this.linkName=file[0].name;
+        $(this.$refs.linkBot).text(file[0].name);
+      }
+    }
   }
 }
 </script>
@@ -73,6 +120,18 @@ export default {
     >a{
       display: block;
       color: #000;
+    }
+    .file_{
+      opacity: 0;
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 110px;
+      height: 32px;
+      cursor:pointer;
+    }
+    .btn_position{
+      font-size: 13px;
     }
   }
   .rightBar{

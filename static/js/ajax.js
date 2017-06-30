@@ -1,5 +1,5 @@
 //以下用户管理
-var url="http://192.168.2.108:9000";
+var url="http://192.168.2.129:9000";
 // var url="127.0.0.1:9000";
 // var url="";
 function getAllUsers(){
@@ -187,6 +187,8 @@ function getInstructionFlow(instructionId){//获取批示流程
     });
     return ajax;
 }
+
+//登录
 function loginPage(username,password){
   var ajax=$.ajax({
     url:url+'/api/user/login',
@@ -203,4 +205,40 @@ function loginPage(username,password){
       }
     }
   })
+  return ajax;
+}
+
+
+//组织
+function getOrgTree(){
+  var ajax=$.ajax({
+    url:url+'/api/user/login',
+    type:'get',
+    data:{
+    },
+    success:function(data){
+      if(data.state==0){
+      }
+      else{
+
+      }
+    }
+  })
+  return ajax;
+}
+function getOrgList(){
+  var ajax=$.ajax({
+    url:url+'/api/org/getOrgTree',
+    type:'get',
+    data:{
+    },
+    success:function(data){
+      if(data.state==0){
+      }
+      else{
+
+      }
+    }
+  })
+  return ajax;
 }

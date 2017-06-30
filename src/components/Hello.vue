@@ -2,13 +2,13 @@
   <div class="hello">
     <div class="content">
       <div class="leftMenu" id="leftMenu">
-        <ul>
+        <!-- <ul>
           <li @click="changeColor" class="clickStyle">
               <router-link to="/homePage/consultation">
                 <img src="../../static/img/home.png" alt="">平台主页
               </router-link>
           </li>
-        </ul>
+        </ul> -->
         <ul>
           <li class="noClickStyle">
               <router-link to="">
@@ -34,20 +34,16 @@
         <ul>
           <li class="noClickStyle">
               <router-link to="">
-                <img src="../../static/img/platform.png" alt="">资讯数据
+                <img src="../../static/img/allInfomation.png" alt="">全部资讯
               </router-link>
           </li>
+
           <li @click="changeColor" class="clickStyle">
               <!-- <router-link to="/homePage/consultation"> -->
               <router-link :to="{ path: '/homePage/dynamicArticle', query: {type:'dynamic'}}">
               动态资讯
               </router-link>
           </li>
-          <!-- <li @click="changeColor" class="clickStyle">
-              <router-link to="/homePage/consultation">
-              数据分析
-              </router-link>
-          </li> -->
           <li @click="changeColor" class="clickStyle">
               <!-- <router-link to="/homePage/consultation"> -->
               <router-link :to="{ path: '/homePage/manualArticle', query: {type:'manual'}}">
@@ -150,15 +146,33 @@ export default {
       styleObject: {
         minHeight: "800px",
       }
+      options: [],
     }
   },
   methods:{
     changeColor:function(e){
       $(".clickStyle a").removeClass("blue");
       $(e.target).addClass("blue");
-
-    }
+    },
   },
+  created(){
+    $.when(getArticleType()).done(function(data){
+      if(data.state=="0"){
+        var res=data.data;
+        that.options=res.map(function(value,index){
+          return {
+            // "value":index+1,
+            "value":value,
+            "label":value,
+          }
+        })
+        that.options.splice(0,0,{value:"全部内容",label:"全部资讯"});
+      }
+      else{
+        alert(data.data);
+      }
+    })
+  }
   // beforeMount(){
   //   var self=this;
   //   self.styleObject.minHeight=window.screen.height-74;

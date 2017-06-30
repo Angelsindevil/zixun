@@ -18,7 +18,7 @@
             </el-col>
             <el-col :span="6">
               <el-form-item label="用户账号：">
-                <el-input v-model="form.account"></el-input>
+                <el-input v-model="form.account" :disabled="accountState"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
@@ -98,16 +98,18 @@
 		    },
         userid:'',
         orgid:'',
+        accountState:false,
 		  }
 		},
     computed: {
       ...mapGetters({
         userState: 'userState',
+        unitVal: 'unitVal',
       })
     },
     watch:{
       userState:{
-        handler: function (val, oldVal) {//监听学校和指标数组，只要学科id没有变化，则不变化
+        handler: function (val, oldVal) {//
           if(Object.keys(val).length!=0){
             var level=this.levelJudge(val.level); 
             // this.$set()
@@ -118,6 +120,7 @@
             this.form.state=val.state;
             this.userid=val.id;
             this.orgid=val.orgid;
+            this.accountState=true;
           }
           else{//表示新增
             this.form={
@@ -129,7 +132,16 @@
             };
             this.userid="";
             this.orgid="";
+            this.accountState=false;
           }
+        },
+        deep:true,
+        immediate: true,
+      },
+      unitVal:{
+        handler: function (val, oldVal) {//获得组织id
+          console.log(val);
+          this.orgid=val;
         },
         deep:true,
         immediate: true,
@@ -165,16 +177,16 @@
 		  optionChangeHandler(val){
 		  },
       operateUser(){
-        if(this.userid==""){
+        if(this.userid==""){//userid哪里来的
           $.when(addUsers(this.orgid,this.form.account,this.form.name,this.form.level)).done(function(data){
-            if(data.state==0){
+            if(data.state=="0"){
               var res=data.data;
             }
           })
         }
         else{
           $.when(addUsers(this.userid,this.orgid,this.form.account,this.form.name,this.form.level)).done(function(data){
-            if(data.state==0){
+            if(data.state=="0"){
               var res=data.data;
             }
           })
@@ -182,14 +194,14 @@
       },
       cancelUser(){
         $.when(cancelUsers(this.userid)).done(function(data){
-          if(data.state==0){
+          if(data.state=="0"){
             var res=data.data;
           }
         })
       },
       deleteUser(){
         $.when(deleteUsers(this.userid)).done(function(data){
-          if(data.state==0){
+          if(data.state=="0"){
             var res=data.data;
           }
         })

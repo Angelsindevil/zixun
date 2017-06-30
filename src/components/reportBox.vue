@@ -14,9 +14,11 @@
           </draggable>
         </div>
         <div class="alertBottom">
-          <span class="bg_blue"><img src="../../static/img/word.png" alt="">生成WORD</span> 
-          <span class="bg_red"><img src="../../static/img/pdf.png" alt="">生成PDF</span> 
-          <span @click="hideBox" class="bg_cancle">取消</span> 
+          <span class="rightBot">
+            <span class="bg_blue" style="font-size:13px;width:110px"><img src="../../static/img/word.png" alt="">生成WORD</span> 
+            <span class="bg_red" style="font-size:13px;"><img src="../../static/img/pdf.png" alt="">生成PDF</span> 
+            <span @click="hideBox" class="bg_cancle">取消</span>  
+          </span>
         </div>
     </div>
 </template>

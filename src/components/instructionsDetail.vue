@@ -4,6 +4,7 @@
       <p>消息反馈-我的批示：
         <span>批示流程详细信息</span>
       </p>
+      <router-link to='/homePage/managementCenter'><el-button class="btn_position">返回</el-button></router-link>
     </div>
     <div class="rightContent" v-for="(item,index) in articlesFilter">
       <!-- <ul>
@@ -17,7 +18,7 @@
               ：<span>{{item.date}}</span></span></p>
               <p class="grey_font" v-show="(item.type=='0'?true:false)">
                 <span>批示文章：<span>{{item.title}}</span> - <span>{{item.art_date}}</span></span>
-                <router-link :to="{ path: 'articleDetail', query: { id:item.articleId}}">
+                <router-link :to="{ path: '/homePage/articleDetail', query: { id:item.articleId}}">
                   <el-button type="primary" size="small" class="btn-pos">查看原文</el-button>
                 </router-link>
               </p>
@@ -458,5 +459,10 @@ export default {
   .el-dropdown-menu__item{
     text-align: center;
     color:#666;
+  }
+  .instructionsDetail{
+    .btn_position{
+      right:20px;
+    }
   }
 </style>

@@ -39,6 +39,7 @@ const state = {
 		instructionId:'',
 	},
 	clrId:'',
+	unitVal:'',
 }
 const store = new Vuex.Store({
   state,

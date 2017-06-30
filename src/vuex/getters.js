@@ -15,3 +15,5 @@ export const newArcticle=state=>state.newArcticle//弹窗类型
 export const psShow=state=>state.psShow//弹窗类型
 
 export const clearAll=state=>state.clearAll//弹窗类型
+
+export const unitVal=state=>state.unitVal//弹窗类型

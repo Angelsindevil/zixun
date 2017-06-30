@@ -21,34 +21,37 @@ i<template>
         <el-table-column
           prop="index"
           label="序号"
-          width="80">
+          width="10%">
         </el-table-column>
         <el-table-column
           prop="org"
           label="所属组织"
-          width="150">
+          width="15%">
         </el-table-column>
         <el-table-column
           prop="account"
           label="用户账号"
-          width="120">
+          width="20%">
         </el-table-column>
         <el-table-column
           prop="name"
           label="用户姓名"
+          width="20%"
           >
         </el-table-column>
         <el-table-column
           prop="state"
-          label="状态">
+          label="状态"
+          width="10%">
         </el-table-column>
         <el-table-column
           prop="level"
-          label="角色权限">
+          label="角色权限"
+          width="15%">
         </el-table-column>
         <el-table-column
           label="操作"
-          width="100">
+          width="10%">
           <template scope="scope">
             <el-button type="text" size="small" :data-id="scope.row.id" :data-state="propsArr[scope.row.index]" @click="showUserBox_">编辑</el-button>
           </template>
@@ -92,26 +95,26 @@ export default {
         value: '1',
         totalItem:1,
         tableData: [
-        {
-          index: 0,
-          org: '校长办公室',
-          account: 'PK_admin',
-          name: '张三',
-          state:'正常',
-          level: '系统管理员',
-          id:'01',
-          orgid:'03',
-        }, 
-        {
-          index: 1,
-          org: '数据与信息中心',
-          account:'TH_edit',
-          name: '李四',
-          state:'正常',
-          level: '内容管理员',
-          id:'02',
-          orgid:'04',
-        }, 
+        // {
+        //   index: 0,
+        //   org: '校长办公室',
+        //   account: 'PK_admin',
+        //   name: '张三',
+        //   state:'正常',
+        //   level: '系统管理员',
+        //   id:'01',
+        //   orgid:'03',
+        // }, 
+        // {
+        //   index: 1,
+        //   org: '数据与信息中心',
+        //   account:'TH_edit',
+        //   name: '李四',
+        //   state:'正常',
+        //   level: '内容管理员',
+        //   id:'02',
+        //   orgid:'04',
+        // }, 
       ],
       propsArr:[],
       }
@@ -179,13 +182,20 @@ export default {
           that.totalItem=res.length;
           that.tableData=res.map(function(value,index){
             var val=that.levelJudge(value.level);
+            var status;
+            if(value.status=="1"){
+              status='正常';
+            }
+            else{
+              status='已注销';
+            }
             console.log(val);
             return {
               "index":index+1,
               "org": value.organization,
               "account":value.account,
               "name": value.username,
-              "state":value.status,
+              "state":status,
               "level":val,
               "id":value.id,//用户id
               "orgid":value.orgid,

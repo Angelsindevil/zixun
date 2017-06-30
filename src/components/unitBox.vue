@@ -40,8 +40,9 @@
           :data="data2"
           show-checkbox
           node-key="id"
-          :default-expanded-keys="[2, 3]"
-          :default-checked-keys="[5]"
+          ref="tree"
+          :default-expanded-keys="[1]"
+          :default-checked-keys="[1]"
           :props="defaultProps">
           </el-tree>
         </div>
@@ -92,13 +93,6 @@
           children: [{
             id: 4,
             label: '二级 1-1',
-            children: [{
-              id: 9,
-              label: '三级 1-1-1'
-            }, {
-              id: 10,
-              label: '三级 1-1-2'
-            }]
           }]
         }, {
           id: 2,
@@ -144,18 +138,12 @@
         };
       },
       handleSelect(item) {
-        // var el=event.currentTarget;
-        console.log(item.value);
-        for (var i=0;i<this.commonData.length;i++) {
-          if(this.commonData[i].value==item.value){
-            if(this.isSelect){
-              this.commonSelHandler('.multiBox',i,item);
-            }
-            else{
-              this.commonSelHandler('.articleBox',i,item);
-            }
-          }
-        }
+      },
+      getCheckedKeys(leafOnly) {//接受一个值为true的参数（表示仅接受叶子结点）
+        return this.$refs.tree.getCheckedKeys(leafOnly);
+      },
+      setCheckedKeys(keys) {//可以deep向上到父节点
+        this.$refs.tree.setCheckedKeys(keys);
       },
       commonSelHandler(selector,i,item){
         $(selector).find(".article_table tbody").children("tr").removeClass("current-row");
@@ -173,33 +161,22 @@
         var height=$(selector).find(".article_table tbody").children("tr").eq(i).position().top;
         $(selector).find(".alertContent .el-table__body-wrapper").scrollTop(height)
       },
-      handleTableCurrentChange(val){//点击具体表格中的条目
-        console.log(val);
-        if(val){
-          if(this.commonData==this.alltableData){
-            this.currentRow=val.value;
-            // this.radio1=val.i;
-          }
-          else{
-          }
-          this.radio=val.i;
-          this.peopleObj=val;
-        }
-      },
-      handlePreData:function(val1){
-        // for (var i=0;i<val1.length;i++) {
-        //   val1[i].i=i;
-        // }
-        // var val2=val1.slice(0,6);
-        // return val2;
-        return val1;
-      },
       submit(){
-        this.$store.dispatch('changePleObj',{peopleObj:this.peopleObj}).then(function(resp){});
+        var orgid=this.getCheckedKeys(true);
+        console.log(orgid);
+        this.$store.dispatch('changeUnitVal',{unitVal:orgid}).then(function(resp){});
       },
     },
     mounted() {
-      this.commonData=this.handlePreData(this.alltableData);
+      this.setCheckedKeys([7,8])
+    },
+    created(){
+      var that=this;
+      $.when(getOrgTree()).done(function(data){
+        if(data.state=='0'){
+          that.data2=data.data;
+        }
+      })
     }
   }
 </script>

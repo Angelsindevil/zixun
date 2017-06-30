@@ -2,13 +2,14 @@
   <div class="article">
     <div class="title_bar">
       <p style="padding-right:110px">
-      <span class="ellipsis" style="display:block;font-size: 18px;color: #222;padding-top:0">{{title}}</span>
-      <span>
-        <span>来源：<span>{{source}}</span></span>
-        <span>类别：<span>{{type}}</span></span>
-        <span>时间：<span>{{date}}</span></span>
-      </span> 
+        <span class="ellipsis" style="display:block;font-size: 18px;color: #222;padding-top:0">{{title}}</span>
+        <span>
+          <span>来源：<span>{{source}}</span></span>
+          <span>类别：<span>{{type}}</span></span>
+          <span>时间：<span>{{date}}</span></span>
+        </span> 
       </p>
+      <router-link :to="{path:'/homePage/contentAdd', query: { id:id}}"><el-button type="text" size="small" class="editBtn">编辑</el-button></router-link>
       <span class="includeBtn" :class="isInstructions=='0'?'':'grey'" :data-state="isInstructions" :data-id="id" :data-pid="instructionId" :data-title="title" :data-i="number" @click="includeThis" @mouseover="canceInclude" @mouseout="includeThis_"><img src="../../static/img/plus.png" alt="" v-show="isInstructions=='0'?true:false"><span>{{isInstructions=='0'?'批示':'批示中'}}</span></span>
     </div>
     <div class="content_bar">
@@ -239,6 +240,11 @@ export default {
           width:25%;
         }
       }
+    }
+    .editBtn{
+      position: absolute;
+      right: 160px;
+      top: 35px;
     }
     img{
       display:inline-block;

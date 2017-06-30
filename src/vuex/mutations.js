@@ -33,6 +33,9 @@ export const changePsShow= (state,payload) => {//将参数mes赋值给state的�
 	state.psShow.value=payload.psShow.value;
 	state.psShow.id=payload.psShow.id;
 }
+export const changeUnitVal= (state,payload) => {//将参数mes赋值给state的变量subjectid 
+	state.unitVal=payload.unitVal;
+}
 export const changeClearAll= (state,payload) => {//将参数mes赋值给state的变量subjectid 
 	state.clearAll=payload.clearAll;
 }
