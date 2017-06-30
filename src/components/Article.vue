@@ -178,7 +178,7 @@ export default {
           el.find("span").text("已批示");
           el.addClass("grey");
           el.find("img").remove();
-          this.$router.push({path:'instructionsDetail',query: {id:pid}});
+          this.$router.push({path:'/homePage/instructionsDetail',query: {id:pid}});
         }
       }
     },

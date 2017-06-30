@@ -4,7 +4,7 @@
       <div class="leftMenu" id="leftMenu">
         <ul>
           <li @click="changeColor" class="clickStyle">
-              <router-link to="/consultation">
+              <router-link to="/homePage/consultation">
                 <img src="../../static/img/home.png" alt="">平台主页
               </router-link>
           </li>
@@ -16,17 +16,17 @@
               </router-link>
           </li>
           <li @click="changeColor" class="clickStyle">
-              <router-link to="/contentManage">
+              <router-link to="/homePage/contentManage">
               内容筛选
               </router-link>
           </li>
           <li @click="changeColor" class="clickStyle">
-              <router-link to="/contentAdd">
+              <router-link to="/homePage/contentAdd">
               新增内容
               </router-link>
           </li>
           <li @click="changeColor" class="clickStyle">
-              <router-link to="/contentPublish">
+              <router-link to="/homePage/contentPublish">
               已发布内容
               </router-link>
           </li>
@@ -38,19 +38,19 @@
               </router-link>
           </li>
           <li @click="changeColor" class="clickStyle">
-              <!-- <router-link to="/consultation"> -->
-              <router-link :to="{ path: 'dynamicArticle', query: {type:'dynamic'}}">
+              <!-- <router-link to="/homePage/consultation"> -->
+              <router-link :to="{ path: '/homePage/dynamicArticle', query: {type:'dynamic'}}">
               动态资讯
               </router-link>
           </li>
           <!-- <li @click="changeColor" class="clickStyle">
-              <router-link to="/consultation">
+              <router-link to="/homePage/consultation">
               数据分析
               </router-link>
           </li> -->
           <li @click="changeColor" class="clickStyle">
-              <!-- <router-link to="/consultation"> -->
-              <router-link :to="{ path: 'manualArticle', query: {type:'manual'}}">
+              <!-- <router-link to="/homePage/consultation"> -->
+              <router-link :to="{ path: '/homePage/manualArticle', query: {type:'manual'}}">
               校内信息
               </router-link>
           </li>
@@ -62,21 +62,21 @@
               </router-link>
           </li>
           <li @click="changeColor" class="clickStyle">
-              <!-- <router-link to="/instructions"> -->
-              <router-link to="/managementCenter">
+              <!-- <router-link to="/homePage/instructions"> -->
+              <router-link to="/homePage/managementCenter">
               <!-- <el-badge :value="3" :max="10" class="item">我的批示</el-badge> -->
               批示内容
               <span>3</span> 
               </router-link>
           </li>
           <li @click="changeColor" class="clickStyle">
-              <router-link to="/mesManage">
+              <router-link to="/homePage/mesManage">
               消息管理
               <!-- <span>3</span>  -->
               </router-link>
           </li>
           <li @click="changeColor" class="clickStyle">
-              <router-link to="/messageBox">
+              <router-link to="/homePage/messageBox">
               系统消息
               </router-link>
           </li>
@@ -88,17 +88,17 @@
               </router-link>
           </li>
           <li @click="changeColor" class="clickStyle">
-              <router-link to="/orgManage">
+              <router-link to="/homePage/orgManage">
               组织信息
               </router-link>
           </li>
           <li @click="changeColor" class="clickStyle">
-              <router-link to="/userManage">
+              <router-link to="/homePage/userManage">
               用户管理
               </router-link>
           </li>
           <li @click="changeColor" class="clickStyle">
-              <router-link to="/managementCenter">
+              <router-link to="/homePage/managementCenter">
               <span>2</span> 
               批示管理
               </router-link>
@@ -111,12 +111,12 @@
               </router-link>
           </li>
           <li @click="changeColor" class="clickStyle">
-              <router-link to="/IncludeList">
+              <router-link to="/homePage/IncludeList">
               收录管理
               </router-link>
           </li>
           <li @click="changeColor" class="clickStyle">
-              <router-link to="/ReportList">
+              <router-link to="/homePage/ReportList">
               报告列表
               </router-link>
           </li>
@@ -128,7 +128,7 @@
         </ul>
         <ul>
           <li class="clickStyle" @click="changeColor">
-              <router-link to="/DataStatistics">
+              <router-link to="/homePage/DataStatistics">
                 <img src="../../static/img/reporter.png" alt="">数据统计
               </router-link>
           </li>

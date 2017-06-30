@@ -29,7 +29,7 @@
         <li v-for="(item,index) in articlesAarry">
           <div class="rightContent_"> -->
             <span class="includeBtn" :class="item.isInstructions=='0'?'':'grey'" :data-state="item.isInstructions" :data-pid="item.instructionId" :data-id="item.id" :data-title="item.title" :data-i="index" @click="includeThis" @mouseover="canceInclude" @mouseout="includeThis_" ref="includeBtn"><img src="../../static/img/plus.png" alt="" v-show="item.isInstructions=='0'?true:false"><span>{{item.isInstructions=='0'?'批示':'批示中'}}</span></span>
-            <router-link :to="{ path: 'articleDetail', query: { id:item.id,index:index}}">
+            <router-link :to="{ path: '/homePage/articleDetail', query: { id:item.id,index:index}}">
               <div class="rightContent">
                 <p class="title_bar" style="padding-right: 160px;">
                   <span class="ellipsis" style="display:block">{{item.title}}<span>
@@ -130,7 +130,7 @@
         </router-link>
       </div> -->
     </div>
-    <div class="rightBottom">
+    <div class="rightBottom" ref="rightBottom">
       <p>
       点击加载更多内容
       </p>
@@ -313,7 +313,7 @@ export default {
           el.find("span").text("已批示");
           el.addClass("grey");
           el.find("img").remove();
-          this.$router.push({path:'instructionsDetail',query: {id:pid}});
+          this.$router.push({path:'/homePage/instructionsDetail',query: {id:pid}});
         }
       }
     },
@@ -332,7 +332,7 @@ export default {
       window.open($(ele).text());
     },
     routerChange(id){
-      this.$router.push({path:'articleDetail', params: { id: id}})
+      this.$router.push({path:'/homePage/articleDetail', params: { id: id}})
     },
     showPSBox:function(){
       $(".mask1").addClass("showBtn");
@@ -343,63 +343,17 @@ export default {
     insertData(data){
       var that=this;
       $('.contentBox').empty();
-        var res=data.data;
-        that.totalNum=res.updateNum;
-        that.todayNum=res.includeNum;
+      var res=data.data;
+      that.totalNum=res.updateNum;
+      that.todayNum=res.includeNum; 
+      if(res.list&&res.list.length!=0){
+        $(that.$refs.rightBottom).children('p').text('点击加载更多内容');
         that.articlesAarry=that.copyArr(res.list);
-        // console.log(that.articlesAarry);
-        for(var i=0;i<res.list.length;i++){
-          // var item=$('<div class="rightContent_">'+
-          //   // '<span class="includeBtn" data-state=\"'+res.list[i].isInstructions+'\" @click=\"'+that.includeThis+'\" @mouseover=\"'+that.canceInclude+'\" @mouseout=\"'+that.includeThis_+'\"><img src="../../static/img/plus.png" alt=""><span>'+that.btnState+'</span></span>'+
-          //   "<span class=\"includeBtn\" data-state=\""+res.list[i].isInstructions+"\" @click=\"+that.includeThis+\" @mouseover=\"+that.canceInclude+\" @mouseout=\"+that.includeThis_+\">"+
-
-          //   "<img src=\"./static/img/plus.png\" alt=\"\"><span>"+that.btnState+"</span></span>"+  
-          //   // '<span class="includeBtn"><img src="../../static/img/plus.png" alt=""><span>'+that.btnState+'</span></span>'+
-          //   // '<router-link to="/articleDetail">'+
-
-          //   // "{ path: 'articleDetail', query: { id: '001' }}"
-          //   // "<ul class='mui-table-view' id='ul"+i+"'>" +
-
-          //   // '<router-link to="{ path: \'articleDetail\', query: {id:'+res.list[i].id+'}}">'+
-          //    // '<router-link :to="{ path: \'articleDetail\', query: {id:"\'"+id+"\'"}}">'+
-          //    // '<router-link :to="{path:\'articleDetail\',query:{id:\'"+res.list[i].id+"\'}}">'+
-          //    // "<router-link :to=\"{path:\'articleDetail\',query:{id:\'"+res.list[i].id+"\'}}\">"+
-          //    // "<router-link :to=\"{path:\'articleDetail\'"+res.list[i].id+"}\">"+
-          //     // '<div class="rightContent">'+ 
-          //     "<div class=\"rightContent\" @click=\"this.routerChange("+res.list[i].id+")\">"+
-          //       '<p class="title_bar">'+
-          //         '<span>'+res.list[i].title+'<span>'+
-          //       '</p>'+     
-          //       '<p class="title_content">'+
-          //         res.list[i].summary+
-          //       '</p>'+
-          //       '<p class="title_bottom">'+
-          //         '<span>'+
-          //           '<span>来源：<span>'+res.list[i].source+'</span></span>'+
-          //           '<span>类别：<span>'+res.list[i].type+'</span></span>'+
-          //           '<span>时间：<span>'+res.list[i].date+'</span></span>'+
-          //         '</span>'+ 
-          //       '</p>'+
-          //     '</div>'+
-          //   '</router-link>'+
-          // '</div>');
-          if(res.list[i].isInstructions){//文章在批示中 修改样式
-            // console.log("111");
-            // that.$nextTick(function(){
-            //   item.find(".includeBtn").children("span").text("批示中");
-            //   item.find(".includeBtn").addClass("grey");
-            //   item.find(".includeBtn").find("img").remove();
-            // })
-            // $(that.$refs.includeBtn).children("span").text("批示中");
-            // $(that.$refs.includeBtn).addClass("grey");
-            // $(that.$refs.includeBtn).find("img").remove();
-            // // item.find(".includeBtn").children("span").text("批示中");
-            // // item.find(".includeBtn").addClass("grey");
-            // // item.find(".includeBtn").find("img").remove();
-          }
-          else{}
-          // $('.contentBox').append(item);
-        }
+      }
+      else{
+        $(that.$refs.rightBottom).children('p').text('暂无文章');
+        that.articlesAarry=[];
+      }
     },
   },
   mounted(){

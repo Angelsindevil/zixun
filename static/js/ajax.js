@@ -1,5 +1,6 @@
 //以下用户管理
 var url="http://192.168.2.108:9000";
+// var url="127.0.0.1:9000";
 // var url="";
 function getAllUsers(){
 	var ajax = $.ajax({
@@ -185,4 +186,21 @@ function getInstructionFlow(instructionId){//获取批示流程
 
     });
     return ajax;
+}
+function loginPage(username,password){
+  var ajax=$.ajax({
+    url:url+'/api/user/login',
+    type:'get',
+    data:{
+      "password":password,
+      "username":username,
+    },
+    success:function(data){
+      if(data.state==0){
+      }
+      else{
+
+      }
+    }
+  })
 }

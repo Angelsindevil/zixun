@@ -15,25 +15,31 @@ import contentManage from '../components/contentManage'
 import contentPublish from '../components/contentPublish'
 import contentAdd from '../components/contentAdd'
 import orgManage from '../components/orgManage'
+import login from '../components/login'
+import homePage from '../components/homePage'
 const routes = [
-  { path: '/', component:AllInfomation},
-  {path: '/dynamicArticle', component: AllInfomation},
-  {path: '/manualArticle', component: AllInfomation},
-  {path:'/articleDetail',component:Article},
-  {path:'/IncludeList',component:IncludeList},
-  {path:'/ReportList',component:reportList},
-  {path:'/messageBox',component:messageBox},
-  {path:'/mesManage',component:mesManage},
-  {path:'/DataStatistics',component:DataStatistics},
-  {path:'/instructions',component:instructions},
-  {path:'/instructionsDetail',component:instructionsDetail},
-  {path:'/feedback',component:feedback},
-  {path:'/managementCenter',component:managementCenter},
-  {path:'/userManage',component:userManage},
-  {path:'/contentManage',component:contentManage},
-  {path:'/contentPublish',component:contentPublish},
-  {path:'/contentAdd',component:contentAdd},
-  {path:'/orgManage',component:orgManage},
-  {path:'/test',component:test}
+  { path: '/login', component:login},
+  // { path: '/', component:login},
+  {path: '/', redirect: '/homePage/dynamicArticle'},
+  { path: '/homePage', component:homePage,children:[
+    {path: 'dynamicArticle', component: AllInfomation},
+    {path: 'manualArticle', component: AllInfomation},
+    {path: 'login', component: login},
+    {path:'articleDetail',component:Article},
+    {path:'IncludeList',component:IncludeList},
+    {path:'ReportList',component:reportList},
+    {path:'messageBox',component:messageBox},
+    {path:'mesManage',component:mesManage},
+    {path:'DataStatistics',component:DataStatistics},
+    {path:'instructions',component:instructions},
+    {path:'instructionsDetail',component:instructionsDetail},
+    {path:'feedback',component:feedback},
+    {path:'managementCenter',component:managementCenter},
+    {path:'userManage',component:userManage},
+    {path:'contentManage',component:contentManage},
+    {path:'contentPublish',component:contentPublish},
+    {path:'contentAdd',component:contentAdd},
+    {path:'orgManage',component:orgManage},
+  ]},
 ]
 export default routes

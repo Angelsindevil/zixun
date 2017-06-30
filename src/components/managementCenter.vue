@@ -45,7 +45,7 @@
             <span class="includeBtn_" :class="(item.rowState!=0)?'orange':'grey'"><span>{{item.btn_con}}</span></span>
             <!-- <router-link to="/instructionsDetail"><span class="includeBtn"><span>查看</span><img src="../../static/img/arrow_blue.png" alt=""></span></router-link> -->
             <!-- <el-tag type="primary" class="label_style">有新反馈</el-tag> -->
-            <router-link :to="{ path: 'instructionsDetail', query: { id: item.instructionsId}}" :data-id="item.instructionsId"><el-button type="primary" class="button_style">{{(item.rowState!=0)?"批示处理":"查看详情"}}</el-button></router-link>
+            <router-link :to="{ path: '/homePage/instructionsDetail', query: { id: item.instructionsId}}" :data-id="item.instructionsId"><el-button type="primary" class="button_style">{{(item.rowState!=0)?"批示处理":"查看详情"}}</el-button></router-link>
           </li>    
         </ul>
       </div>
