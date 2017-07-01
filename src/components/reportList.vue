@@ -2,13 +2,13 @@
   <div class="report">
     <div class="rightBar">
       <p>报告中心-报告列表：
-        <span>共计生成<span>136</span>篇报告</span>
+        <span>共计生成<span>{{totalNum}}</span>篇报告</span>
       </p>
       <el-button class="btn_position">
         <input type="file" name="" class="file_" @change="linkChange">上传报告
       </el-button>
       <el-input
-        placeholder="搜索已收录的内容"
+        placeholder="搜索已生成的报告"
         icon="search"
         v-model="input2"
         class="input_position" :on-icon-click="handleInputClick" @keyup.13="handleInputClick">
@@ -17,15 +17,15 @@
     <div class="reporterContainer">
       <el-tabs v-model="activeName" @tab-click="handleClick">
         <el-tab-pane label="系统报告" name="first">
-          <div class="rightContent">
+          <div class="rightContent" v-for="(item,index) in listFilter_1">
             <div class="title_bar">
               <img src="../../static/img/multi-report.png" alt="">
-              <span><span>高等教育信息动态-20161208-V01</span>&nbsp;&nbsp;&nbsp;<span>生成日期：<span>2016/12/08 16：45</span></span></span>
-              <img src="../../static/img/delete.png" alt="" class="delete" @click="delete_">
-              <span class="includeBtn"><img src="../../static/img/download.png" alt=""><span>下载报告</span></span>
+              <span>{{item.title}}</span>
+              <img src="../../static/img/delete.png" alt="" class="delete" @click="delete_" :data-id='item.id'>
+              <a :href="item.link"><span class="includeBtn"><img src="../../static/img/download.png" alt=""><span>下载报告</span></span></a>
             </div>
           </div>
-          <div class="rightContent">
+          <!-- <div class="rightContent">
             <div class="title_bar">
               <img src="../../static/img/multi-report.png" alt="">
               <span><span>高等教育信息动态-20161208-V02</span>&nbsp;&nbsp;&nbsp;<span>生成日期：<span>2016/12/08 16：45</span></span></span>
@@ -40,15 +40,23 @@
               <img src="../../static/img/delete.png" alt="" class="delete" @click="delete_">
               <span class="includeBtn"><img src="../../static/img/download.png" alt=""><span>下载报告</span></span>
             </div>
-          </div>  
-          <div class="rightBottom">
+          </div>   -->
+          <div class="rightBottom" @click="loadMore">
             <p>
             点击加载更多历史报告
             </p>
           </div>
         </el-tab-pane>
         <el-tab-pane label="手工报告" name="second">
-          <div class="rightContent">
+          <div class="rightContent" v-for="(item,index) in listFilter_2">
+            <div class="title_bar">
+              <img src="../../static/img/multi-report.png" alt="">
+              <span>{{item.title}}</span>
+              <img src="../../static/img/delete.png" alt="" class="delete" @click="delete_" :data-id='item.id'>
+              <a :href="item.link"><span class="includeBtn"><img src="../../static/img/download.png" alt=""><span>下载报告</span></span></a>
+            </div>
+          </div>
+          <!-- <div class="rightContent">
             <div class="title_bar">
               <img src="../../static/img/multi-report.png" alt="">
               <span><span>高等教育信息动态-20161208-V04</span>&nbsp;&nbsp;&nbsp;<span>生成日期：<span>2016/12/08 16：45</span></span></span>
@@ -71,8 +79,8 @@
               <img src="../../static/img/delete.png" alt="" class="delete" @click="delete_">
               <span class="includeBtn"><img src="../../static/img/download.png" alt=""><span>下载报告</span></span>
             </div>
-          </div>  
-          <div class="rightBottom">
+          </div>   -->
+          <div class="rightBottom" @click="loadMore">
             <p>
             点击加载更多历史报告
             </p>
@@ -89,6 +97,38 @@ export default {
     return {
       input2:'',
       activeName: 'first',
+      userId:'d733ed4b5afd11e79ea400269e28ab11',
+      userName:'系统管理员',//想一想 先存哪里去 登录的时候存
+      type:'系统报告',
+      totalNum:'136',
+      todayNum:'',
+      listFilter:[],
+      listFilter_1:[
+        {
+          'id':'001',
+          'link':'http://www.baidu.com',
+          'title':'高等教育信息动态-20161208-V01   生成日期：2016/12/08 16：45',
+        },
+        {
+          'id':'002',
+          'link':'http://www.baidu.com',
+          'title':'高等教育信息动态-20161208-V02   生成日期：2016/12/08 16：45',
+        },
+      ],
+      listFilter_2:[
+        {
+          'id':'003',
+          'link':'http://www.baidu.com',
+          'title':'高等教育信息动态-20161208-V03   生成日期：2016/12/08 16：45',
+        },
+        {
+          'id':'004',
+          'link':'http://www.baidu.com',
+          'title':'高等教育信息动态-20161208-V04   生成日期：2016/12/08 16：45',
+        },
+      ],
+      pageCount_1:1,
+      pageCount_2:1,
     }
   },
   methods:{
@@ -96,7 +136,27 @@ export default {
       $(e.target).closest(".rightContent").remove();
     },
     handleClick(tab, event) {
-      console.log(tab, event);
+      // console.log(tab, event);
+      console.log(tab.label);
+      $.when(getIncludedList(this.userId,tab.label)).done(function(data){
+        if(data.state=="0"){
+          var res=data.data;
+          that.totalNum=res.totalNum;
+          // that.listFilter=res.list;
+          if(tab.label=="手工报告"){
+            that.listFilter_2=res.list;
+            that.type="手工报告";
+          }
+          else if(tab.label=='系统报告'){
+            that.listFilter_1=res.list;
+            that.type="系统报告";
+          }
+          else{}
+        }
+        else{
+          alert(data.data);
+        }
+      })
     },
     handleInputClick:function(){},
     linkChange:function(e){
@@ -107,8 +167,51 @@ export default {
         this.linkName=file[0].name;
         $(this.$refs.linkBot).text(file[0].name);
       }
-    }
-  }
+    },
+    loadMore(){
+      if(this.activeName=='first'){
+        this.pageCount_1++;
+        $.when(getIncludedList(that.userId,that.type,that.pageCount_1)).done(function(data){
+          if(data.state=="0"){
+            var res=data.data;
+            that.totalNum=res.totalNum;
+            that.listFilter=res.list;
+          }
+          else{
+            alert(data.data);
+          }
+        })
+      }
+      else if(this.activeName=='second'){
+        this.pageCount_2++;
+        $.when(getIncludedList(that.userId,that.type,that.pageCount_2)).done(function(data){
+          if(data.state=="0"){
+            var res=data.data;
+            that.totalNum=res.totalNum;
+            that.listFilter=res.list;
+          }
+          else{
+            alert(data.data);
+          }
+        })
+      }
+      else{}
+    },
+  },
+  create(){
+    var that=this;
+    that.listFilter_1=that.listFilter_1;
+    $.when(getIncludedList(that.userId,that.type,that.pageCount)).done(function(data){
+      if(data.state=="0"){
+        var res=data.data;
+        that.totalNum=res.totalNum;
+        that.listFilter=res.list;
+      }
+      else{
+        alert(data.data);
+      }
+    })
+  },
 }
 </script>
 

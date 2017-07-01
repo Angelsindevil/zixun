@@ -34,20 +34,13 @@
         <ul>
           <li class="noClickStyle">
               <router-link to="">
-                <img src="../../static/img/allInfomation.png" alt="">全部资讯
+                <img src="../../static/img/platform.png" alt="">资讯数据
               </router-link>
           </li>
-
-          <li @click="changeColor" class="clickStyle">
+          <li @click="changeColor" class="clickStyle" v-for="(item,index) in options">
               <!-- <router-link to="/homePage/consultation"> -->
-              <router-link :to="{ path: '/homePage/dynamicArticle', query: {type:'dynamic'}}">
-              动态资讯
-              </router-link>
-          </li>
-          <li @click="changeColor" class="clickStyle">
-              <!-- <router-link to="/homePage/consultation"> -->
-              <router-link :to="{ path: '/homePage/manualArticle', query: {type:'manual'}}">
-              校内信息
+              <router-link :to="{ path: '/homePage/articleList', query: {type:item.value}}">
+              {{item.value}}
               </router-link>
           </li>
         </ul>
@@ -145,8 +138,21 @@ export default {
       height_:"",
       styleObject: {
         minHeight: "800px",
-      }
-      options: [],
+      },
+      // options: [],
+      options: [
+      {
+        value: '全部内容',
+        label: '全部内容'
+      }, 
+      {
+        value: '动态资讯',
+        label: '动态资讯'
+      }, 
+      {
+        value: '校内信息',
+        label: '校内信息'
+      }],
     }
   },
   methods:{

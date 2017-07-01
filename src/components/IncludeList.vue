@@ -109,7 +109,7 @@ export default {
           value: '3',
           label: '未生成报告'
         }],
-        value: '1',
+        value: '3',
         }
     },
   methods: {

@@ -4,7 +4,7 @@ i<template>
       <p>
         系统维护-消息管理
       </p>
-      <el-button class="btn_position" @click="showMesBox">发送新消息<i class="el-icon-plus el-icon--right"></i></el-button>
+      <el-button class="btn_position" @click="showMesBox">发送新消息</el-button>
       <el-input
         placeholder="搜索消息标题"
         icon="search"

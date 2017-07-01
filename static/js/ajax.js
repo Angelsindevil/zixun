@@ -242,3 +242,19 @@ function getOrgList(){
   })
   return ajax;
 }
+
+
+//收录
+function getIncludedList(userid,type,pageCount,pageSize){
+  var ajax=$.ajax({
+    url:url+'/api/org/getOrgTree',
+    type:'get',
+    data:{
+        "userid":userid,
+        "type":type,
+        "pageCount":pageCount,
+        "pageSize":10,
+    },
+  })
+  return ajax;
+}

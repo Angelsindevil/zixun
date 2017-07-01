@@ -106,10 +106,10 @@ export default {
     },
     doSearch(){
       if(this.keyword==''){
-        this.$router.push({path:'/homePage/dynamicArticle',query: { add: "全部" ,type:'dynamic'}});
+        this.$router.push({path:'/homePage/articleList',query: { add: "全部" ,type:'全部内容'}});
       }
       else{
-        this.$router.push({path:'/homePage/dynamicArticle',query: { keyword: this.keyword,type:'dynamic'}});
+        this.$router.push({path:'/homePage/articleList',query: { keyword: this.keyword,type:'全部内容'}});
       }
       // this.$router.push({path:'consultation',query: { keyword: encodeURI(this.keyword) }});
       // var that=this;

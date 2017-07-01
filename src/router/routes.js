@@ -24,6 +24,7 @@ const routes = [
   { path: '/homePage', component:homePage,children:[
     {path: 'dynamicArticle', component: AllInfomation},
     {path: 'manualArticle', component: AllInfomation},
+    {path: 'articleList', component: AllInfomation},
     {path: 'login', component: login},
     {path:'articleDetail',component:Article},
     {path:'IncludeList',component:IncludeList},

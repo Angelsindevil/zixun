@@ -144,28 +144,34 @@ export default {
   name: 'test',
   data () {
     return {
-      // options: [{
-      //   value:'全部内容' ,
-      //   label: '全部内容'
-      // }, {
-      //   value: '国家动态',
-      //   label: '国家动态'
-      // }, {
-      //   value: '地方动态',
-      //   label: '地方动态'
-      // }],
-      options: [],
+      options: [
+      {
+        value: '全部内容',
+        label: '全部内容'
+      }, 
+      {
+        value: '动态资讯',
+        label: '动态资讯'
+      }, 
+      {
+        value: '校内信息',
+        label: '校内信息'
+      }],
+      // options: [],
       value: '全部内容',
       userid:'001',
       totalNum:'',
       todayNum:'',
       keyword:'',
       btnState:'批示',
-      method:'dynamic',
-      type:'全部内容',
+      // method:'dynamic',
+      // method:'全部内容',
+      // type:'全部内容',
+      type:'',
       add:'',
       articlesAarry:[
       ],
+      flag:false,
     }
   },
   watch: { 
@@ -181,19 +187,21 @@ export default {
     },
     searchThis:function(){
       console.log("111");
+      this.flag=true;
       this.keyword = this.$route.query.keyword;
       this.add = this.$route.query.add;
-      this.method=this.$route.query.type;
-      console.log(this.method);
+      this.type=this.$route.query.type;
+      this.value='全部内容';
+      console.log(this.type);
       var that=this;
       if(this.keyword!=''&&this.keyword!=undefined){
-        console.log(this.keyword);
         $.when(searchArticle(that.keyword)).done(function(data){
           if(data.state=="0"){
             // that.$nextTick(function(){
             //   $(".rightContent_").remove();
             // })
             that.insertData(data); 
+            this.flag=false;
           }
           else{
             alert(data.data);
@@ -202,11 +210,10 @@ export default {
       }
       else{//this.add=='全部'以及其他所有可能
         // if(this.add=='全部'){ 
-          $.when(getAllArticles(that.userid,that.method,that.type)).done(function(data){
+          $.when(getAllArticles(that.userid,that.value,that.type)).done(function(data){
             if(data.state=="0"){
               that.insertData(data);
               // that.articlesAarry=data.data.list;
-              // console.log(that.articlesAarry);
             }
             else{
               alert(data.data);
@@ -219,16 +226,17 @@ export default {
       }
     },
     optionChangeHandler(val){
-      var that=this;
-      console.log("11");
-      $.when(getAllArticles(this.userid,this.method,val)).done(function(data){
-        if(data.state=="0"){
-          that.insertData(data);
-        }
-        else{
-          alert(data.data);
-        }
-      })
+      if(this.flag){
+        var that=this;
+        $.when(getAllArticles(this.userid,val,this.type)).done(function(data){
+          if(data.state=="0"){
+            that.insertData(data);
+          }
+          else{
+            alert(data.data);
+          }
+        })
+      }
     },
     includeThis_:function(e){
       var el=$(e.target).closest(".includeBtn");
@@ -302,7 +310,6 @@ export default {
           "value":title,//表示在文章列表或者详情页跳转
           "id":id,
         }
-        console.log(state);
         if(state=="0"){//文章不在批示中，可新增批示
           this.$store.dispatch('changeNewArticle',{newArcticle:articleObj}).then(function(resp){});
           this.$store.dispatch('changePsShow',{psShow:psObj}).then(function(resp){});
@@ -361,13 +368,14 @@ export default {
   created: function() {
     this.keyword = this.$route.query.keyword;
     this.add = this.$route.query.add;
-    this.method=this.$route.query.type;
+    this.type=this.$route.query.type;//获得左侧菜单type
+    console.log(this.type);
     var that=this;
     if(this.keyword!=''&&this.keyword!=undefined){//有关键词的时候
       this.searchThis();
     }
     else{
-      $.when(getAllArticles(that.userid,that.method,that.type)).done(function(data){
+      $.when(getAllArticles(that.userid,that.value,that.type)).done(function(data){
         if(data.state=="0"){
           that.insertData(data);
           // that.articlesAarry=data.data.list;
@@ -378,22 +386,22 @@ export default {
         }
       })
     }
-    $.when(getArticleType()).done(function(data){
-      if(data.state=="0"){
-        var res=data.data;
-        that.options=res.map(function(value,index){
-          return {
-            // "value":index+1,
-            "value":value,
-            "label":value,
-          }
-        })
-        that.options.splice(0,0,{value:"全部内容",label:"全部内容"});
-      }
-      else{
-        alert(data.data);
-      }
-    })
+    // $.when(getArticleType()).done(function(data){
+    //   if(data.state=="0"){
+    //     var res=data.data;
+    //     that.options=res.map(function(value,index){
+    //       return {
+    //         // "value":index+1,
+    //         "value":value,
+    //         "label":value,
+    //       }
+    //     })
+    //     that.options.splice(0,0,{value:"全部内容",label:"全部内容"});
+    //   }
+    //   else{
+    //     alert(data.data);
+    //   }
+    // })
     scrollFun();
   },
 }
