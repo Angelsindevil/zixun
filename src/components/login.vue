@@ -56,9 +56,12 @@ export default {
   methods:{
     doLogin(){
       var pw=md5(this.input2);
+      var that=this;
       $.when(loginPage(this.input1,pw)).done(function(data){
         if(data.state==0){
-
+          // that.$store.dispatch('changeUserSource',{userSource:data.data}).then(function(resp){});
+          that.$router.push({path:'/homePage/articleList',query: { index: 0 ,type:'全部内容'}});
+          localStorage.setItem("userSource",JSON.stringify(data.data));
         }
       })
     }

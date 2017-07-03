@@ -18,7 +18,7 @@
               ：<span>{{item.date}}</span></span></p>
               <p class="grey_font" v-show="(item.type=='0'?true:false)">
                 <span>批示文章：<span>{{item.title}}</span> - <span>{{item.art_date}}</span></span>
-                <router-link :to="{ path: '/homePage/articleDetail', query: { id:item.articleId}}">
+                <router-link :to="{ path: '/homePage/articleDetail', query: { id:item.articleId,edit:'0'}}">
                   <el-button type="primary" size="small" class="btn-pos">查看原文</el-button>
                 </router-link>
               </p>
@@ -71,10 +71,10 @@
       <el-button :disabled="dropDownState">
         批示处理<i class="el-icon-caret-bottom el-icon--right"></i>
       </el-button>
-      <el-dropdown-menu slot="dropdown">
-        <el-dropdown-item command="ff">分发</el-dropdown-item>
+      <el-dropdown-menu slot="dropdown" class="psDown">
+        <el-dropdown-item command="ff" style="display:none;">分发</el-dropdown-item>
         <el-dropdown-item command="fk">反馈</el-dropdown-item>
-        <el-dropdown-item command="gb">关闭</el-dropdown-item>
+        <el-dropdown-item command="gb" style="display:none;">关闭</el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
     <!-- <el-button @click="showPSBox" icon="edit" class="psBtn_new">再次批示</el-button> -->
@@ -125,6 +125,7 @@ export default {
       //     "content":"请发展规划处等抓紧时间研究国家双一流方案的细则，特别是教育部有关部门的解读。",
       // }
       ],
+      userSource:{},
     }
   },
   methods:{
@@ -221,6 +222,19 @@ export default {
         alert(data.data);
       }
     })
+    this.userSource=JSON.parse(localStorage.getItem("userSource"));
+    if(this.userSource.level==0){
+      this.$nextTick(function(){
+        $(".psDown").children("li").eq(0).addClass("showBtn");
+        $(".psDown").children("li").eq(2).addClass("showBtn");
+      })
+    }
+    else{
+      this.$nextTick(function(){
+        $(".psDown").children("li").eq(0).removeClass("showBtn");
+        $(".psDown").children("li").eq(2).removeClass("showBtn");
+      })
+    }
   }
 }
 </script>

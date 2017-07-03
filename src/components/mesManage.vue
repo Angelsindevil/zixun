@@ -1,4 +1,4 @@
-i<template>
+<template>
   <div class="message">
     <div class="rightBar">
       <p>
@@ -49,6 +49,7 @@ i<template>
   </div>
 </template>
 <script>
+import {scrollFun,matchMenu} from '../../static/js/public.js'
 export default {
   name: 'report',
   components: {
@@ -89,17 +90,11 @@ export default {
       $(".mesBox").addClass("showBtn");
     },
   },
-   created: function () {
-      $('.M-box').pagination({
-          totalData:100,
-          showData:10,
-          coping:true,
-          homePage:'首页',
-          endPage:'末页',
-          prevContent:'上页',
-          nextContent:'下页'
-      });
-   }
+  created: function () {
+    this.$nextTick(function(){
+      matchMenu();
+    })
+  }
 }
 </script>
 

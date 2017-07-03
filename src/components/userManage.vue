@@ -14,7 +14,7 @@ i<template>
     </div>
     <div class="rightContent">
       <el-table
-        :data="tableData"
+        :data="filterData"
         border
         stripe
         style="width: 100%">
@@ -53,22 +53,24 @@ i<template>
           label="操作"
           width="10%">
           <template scope="scope">
-            <el-button type="text" size="small" :data-id="scope.row.id" :data-state="propsArr[scope.row.index]" @click="showUserBox_">编辑</el-button>
+            <el-button type="text" size="small" :data-id="scope.row.id" :data-state="propsArr[scope.row.index-1]" @click="showUserBox_">编辑</el-button>
           </template>
         </el-table-column>  
       </el-table>  
     </div>
     <div class="block">
-        <el-pagination
-          layout="prev, pager, next"
-          :total="totalItem"
-          :page-size="10"
-          @current-change="handleCurrentChange">
-        </el-pagination>
-      </div>  
+      <el-pagination
+        layout="prev, pager, next"
+        :total="totalItem"
+        :page-size="pageSize"
+        :current-page="currentPage"
+        @current-change="handleCurrentChange">
+      </el-pagination>
+    </div>  
   </div>
 </template>
 <script>
+import {scrollFun,matchMenu} from '../../static/js/public.js'
 export default {
   name: 'report',
   components: {
@@ -103,7 +105,7 @@ export default {
         //   state:'正常',
         //   level: '系统管理员',
         //   id:'01',
-        //   orgid:'03',
+        //   orgid:'3',
         // }, 
         // {
         //   index: 1,
@@ -113,10 +115,112 @@ export default {
         //   state:'正常',
         //   level: '内容管理员',
         //   id:'02',
-        //   orgid:'04',
+        //   orgid:'4',
+        // }, 
+        // {
+        //   index: 2,
+        //   org: '数据与信息中心',
+        //   account:'TH_edit',
+        //   name: '李四',
+        //   state:'正常',
+        //   level: '内容管理员',
+        //   id:'02',
+        //   orgid:'4',
+        // }, 
+        // {
+        //   index: 3,
+        //   org: '数据与信息中心',
+        //   account:'TH_edit',
+        //   name: '李四',
+        //   state:'正常',
+        //   level: '内容管理员',
+        //   id:'02',
+        //   orgid:'4',
+        // }, 
+        // {
+        //   index: 4,
+        //   org: '数据与信息中心',
+        //   account:'TH_edit',
+        //   name: '李四',
+        //   state:'正常',
+        //   level: '内容管理员',
+        //   id:'02',
+        //   orgid:'4',
+        // }, 
+        // {
+        //   index: 5,
+        //   org: '数据与信息中心',
+        //   account:'TH_edit',
+        //   name: '李四',
+        //   state:'正常',
+        //   level: '内容管理员',
+        //   id:'02',
+        //   orgid:'4',
+        // }, 
+        // {
+        //   index: 6,
+        //   org: '数据与信息中心',
+        //   account:'TH_edit',
+        //   name: '李四',
+        //   state:'正常',
+        //   level: '内容管理员',
+        //   id:'02',
+        //   orgid:'4',
+        // }, 
+        // {
+        //   index: 7,
+        //   org: '数据与信息中心',
+        //   account:'TH_edit',
+        //   name: '李四',
+        //   state:'正常',
+        //   level: '内容管理员',
+        //   id:'02',
+        //   orgid:'4',
+        // }, 
+        // {
+        //   index: 8,
+        //   org: '数据与信息中心',
+        //   account:'TH_edit',
+        //   name: '李四',
+        //   state:'正常',
+        //   level: '内容管理员',
+        //   id:'02',
+        //   orgid:'4',
+        // }, 
+        // {
+        //   index: 9,
+        //   org: '数据与信息中心',
+        //   account:'TH_edit',
+        //   name: '李四',
+        //   state:'正常',
+        //   level: '内容管理员',
+        //   id:'02',
+        //   orgid:'4',
+        // }, 
+        // {
+        //   index: 10,
+        //   org: '数据与信息中心',
+        //   account:'TH_edit',
+        //   name: '李四',
+        //   state:'正常',
+        //   level: '内容管理员',
+        //   id:'02',
+        //   orgid:'4',
+        // }, 
+        // {
+        //   index: 11,
+        //   org: '数据与信息中心',
+        //   account:'TH_edit',
+        //   name: '李四',
+        //   state:'正常',
+        //   level: '内容管理员',
+        //   id:'02',
+        //   orgid:'4',
         // }, 
       ],
       propsArr:[],
+      currentPage:1,
+      pageSize:20,
       }
   },
   methods: {
@@ -127,12 +231,23 @@ export default {
     optionChangeHandler:function(){
 
     },
-    handleInputClick:function(){},
+    handleInputClick:function(){
+      this.filterData.splice(0);
+      var that=this;
+      for(var i=0;i<this.tableData.length;i++){
+        if((this.tableData[i].name.indexOf(that.input2)!=-1)||(this.tableData[i].org.indexOf(that.input2)!=-1)||(this.tableData[i].account.indexOf(that.input2)!=-1)||(this.tableData[i].level.indexOf(that.input2)!=-1)){
+          this.filterData.push(this.tableData[i]);
+        }
+        else{
+        }
+      }
+    },
     showUserBox(){
       $(".mask1").addClass("showBtn");
       $(".userBox").addClass("showBtn userBoxAdd");
       // $(".userBox").removeAttr("data-id");
       // $(".userBox").removeAttr("data-state");
+      // this.$store.dispatch('changeUnitVal',{"unitVal":''}).then(function(resp){});
       this.$store.dispatch('changeUserState',{"userState":{}}).then(function(resp){});
       $(".userBox .user-wf").removeClass("showBtn");
       $(".userBox .user-dele").removeClass("showBtn");
@@ -142,6 +257,7 @@ export default {
       var ele=e.currentTarget;
       var id=$(ele).attr("data-id");
       var state=JSON.parse($(ele).attr("data-state"));
+      state.type="user";
       $(".mask1").addClass("showBtn");
       $(".userBox").addClass("showBtn");
       // $(".userBox").attr("data-id",id);
@@ -149,6 +265,7 @@ export default {
       $(".userBox .user-wf").addClass("showBtn");
       $(".userBox .user-dele").addClass("showBtn");
       $(".userBox .stateRow").addClass("showBtn");
+      this.$store.dispatch('changeUserState',{"userState":{}}).then(function(resp){});
       this.$store.dispatch('changeUserState',{"userState":state}).then(function(resp){});
     },
     levelJudge(value){
@@ -166,16 +283,40 @@ export default {
       }
       else{}
     },
+    copyArr(arr){
+      return arr.map((e)=>{
+          if(typeof e === 'object'){
+              return Object.assign({},e)
+          }else{
+              return e
+          }
+      })
+    },
     handleCurrentChange(val){
-      console.log(val);
+      var page=val;
+      this.filterData.splice(0);
+      var start=(page-1)*(this.pageSize);
+      var end=page*(this.pageSize);
+      if(page==Math.ceil(this.totalItem/(this.pageSize))){
+        end=this.totalItem;
+      }
+      else{
+      }
+      for(var i=start;i<end;i++){
+        this.filterData.push(this.tableData[i]);
+      }
     },
   },
    created: function () {
-
+      this.$nextTick(function(){
+        matchMenu();
+      })
+      this.totalItem=this.tableData.length;
       this.propsArr=this.tableData.map(function(value){
         return JSON.stringify(value);
       })//测试
       var that=this;
+      this.filterData=this.copyArr(this.tableData).slice(0,this.pageSize);
       $.when(getAllUsers()).done(function(data){
         if(data.state==0){
           var res=data.data;
@@ -189,7 +330,6 @@ export default {
             else{
               status='已注销';
             }
-            console.log(val);
             return {
               "index":index+1,
               "org": value.organization,
@@ -198,13 +338,14 @@ export default {
               "state":status,
               "level":val,
               "id":value.id,//用户id
-              "orgid":value.orgid,
+              "orgid":value.orgId,
             }
           })
         }
         that.propsArr=that.tableData.map(function(value){
           return JSON.stringify(value);
         })
+        that.filterData=that.tableData.slice(0,this.pageSize);
       })
    }
 }
@@ -265,6 +406,9 @@ export default {
     }
     .el-table th{
       font-weight:500!important;
+    }
+    .el-table__empty-block{
+      width:100%!important;
     }
   }
   .selectStyle{

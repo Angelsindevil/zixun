@@ -23,26 +23,32 @@
     </div>
 </template>
 <script>
-    export default {
-      name: 'app',
-      data () {
-        return {
-          list:[{title:"2014年度国家科学技术奖正式公布，128所高校获奖 -",time:'2016/12/10'}, 
-              {title:"2015年度国家科学技术奖正式公布，128所高校获奖 -",time:'2016/12/11'},
-              {title:"2016年度国家科学技术奖正式公布，128所高校获奖 -",time:'2016/12/12'},
-               ],
-        }
-      },
-      methods:{
-        hideBox:function(){
-          $(".mask1,.alertBox").removeClass("showBtn");
-        },
-        removeItem:function(index){
-          var self=this;
-          self.list.splice(index,1);
-        },
-      },
-      mounted() {
+  import {scrollFun,matchMenu} from '../../static/js/public.js'
+  export default {
+    name: 'app',
+    data () {
+      return {
+        list:[{title:"2014年度国家科学技术奖正式公布，128所高校获奖 -",time:'2016/12/10'}, 
+            {title:"2015年度国家科学技术奖正式公布，128所高校获奖 -",time:'2016/12/11'},
+            {title:"2016年度国家科学技术奖正式公布，128所高校获奖 -",time:'2016/12/12'},
+             ],
       }
+    },
+    methods:{
+      hideBox:function(){
+        $(".mask1,.alertBox").removeClass("showBtn");
+      },
+      removeItem:function(index){
+        var self=this;
+        self.list.splice(index,1);
+      },
+    },
+    mounted() {
+    },
+    created: function () {
+      this.$nextTick(function(){
+        matchMenu();
+      })
     }
+  }
 </script>

@@ -1,4 +1,5 @@
 <template>
+  <!-- 弃用 -->
   <div class="test">
     <div class="rightBar">
       <p>消息反馈-我的批示：
@@ -52,7 +53,6 @@
     </div>
   </div>
 </template>
-
 <script>
 export default {
   name: 'test',

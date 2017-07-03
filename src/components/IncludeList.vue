@@ -86,6 +86,7 @@
   </div>
 </template>
 <script>
+import {scrollFun,matchMenu} from '../../static/js/public.js'
 export default {
   name: 'report',
   components: {
@@ -180,6 +181,11 @@ export default {
     handleInputClick:function(){},
     optionChangeHandler(val){
     },
+  },
+  created:function(){
+    this.$nextTick(function(){
+      matchMenu();
+    })
   }
 }
 </script>

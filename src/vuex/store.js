@@ -5,6 +5,7 @@ import * as getters from './getters'
 import * as actions from './actions'
 Vue.use(Vuex)
 const state = {
+	userSource:{},
 	selectArr:{
 		name:[],
 		id:[]
@@ -31,6 +32,7 @@ const state = {
 	},
 	clearAll:'',
 	userState:{},
+	orgState:{},
 	type:'',//0-批示,1-分发,2-反馈
 	psBox:{
 		type:'',

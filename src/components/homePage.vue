@@ -23,9 +23,10 @@
               <span class="el-dropdown-link">
                 <img src="../../static/img/user.png" alt="">
               </span>
-              <el-dropdown-menu slot="dropdown">
+              <el-dropdown-menu slot="dropdown" class="topDown">
                 <el-dropdown-item>用户名</el-dropdown-item>
-                <el-dropdown-item>修改密码</el-dropdown-item>
+                <el-dropdown-item command="changepw">修改密码</el-dropdown-item>
+                <el-dropdown-item style="display:none" command="resetpw">重置默认密码</el-dropdown-item>
                 <router-link to='/login'><el-dropdown-item>退出登录</el-dropdown-item></router-link>
               </el-dropdown-menu>
             </el-dropdown>
@@ -72,6 +73,8 @@
     <mesBox></mesBox>
     <unitBox></unitBox>
     <loginBox></loginBox>
+    <pwBox></pwBox>
+    <initpwBox></initpwBox>
     <div class="mask mask1"></div>
     <div class="mask mask2"></div>
   </div>
@@ -89,20 +92,30 @@ import mesBox from '../components/mesBox.vue'
 import unitBox from '../components/unitBox.vue'
 import loginBox from '../components/loginBox.vue'
 import peopleBox from '../components/peopleBox.vue'
+import pwBox from '../components/pwBox.vue'
+import initpwBox from '../components/initpwBox.vue'
 export default {
   name: 'homePage',
   components: {
-    Hello,reportBox,psBox,articleBox,multiBox,userBox,peopleBox,mesBox,orgBox,unitBox,loginBox},
+    Hello,reportBox,psBox,articleBox,multiBox,userBox,peopleBox,mesBox,orgBox,unitBox,loginBox,initpwBox,pwBox},
   data () {
     return {
       keyword:'',
+      userSource:{},
     }
   },
   methods:{
     showLoginBox(command){
-      if(command=="a"){
-        $(".loginBox,.mask1").addClass("showBtn");
+      // if(command=="a"){
+      //   $(".loginBox,.mask1").addClass("showBtn");
+      // }
+      if(command=="changepw"){
+        $(".mask1,.pwBox").addClass("showBtn");
       }
+      else if(command=="resetpw"){
+        $(".mask1,.initpwBox").addClass("showBtn");
+      }
+      else{}
     },
     doSearch(){
       if(this.keyword==''){
@@ -123,6 +136,19 @@ export default {
     }
   },
   mounted() {
+  },
+  created(){
+    this.userSource=JSON.parse(localStorage.getItem("userSource"));
+    if(this.userSource.level==0){
+      this.$nextTick(function(){
+        $(".topDown").children("li").eq(2).addClass("showBtn");
+      })
+    }
+    else{
+      this.$nextTick(function(){
+        $(".topDown").children("li").eq(2).removeClass("showBtn");
+      })
+    }
   }
 }
 </script>

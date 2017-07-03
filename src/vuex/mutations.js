@@ -12,6 +12,9 @@ export const changeArtObj= (state,payload) => {//将参数mes赋值给state的�
 	state.articleObj.id=payload.articleObj.id;
 	// state.articleObj.flag=payload.articleObj.flag;
 }
+export const changeOrgState= (state,payload) => {//将参数mes赋值给state的变量subjectid 
+	state.orgState=payload.orgState;
+}
 export const changeUserState= (state,payload) => {//将参数mes赋值给state的变量subjectid 
 	state.userState=payload.userState;
 }
@@ -38,4 +41,7 @@ export const changeUnitVal= (state,payload) => {//将参数mes赋值给state的�
 }
 export const changeClearAll= (state,payload) => {//将参数mes赋值给state的变量subjectid 
 	state.clearAll=payload.clearAll;
+}
+export const changeUserSource= (state,payload) => {//将参数mes赋值给state的变量subjectid 
+	state.userSource=payload.userSource;
 }

@@ -88,6 +88,7 @@
 </template>
 
 <script>
+import {matchMenu} from '../../static/js/public.js'
 export default {
   name: 'test',
   data () {
@@ -120,7 +121,10 @@ export default {
       theme: 'snow'
     });
   },
-  created(){
+  created:function(){
+    this.$nextTick(function(){
+      matchMenu();
+    })
   }
 }
 </script>

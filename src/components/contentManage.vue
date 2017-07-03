@@ -91,6 +91,7 @@
 </template>
 
 <script>
+import {matchMenu} from '../../static/js/public.js'
 export default {
   name: 'test',
   data () {
@@ -158,6 +159,11 @@ export default {
       e.preventDefault();
       window.open($(ele).text());
     },
+  },
+  created:function(){
+    this.$nextTick(function(){
+      matchMenu();
+    })
   }
 }
 </script>

@@ -55,6 +55,7 @@
         labeltext:'文章标题',
         // restaurants: [],
         commonData:[],
+        pageNo:1,
         alltableData: [
           // {
           //   value: '国家“111计划”基地5年评估一次，运行良好可滚动支持',
@@ -87,7 +88,7 @@
         // currentRow:'国家“111计划”基地5年评估一次，运行良好可滚动支持',
         currentRow:'',
         userid:'001',
-        method:'dynamic',
+        method:'全部内容',
         type:'全部内容',
       }
     },
@@ -193,7 +194,7 @@
     mounted() {
       // this.commonData=this.handlePreData(this.alltableData);
       var that=this;
-      $.when(getAllArticles(this.userid,this.method,this.type)).done(function(data){
+      $.when(getAllArticles(this.userid,this.method,this.type,this.pageNo)).done(function(data){
         if(data.state=="0"){
           var res=data.data;
           var list=res.list;

@@ -39,6 +39,7 @@
   </div>
 </template>
 <script>
+import {scrollFun,matchMenu} from '../../static/js/public.js'
 export default {
   name: 'statistics',
   components: {
@@ -211,6 +212,11 @@ export default {
     getHeight:function(){
       return ((window.innerWidth - 240) * 0.3 | 0) + 'px'
     },
+  },
+  created:function(){
+    this.$nextTick(function(){
+      matchMenu();
+    })
   }
 }
 </script>

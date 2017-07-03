@@ -2,7 +2,7 @@
   <!-- 批示管理中心 -->
   <div class="test">
     <div class="rightBar">
-      <p>平台管理-管理中心：
+      <p>平台管理-批示管理
         <span>共计处理了<span>{{totalNum}}</span>份批示，今日收到批示和反馈<span>{{todayNum}}</span>份</span>
       </p>
       <!-- <div class="admin_ui_input">
@@ -59,6 +59,7 @@
 </template>
 
 <script>
+import {scrollFun,matchMenu} from '../../static/js/public.js'
 export default {
   name: 'test',
   data () {
@@ -157,6 +158,9 @@ export default {
   created(){
     // this.articlesFilter=this.articles;
     var that=this;
+    this.$nextTick(function(){
+      matchMenu();
+    });
     $.when(getInstructionsList(this.userId)).done(function(data){
       if(data.state=='0'){
         var res=data.data;

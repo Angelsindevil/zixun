@@ -28,8 +28,13 @@
      <!--  <ul>
         <li v-for="(item,index) in articlesAarry">
           <div class="rightContent_"> -->
-            <span class="includeBtn" :class="item.isInstructions=='0'?'':'grey'" :data-state="item.isInstructions" :data-pid="item.instructionId" :data-id="item.id" :data-title="item.title" :data-i="index" @click="includeThis" @mouseover="canceInclude" @mouseout="includeThis_" ref="includeBtn"><img src="../../static/img/plus.png" alt="" v-show="item.isInstructions=='0'?true:false"><span>{{item.isInstructions=='0'?'批示':'批示中'}}</span></span>
-            <router-link :to="{ path: '/homePage/articleDetail', query: { id:item.id,index:index}}">
+            <span class="includeBtn" :class="item.isInstructions=='0'?'':'grey'" :data-state="item.isInstructions" :data-pid="item.instructionId" :data-id="item.id" :data-title="item.title" :data-i="index" @click="includeThis" @mouseover="canceInclude" @mouseout="includeThis_" ref="includeBtn"><img src="../../static/img/plus.png" alt="" v-show="(level==0||level==2)?((item.isInstructions=='0')?true:false):((level==1)?true:false)">
+              <span>
+              {{(level==0||(level==2))?(item.isInstructions=='0'?'批示':'批示中'):((level==1)?(item.isInclude=='0'?'收录':'已收录'):false)}}
+              <!-- {{item.isInstructions=='0'?'批示':'批示中'}} -->
+              </span>
+            </span>
+            <router-link :to="{ path: '/homePage/articleDetail', query: { id:item.id,index:index,edit:'0'}}">
               <div class="rightContent">
                 <p class="title_bar" style="padding-right: 160px;">
                   <span class="ellipsis" style="display:block">{{item.title}}<span>
@@ -130,7 +135,7 @@
         </router-link>
       </div> -->
     </div>
-    <div class="rightBottom" ref="rightBottom">
+    <div class="rightBottom" ref="rightBottom" @click="loadMore">
       <p>
       点击加载更多内容
       </p>
@@ -139,7 +144,7 @@
 </template>
 
 <script>
-import scrollFun from '../../static/js/public.js'
+import {scrollFun,matchMenu} from '../../static/js/public.js'
 export default {
   name: 'test',
   data () {
@@ -172,11 +177,13 @@ export default {
       articlesAarry:[
       ],
       flag:false,
+      pageNo:1,
+      userSource:{},
+      level:'',
     }
   },
   watch: { 
     // this.$route(to, from) { 
-    //   console.log("11");
     //    // 对路由变化作出响应... 
     // }
     '$route': 'searchThis'
@@ -186,22 +193,22 @@ export default {
       $(document).scrollTop(0);
     },
     searchThis:function(){
-      console.log("111");
+      this.pageNo=1,
       this.flag=true;
       this.keyword = this.$route.query.keyword;
       this.add = this.$route.query.add;
       this.type=this.$route.query.type;
       this.value='全部内容';
-      console.log(this.type);
+      this.articlesAarry=[];
       var that=this;
       if(this.keyword!=''&&this.keyword!=undefined){
-        $.when(searchArticle(that.keyword)).done(function(data){
+        $.when(searchArticle(that.keyword,that.pageNo)).done(function(data){
           if(data.state=="0"){
             // that.$nextTick(function(){
             //   $(".rightContent_").remove();
             // })
             that.insertData(data); 
-            this.flag=false;
+            that.flag=false;
           }
           else{
             alert(data.data);
@@ -209,8 +216,9 @@ export default {
         })
       }
       else{//this.add=='全部'以及其他所有可能
-        // if(this.add=='全部'){ 
-          $.when(getAllArticles(that.userid,that.value,that.type)).done(function(data){
+        // if(this.add=='全部'){
+          console.log("lala"); 
+          $.when(getAllArticles(that.userid,that.value,that.type,that.pageNo)).done(function(data){
             if(data.state=="0"){
               that.insertData(data);
               // that.articlesAarry=data.data.list;
@@ -226,9 +234,12 @@ export default {
       }
     },
     optionChangeHandler(val){
-      if(this.flag){
+      // if(this.flag){
         var that=this;
-        $.when(getAllArticles(this.userid,val,this.type)).done(function(data){
+        this.pageNo=1,
+        this.articlesAarry=[];
+        console.log("lalala");
+        $.when(getAllArticles(this.userid,val,this.type,that.pageNo)).done(function(data){
           if(data.state=="0"){
             that.insertData(data);
           }
@@ -236,12 +247,13 @@ export default {
             alert(data.data);
           }
         })
-      }
+      // }
     },
     includeThis_:function(e){
+      console.log(this.btnState);
       var el=$(e.target).closest(".includeBtn");
       var class_=el.hasClass('grey');
-      if(!this.btnState=='批示'){
+      if(this.btnState!='批示'){
         // var state=el.attr("data-state");
         // if(state=="false"){//文章不在批示中，可新增批示
         //   this.showPSBox();
@@ -268,7 +280,7 @@ export default {
       // }
     },
     canceInclude:function(e){
-      if(!this.btnState=='批示'){
+      if(this.btnState!='批示'){
         var el=$(e.target).closest(".includeBtn");
         var class_=el.hasClass('grey');
         if(class_){
@@ -280,7 +292,9 @@ export default {
       }
     },
     includeThis:function(e){
-      if(!this.btnState=='批示'){
+      console.log(this.btnState);
+      if(this.btnState!='批示'){
+        console.log("收录fun")
         e.stopPropagation();
         var el=$(e.target).closest(".includeBtn");
         var class_=el.hasClass('red');
@@ -349,17 +363,60 @@ export default {
     },
     insertData(data){
       var that=this;
-      $('.contentBox').empty();
+      // $('.contentBox').empty();
       var res=data.data;
+      var len=that.articlesAarry.length;
+      console.log(len);
       that.totalNum=res.updateNum;
       that.todayNum=res.includeNum; 
       if(res.list&&res.list.length!=0){
         $(that.$refs.rightBottom).children('p').text('点击加载更多内容');
-        that.articlesAarry=that.copyArr(res.list);
+        res.list.map(function(value,index){
+          that.articlesAarry.push(value);
+        })
+        console.log(that.articlesAarry);
+        // that.articlesAarry.concat(that.copyArr(res.list));
+        // console.log(that.articlesAarry);
       }
       else{
-        $(that.$refs.rightBottom).children('p').text('暂无文章');
-        that.articlesAarry=[];
+        console.log("new");
+        if(that.pageNo==1){//只一页
+          $(that.$refs.rightBottom).children('p').text('暂无文章');
+          that.articlesAarry=[];
+        }
+        else{//多余一页
+          $(that.$refs.rightBottom).children('p').text('暂无更多文章');
+        }
+      }
+    },
+    loadMore(){
+      this.pageNo+=this.pageNo;
+      console.log(this.flag);
+      var that=this;
+      if(!this.flag){
+        if(this.keyword!=''&&this.keyword!=undefined){
+          $.when(searchArticle(that.keyword,that.pageNo)).done(function(data){
+            if(data.state=="0"){
+              that.insertData(data); 
+              this.flag=false;
+            }
+            else{
+              alert(data.data);
+            }
+          })
+        }
+      }
+      else{
+        console.log("lalalala")
+        $.when(getAllArticles(that.userid,that.value,that.type,that.pageNo)).done(function(data){
+          if(data.state=="0"){
+            that.insertData(data);
+            // that.articlesAarry=data.data.list;
+          }
+          else{
+            alert(data.data);
+          }
+        })
       }
     },
   },
@@ -375,17 +432,20 @@ export default {
       this.searchThis();
     }
     else{
-      $.when(getAllArticles(that.userid,that.value,that.type)).done(function(data){
+      console.log("la5")
+      $.when(getAllArticles(that.userid,that.value,that.type,that.pageNo)).done(function(data){
         if(data.state=="0"){
           that.insertData(data);
           // that.articlesAarry=data.data.list;
-          // console.log(that.articlesAarry);
         }
         else{
           alert(data.data);
         }
       })
     }
+    this.$nextTick(function(){
+      matchMenu();
+    })
     // $.when(getArticleType()).done(function(data){
     //   if(data.state=="0"){
     //     var res=data.data;
@@ -403,6 +463,17 @@ export default {
     //   }
     // })
     scrollFun();
+    this.userSource=JSON.parse(localStorage.getItem("userSource"));
+    this.level=this.userSource.level;
+    if(this.level==0||this.level==2){
+      this.btnState='批示';
+    }
+    else if(this.level==1){
+      console.log("收录");
+      this.btnState='收录';
+    }
+    else{}
+
   },
 }
 </script>

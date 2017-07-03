@@ -92,6 +92,7 @@
 </template>
 
 <script>
+import {matchMenu} from '../../static/js/public.js'
 export default {
   name: 'contentPublish',
   data () {
@@ -157,6 +158,11 @@ export default {
     handleInputClick:function(){
       
     }
+  },
+  created:function(){
+    this.$nextTick(function(){
+      matchMenu();
+    })
   }
 }
 </script>

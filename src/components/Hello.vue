@@ -9,7 +9,7 @@
               </router-link>
           </li>
         </ul> -->
-        <ul>
+        <ul class="contentManage ulStyle">
           <li class="noClickStyle">
               <router-link to="">
                 <img src="../../static/img/platform.png" alt="">内容管理
@@ -31,7 +31,7 @@
               </router-link>
           </li>
         </ul>
-        <ul>
+        <ul class="articleManage ulStyle">
           <li class="noClickStyle">
               <router-link to="">
                 <img src="../../static/img/platform.png" alt="">资讯数据
@@ -39,12 +39,12 @@
           </li>
           <li @click="changeColor" class="clickStyle" v-for="(item,index) in options">
               <!-- <router-link to="/homePage/consultation"> -->
-              <router-link :to="{ path: '/homePage/articleList', query: {type:item.value}}">
+              <router-link :to="{ path: '/homePage/articleList', query: {type:item.value,index:index}}">
               {{item.value}}
               </router-link>
           </li>
         </ul>
-        <ul>
+        <ul class="messageManage ulStyle">
           <li class="noClickStyle">
               <router-link to="">
                 <img src="../../static/img/mes_white.png" alt="" style="height:15px;">消息中心
@@ -52,7 +52,7 @@
           </li>
           <li @click="changeColor" class="clickStyle">
               <!-- <router-link to="/homePage/instructions"> -->
-              <router-link to="/homePage/managementCenter">
+              <router-link to="/homePage/instructions">
               <!-- <el-badge :value="3" :max="10" class="item">我的批示</el-badge> -->
               批示内容
               <span>3</span> 
@@ -70,7 +70,7 @@
               </router-link>
           </li>
         </ul>
-        <ul>
+        <ul class="platManage ulStyle">
           <li class="noClickStyle">
               <router-link to="">
                 <img src="../../static/img/settings_1.png" alt="">平台管理
@@ -93,7 +93,7 @@
               </router-link>
           </li>
         </ul>
-        <ul>
+        <ul class="reporterManage ulStyle">
           <li class="noClickStyle">
               <router-link to="">
                 <img src="../../static/img/multiReporter.png" alt="">报告中心
@@ -115,7 +115,7 @@
               </router-link>
           </li> -->
         </ul>
-        <ul>
+        <ul class="dataManage ulStyle">
           <li class="clickStyle" @click="changeColor">
               <router-link to="/homePage/DataStatistics">
                 <img src="../../static/img/reporter.png" alt="">数据统计
@@ -139,6 +139,7 @@ export default {
       styleObject: {
         minHeight: "800px",
       },
+      userSource:{},
       // options: [],
       options: [
       {
@@ -157,11 +158,14 @@ export default {
   },
   methods:{
     changeColor:function(e){
-      $(".clickStyle a").removeClass("blue");
-      $(e.target).addClass("blue");
+      var liItem=$(e.target).closest('li');
+      $(".clickStyle").removeClass("blue");
+      liItem.addClass("blue");
     },
   },
   created(){
+    var that=this;
+    this.userSource=JSON.parse(localStorage.getItem("userSource"));
     $.when(getArticleType()).done(function(data){
       if(data.state=="0"){
         var res=data.data;
@@ -176,6 +180,36 @@ export default {
       }
       else{
         alert(data.data);
+      }
+    })
+    console.log(this.userSource);
+
+    //可见菜单设置
+    this.$nextTick(function(){
+      if(this.userSource.level==0){//系统管理员
+        $(".articleManage").addClass("showBtn");
+        $(".articleManage").css("margin-top",'20px');
+        $(".platManage").addClass("showBtn");
+        $(".messageManage").addClass("showBtn");
+        $(".messageManage").children("li").eq(1).hide();
+        $(".dataManage").addClass("showBtn");
+      }
+      else if(this.userSource.level==1){//内容管理员
+        $(".contentManage").addClass("showBtn");
+        $(".articleManage").addClass("showBtn");
+        $(".reporterManage").addClass("showBtn");
+        $(".messageManage").addClass("showBtn");
+        $(".messageManage").children("li").eq(2).hide();
+        $(".dataManage").addClass("showBtn");
+      }
+      else if(this.userSource.level==2||this.userSource.level==3){//批示用户
+        $(".articleManage").css("margin-top",'20px');
+        $(".articleManage").addClass("showBtn");
+        $(".messageManage").addClass("showBtn");
+        $(".messageManage").children("li").eq(2).hide();
+        $(".dataManage").addClass("showBtn");
+      }
+      else{//批示用户
       }
     })
   }
@@ -211,6 +245,9 @@ export default {
       color: #fff;
       border-radius:5px;
       float: left;
+      .ulStyle{
+        display:none;
+      }
       ul{
         margin:0;
         li{
@@ -277,6 +314,9 @@ export default {
   }
   .blue{
     color:#0099cc;
+    a{
+      color:#0099cc;
+    }
   }
   .item{
     sup{

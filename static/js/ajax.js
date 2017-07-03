@@ -1,5 +1,6 @@
 //以下用户管理
-var url="http://192.168.2.129:9000";
+var url="http://192.168.2.108:9000";//ct
+// var url="http://192.168.2.129:9000";//bh
 // var url="127.0.0.1:9000";
 // var url="";
 function getAllUsers(){
@@ -11,29 +12,32 @@ function getAllUsers(){
     });
     return ajax;
 }
-function addUsers(orgid,account,username,level){
+function addUsers(orgid,account,username,level,password){
 	var ajax = $.ajax({
         url:url+ "/api/user/saveUser",
         type: "POST",
         data:{
-        	"orgid":orgid,
+        	"orgId":orgid,
         	"account":account,
         	"username":username,
-        	"level":level
+        	"level":level,
+            "password":password
         }
     });
     return ajax;
 }
-function editUsers(id,orgid,account,username,level){
+function editUsers(id,orgid,account,username,level,password,method){
 	var ajax = $.ajax({
         url: url+"/api/user/updateUser",
         type: "POST",
         data:{
         	"id":id,
-        	"orgid":orgid,
+        	"orgId":orgid,
         	"account":account,
         	"username":username,
         	"level":level,
+            "password":password,
+            "method":method,
         }
 
     });
@@ -63,7 +67,7 @@ function deleteUsers(id){
 }
 
 //资讯相关
-function getAllArticles(userid,method,type){
+function getAllArticles(userid,method,type,pageNo){
     var ajax = $.ajax({
         url: url+"/api/article/getList",
         // contentType: 'application/json;charset=UTF-8',
@@ -72,6 +76,8 @@ function getAllArticles(userid,method,type){
             "userid":userid,
             "method":method,
             "type":type,
+            "pageNo":pageNo,
+            "pageSize":20,
         }
 
     });
@@ -120,12 +126,14 @@ function included(id){//收录
     });
     return ajax;
 }
-function searchArticle(keyword){//收录
+function searchArticle(keyword,pageNo){//收录
     var ajax = $.ajax({
         url: url+"/api/article/searchArticle",
         type: "POST",
         data:{
             "keyword":keyword,
+            "pageNo":pageNo,
+            "pageSize":20,
         }
 
     });
@@ -192,63 +200,107 @@ function getInstructionFlow(instructionId){//获取批示流程
 function loginPage(username,password){
   var ajax=$.ajax({
     url:url+'/api/user/login',
-    type:'get',
+    type:'POST',
     data:{
       "password":password,
-      "username":username,
+      "account":username,
     },
-    success:function(data){
-      if(data.state==0){
-      }
-      else{
-
-      }
-    }
+  })
+  return ajax;
+}
+function changePassword(userId,pwInit,pwModify){
+  var ajax=$.ajax({
+    url:url+'/api/user/login',
+    type:'POST',
+    data:{
+      "userId":userId,
+      "pwInit":pwInit,
+      "pwModify":pwModify,
+    },
+  })
+  return ajax;
+}
+function changeDefaultpw(userId,pwDefault){
+  var ajax=$.ajax({
+    url:url+'/api/user/login',
+    type:'POST',
+    data:{
+      "userId":userId,
+      "pwDefault":pwDefault,
+    },
   })
   return ajax;
 }
 
 
 //组织
-function getOrgTree(){
-  var ajax=$.ajax({
-    url:url+'/api/user/login',
-    type:'get',
-    data:{
-    },
-    success:function(data){
-      if(data.state==0){
-      }
-      else{
-
-      }
-    }
-  })
-  return ajax;
-}
-function getOrgList(){
+function getOrgTree(){//获得组织树
   var ajax=$.ajax({
     url:url+'/api/org/getOrgTree',
-    type:'get',
+    type:'POST',
     data:{
     },
-    success:function(data){
-      if(data.state==0){
-      }
-      else{
-
-      }
-    }
   })
   return ajax;
 }
-
+function getOrgList(){//获得组织列表
+  var ajax=$.ajax({
+    url:url+'/api/org/getOrgList',
+    type:'POST',
+    data:{
+    },
+  })
+  return ajax;
+}
+function addOrg(organization,superiors){
+  var ajax=$.ajax({
+    url:url+'/api/org/saveOrg',
+    type:'POST',
+    data:{
+        "organization":organization,
+        "parentOrgId":superiors,
+    },
+  })
+  return ajax;
+}
+function editOrg(id,organization,superiors){
+  var ajax=$.ajax({
+    url:url+'/api/org/updateOrg',
+    type:'POST',
+    data:{
+        "id":id,
+        "organization":organization,
+        "superiors":superiors,
+    },
+  })
+  return ajax;
+}
+function deleteOrg(id){
+  var ajax=$.ajax({
+    url:url+'/api/org/deleteOrg',
+    type:'POST',
+    data:{
+        "id":id,
+    },
+  })
+  return ajax;
+}
+function searchOrg(keyword){
+  var ajax=$.ajax({
+    url:url+'/api/org/searchOrg',
+    type:'POST',
+    data:{
+        "keyword":keyword,
+    },
+  })
+  return ajax;
+}
 
 //收录
 function getIncludedList(userid,type,pageCount,pageSize){
   var ajax=$.ajax({
     url:url+'/api/org/getOrgTree',
-    type:'get',
+    type:'POST',
     data:{
         "userid":userid,
         "type":type,

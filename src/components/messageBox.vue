@@ -1,4 +1,5 @@
-i<template>
+<template>
+  <!-- 可弃用？ -->
   <div class="message">
     <div class="rightBar">
       <p>
@@ -98,15 +99,15 @@ export default {
     }
   },
    created: function () {
-      $('.M-box').pagination({
-          totalData:100,
-          showData:10,
-          coping:true,
-          homePage:'首页',
-          endPage:'末页',
-          prevContent:'上页',
-          nextContent:'下页'
-      });
+      // $('.M-box').pagination({
+      //     totalData:100,
+      //     showData:10,
+      //     coping:true,
+      //     homePage:'首页',
+      //     endPage:'末页',
+      //     prevContent:'上页',
+      //     nextContent:'下页'
+      // });
    }
 }
 </script>

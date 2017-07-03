@@ -1,4 +1,5 @@
 <template>
+  <!-- 新增和编辑用户的弹窗 -->
 	<div class="userBox alertStyle">
       <div class="alertTop">用户编辑<span @click="hideUserBox"><img src="../../static/img/cancel.png"></span></div>
       <div class="alertContent">
@@ -54,6 +55,9 @@
                 <span>{{form.state}}</span> 
               </el-form-item>
             </el-col>
+            <el-col :span="6" style="text-align:right">
+              <el-button type="text" class="editBtn" @click="changepw">重置密码</el-button>
+            </el-col>
           </el-row>
           <!-- 这应该是编辑的时候才有的字段 -->
         </el-form>
@@ -99,6 +103,8 @@
         userid:'',
         orgid:'',
         accountState:false,
+        password:'123456',
+        flag:'0',
 		  }
 		},
     computed: {
@@ -113,7 +119,7 @@
           if(Object.keys(val).length!=0){
             var level=this.levelJudge(val.level); 
             // this.$set()
-            this.form.org=val.org;
+            this.form.org=val.org;　//这里编辑的时候 渲染组织名称
             this.form.account=val.account;
             this.form.name=val.name;
             this.form.level=level;
@@ -140,14 +146,21 @@
       },
       unitVal:{
         handler: function (val, oldVal) {//获得组织id
-          console.log(val);
-          this.orgid=val;
+          if(Object.keys(val).length!=0){
+            this.orgid=val[0].id;
+            this.form.org=val[0].name;
+          }
         },
         deep:true,
         immediate: true,
       }
     },
 		methods:{
+      changepw(){
+        if(confirm('确认重置密码吗？')){
+          this.flag='1';
+        }
+      },
       levelJudge(value){
         if(value=='系统管理员'){
           return "0";
@@ -177,17 +190,25 @@
 		  optionChangeHandler(val){
 		  },
       operateUser(){
-        if(this.userid==""){//userid哪里来的
-          $.when(addUsers(this.orgid,this.form.account,this.form.name,this.form.level)).done(function(data){
+        var pw=md5(this.password);
+
+        //此时列表中没有组织！！！！
+
+        
+        if(this.userid==""){//编辑用户的时候就有啦
+          // $.when(addUsers('1',this.form.account,this.form.name,this.form.level,pw)).done(function(data){
+          $.when(addUsers(this.orgid,this.form.account,this.form.name,this.form.level,pw)).done(function(data){
             if(data.state=="0"){
               var res=data.data;
+              window.location.reload();
             }
           })
         }
         else{
-          $.when(addUsers(this.userid,this.orgid,this.form.account,this.form.name,this.form.level)).done(function(data){
+          $.when(editUsers(this.userid,this.orgid,this.form.account,this.form.name,this.form.level,pw,this.flag)).done(function(data){
             if(data.state=="0"){
               var res=data.data;
+              window.location.reload();
             }
           })
         }
@@ -196,6 +217,7 @@
         $.when(cancelUsers(this.userid)).done(function(data){
           if(data.state=="0"){
             var res=data.data;
+            window.location.reload();
           }
         })
       },
@@ -203,6 +225,7 @@
         $.when(deleteUsers(this.userid)).done(function(data){
           if(data.state=="0"){
             var res=data.data;
+            window.location.reload();
           }
         })
       }

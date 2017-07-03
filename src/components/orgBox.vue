@@ -23,16 +23,17 @@
       </div>
       <div class="alertBottom">
       	  <span class="leftBot">
-	        <span class="user-dele"><img src="../../static/img/alert-delete.png">删除</span> 
+	        <span class="user-dele" @click="deleteUser"><img src="../../static/img/alert-delete.png">删除</span> 
 	      </span>
 	      <span class="rightBot">
-	        <span class="bg_green" @click="hideUserBox">确定</span> 
+	        <span class="bg_green" @click="hideUserBox(),operateUser()">确定</span> 
         	<span @click="hideUserBox" class="bg_cancle">取消</span> 
 	      </span>
       </div>
     </div>
 </template>
 <script>
+	import {mapGetters} from 'vuex'
 	export default {
 		name: 'app',
 		data () {
@@ -41,9 +42,74 @@
 		      org:'',
 		      unit: '',
 		    },
+		    pid:'',
+		    orgid:'',
 		  }
 		},
+		computed: {
+	      ...mapGetters({
+	        userState: 'userState',
+	        unitVal: 'unitVal',
+	      })
+	    },
+	    watch:{
+	      userState:{
+	        handler: function (val, oldVal) {//
+	          console.log(val);
+	          if(Object.keys(val).length!=0){
+	            this.form.org=val.org;　//这里编辑的时候 渲染组织名称
+	            this.form.unit=val.name;//渲染上级单位名称
+	            this.pid=val.pid;//上级单位的id
+	            this.orgid=val.id;//当前编辑的组织id
+	          }
+	          else{//表示新增
+	            this.form={
+	              org:'',
+		      	  unit: '',
+	            };
+	            this.pid="";
+	            this.orgid="";
+	          }
+	        },
+	        deep:true,
+	        immediate: true,
+	      },
+	      unitVal:{
+	        handler: function (val, oldVal) {//获得组织id
+	          if(Object.keys(val).length!=0){
+	            this.pid=val[0].id;//获得修改之后的上级单位id
+	            this.form.unit=val[0].name;
+	          }
+	        },
+	        deep:true,
+	        immediate: true,
+	      }
+	    },
 		methods:{
+		  operateUser(){
+	        console.log(this.orgid);
+	        if(this.orgid==""){//新增组织
+	          $.when(addOrg(this.form.org,this.pid)).done(function(data){
+	            if(data.state=="0"){
+	              var res=data.data;
+	            }
+	          })
+	        }
+	        else{//编辑组织
+	          $.when(editOrg(this.orgid,this.form.org,this.pid)).done(function(data){
+	            if(data.state=="0"){
+	              var res=data.data;
+	            }
+	          })
+	        }
+	      },
+	      deleteUser(){
+	        $.when(deleteOrg(this.orgid)).done(function(data){
+	          if(data.state=="0"){
+	            var res=data.data;
+	          }
+	        })
+	      },
 		  hideUserBox:function(){
 		    $(".mask1,.orgBox").removeClass("showBtn");
 		  },
@@ -61,7 +127,8 @@
 		  },
 		},
 		mounted() {
-		}
+		},
+
 
 	}
 </script>

@@ -139,8 +139,6 @@
         // for (var i=0;i<val.length;i++) {
         //   this.input3+=val[i]+' ';
         // }
-        console.log("selectArr");
-        console.log(val);
         if(val.length<2){
           this.input3=val.name[0];
         }
@@ -172,7 +170,6 @@
     articleObj:{
       handler: function (val, oldVal) {//文章选择后，相应的渲染
         if(this.value=="0"){//分发和反馈的值应该是后台传过来的
-          console.log(val);
           if(val.flag=='0'){
 
           }
@@ -187,8 +184,6 @@
     },
     psBox:{
       handler: function (val, oldVal) {//监听学校和指标数组，只要学科id没有变化，则不变化
-        console.log("psBox");
-        console.log(val);
         if(val.psObj==undefined){
           this.psObj=["系统管理员","d733ed4b5afd11e79ea400269e28ab11"];
         }
@@ -288,19 +283,15 @@
     addPs:function(){ //新增批示 分发 反馈方法
       var formData = new FormData();
       var that=this;
-      console.log(this.fileFlag);
       if(this.file!=''&&this.fileFlag){
-        console.log("true");
         formData.append("file",this.file);
       }
       else{
-        console.log("false");
         formData.append("file",'');
       }
       // if(this.instructionId!=""){
       //   formData.append("instructionId",this.instructionId);
       // }
-      console.log(this.instructionId);
       var delta =this.quill.getText();
       formData.append("content",delta);
       formData.append("userId",this.userId);
@@ -421,7 +412,6 @@
   },
   created(){
     // this.instructionId = this.$route.query.id;
-    // console.log(this.instructionId);
     // tinymce.remove('textarea'); 
     // tinymce.init(obj);
   }

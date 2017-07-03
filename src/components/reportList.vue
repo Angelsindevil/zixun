@@ -91,6 +91,7 @@
   </div>
 </template>
 <script>
+import {scrollFun,matchMenu} from '../../static/js/public.js'
 export default {
   name: 'report',
   data () {
@@ -210,6 +211,9 @@ export default {
       else{
         alert(data.data);
       }
+    })
+    this.$nextTick(function(){
+      matchMenu();
     })
   },
 }

@@ -9,12 +9,12 @@ i<template>
         placeholder="搜索组织名称、上级单位"
         icon="search"
         v-model="input2"
-        class="input_position" :on-icon-click="handleInputClick" @keyup.13="handleInputClick">
+        class="input_position" :on-icon-click="handleInputClick" @keyup.enter="handleInputClick">
       </el-input>
     </div>
     <div class="rightContent">
       <el-table
-        :data="tableData"
+        :data="filterData"
         border
         stripe
         style="width: 100%">
@@ -41,16 +41,25 @@ i<template>
         <el-table-column
           label="操作"
           width="100">
-          <template scope="scope">
-            <el-button type="text" size="small">编辑</el-button>
+           <template scope="scope">
+            <el-button type="text" size="small" :data-id="scope.row.id" :data-state="propsArr[scope.row.index-1]" @click="showUserBox_">编辑</el-button>
           </template>
         </el-table-column>  
       </el-table>    
     </div>
-    <div class="M-box"></div>
+    <div class="block">
+      <el-pagination
+        layout="prev, pager, next"
+        :total="totalItem"
+        :page-size="pageSize"
+        :current-page="currentPage"
+        @current-change="handleCurrentChange">
+      </el-pagination>
+    </div>  
   </div>
 </template>
 <script>
+import {scrollFun,matchMenu} from '../../static/js/public.js'
 export default {
   name: 'report',
   components: {
@@ -72,19 +81,27 @@ export default {
         }],
         value: '1',
         tableData: [
-        {
-          index: '1',
-          org: '西安交通大学',
-          level: '1',
-          name: '西安交通大学',
-        }, 
-        {
-          index: '2',
-          org: '数据与信息中心',
-          level:'2',
-          name: '西安交通大学',
-        }, 
-      ]
+          // {
+          //   index: 0,
+          //   org: '组织1',
+          //   level: '2',
+          //   name: '西安交通大学',
+          //   id:'5',
+          //   pid:'2',
+          // }, 
+          // {
+          //   index: 1,
+          //   org: '数据与信息中心',
+          //   level:'2',
+          //   name: '内容管理员',
+          //   id:'4',
+          //   pid:'1',
+          // }, 
+        ],
+        totalItem:1,
+        propsArr:[],
+        pageSize:20,
+        currentPage:1,
       }
   },
   methods: {
@@ -93,25 +110,97 @@ export default {
       $(".alertBox").addClass("showBtn");
     },
     optionChangeHandler:function(){
-
     },
-    handleInputClick:function(){},
+    handleInputClick:function(){
+      console.log("111");
+      // this.$set(this.filterData,[]);
+      // this.filterData=[];
+      this.filterData.splice(0);
+      console.log(this.filterData);
+      var that=this;
+      for(var i=0;i<this.tableData.length;i++){
+        if((this.tableData[i].name.indexOf(that.input2)!=-1)||(this.tableData[i].org.indexOf(that.input2)!=-1)){
+          console.log("1");
+          this.filterData.push(this.tableData[i]);
+        }
+        else{
+        }
+      }
+      console.log(this.filterData);
+    },
     showUserBox(){
       $(".mask1").addClass("showBtn");
       $(".orgBox").addClass("showBtn");
+      $(".orgBox .user-dele").removeClass("showBtn");
+      this.$store.dispatch('changeUserState',{"userState":{}}).then(function(resp){});
+      // this.$store.dispatch('changeUnitVal',{"unitVal":''}).then(function(resp){});
+    },
+    showUserBox_(e){
+      var ele=e.currentTarget;
+      var id=$(ele).attr("data-id");
+      var state=JSON.parse($(ele).attr("data-state"));
+      state.type="organization";
+      $(".mask1").addClass("showBtn");
+      $(".orgBox").addClass("showBtn");
+      $(".orgBox .user-dele").addClass("showBtn");
+      this.$store.dispatch('changeUserState',{"userState":{}}).then(function(resp){});
+      this.$store.dispatch('changeUserState',{"userState":state}).then(function(resp){});
+    },
+    copyArr(arr){
+      return arr.map((e)=>{
+          if(typeof e === 'object'){
+              return Object.assign({},e)
+          }else{
+              return e
+          }
+      })
+    },
+    handleCurrentChange(val){
+      var page=val;
+      this.filterData.splice(0);
+      var start=(page-1)*(this.pageSize);
+      var end=page*(this.pageSize);
+      if(page==Math.ceil(this.totalItem/(this.pageSize))){
+        end=this.totalItem;
+      }
+      else{
+      }
+      for(var i=start;i<end;i++){
+        this.filterData.push(this.tableData[i]);
+      }
     },
   },
-   created: function () {
-      $('.M-box').pagination({
-          totalData:100,
-          showData:10,
-          coping:true,
-          homePage:'首页',
-          endPage:'末页',
-          prevContent:'上页',
-          nextContent:'下页'
-      });
-   }
+  created: function () {
+    this.$nextTick(function(){
+      matchMenu();
+    })
+    var that=this;
+    this.filterData=this.copyArr(this.tableData).slice(0,this.pageSize);
+    this.propsArr=this.tableData.map(function(value){
+      return JSON.stringify(value);
+    })//测试 
+    $.when(getOrgList()).done(function(data){
+      if(data.state==0){
+        // var res=data.data.results;
+        var res=data.data;
+        that.totalItem=res.length;
+        that.tableData=res.map(function(value,index){
+          return {
+            "index":index+1,
+            "org": value.organization,//组织名称
+            "name": value.parentOrgName,//上级单位名称
+            "level":value.level,
+            "id":value.orgId,
+            "pid":value.parentOrgId,
+          }
+        })
+      }
+      that.propsArr=that.tableData.map(function(value){
+        return JSON.stringify(value);
+      })
+      that.filterData=that.tableData.slice(0,this.pageSize);
+    })
+  }
 }
 </script>
 

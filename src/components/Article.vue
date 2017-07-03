@@ -9,7 +9,9 @@
           <span>时间：<span>{{date}}</span></span>
         </span> 
       </p>
-      <router-link :to="{path:'/homePage/contentAdd', query: { id:id}}"><el-button type="text" size="small" class="editBtn">编辑</el-button></router-link>
+      <router-link :to="{path:'/homePage/contentAdd', query: { id:id}}" class="art_edit">
+        <el-button type="text" size="small" class="editBtn">编辑</el-button>
+      </router-link>
       <span class="includeBtn" :class="isInstructions=='0'?'':'grey'" :data-state="isInstructions" :data-id="id" :data-pid="instructionId" :data-title="title" :data-i="number" @click="includeThis" @mouseover="canceInclude" @mouseout="includeThis_"><img src="../../static/img/plus.png" alt="" v-show="isInstructions=='0'?true:false"><span>{{isInstructions=='0'?'批示':'批示中'}}</span></span>
     </div>
     <div class="content_bar">
@@ -38,6 +40,7 @@ export default {
       isInstructions:'',
       btnState:'批示',
       instructionId:'',
+      edit:'',
     }
   },
   methods:{
@@ -187,6 +190,17 @@ export default {
   created: function() {
     this.id = this.$route.query.id;
     this.number=this.$route.query.index;
+    this.edit=this.$route.query.edit;
+    if(this.edit=='0'){
+      this.$nextTick(function(){
+        $(".art_edit").removeClass("showBtn");
+      })
+    }
+    else{
+      this.$nextTick(function(){
+        $(".art_edit").addClass("showBtn");
+      })
+    }
     var that=this;
     console.log(this.id);
     if(this.id!=''){
@@ -217,6 +231,9 @@ export default {
   .article{
     width:100%;
     background-color: #fff;
+    .art_edit{
+      display:none;
+    }
   }
   .title_bar{
     position: relative;
