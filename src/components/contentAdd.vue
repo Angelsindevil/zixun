@@ -3,7 +3,7 @@
     <div class="rightBar">
       <p>内容编辑
       </p>
-      <el-button class="btn_position">发布</el-button>
+      <el-button class="btn_position" @click="releaseBtn">发布</el-button>
     </div>
     <div class="rightContent">
       <div class="title_bar">
@@ -50,10 +50,15 @@
                 <div id="toolbar">
                   <span class="ql-formats">
                     <select class="ql-size">
-                      <option value="10px">12px</option>
-                      <option value="13px" selected>14px</option>
-                      <option value="18px">16px</option>
-                      <option value="32px">18px</option>
+                     <!--  <option value="12px">12px</option>
+                      <option value="14px">14px</option>
+                      <option value="16px">16px</option>
+                      <option value="18">18px</option> -->
+                      <option value="small">12px</option>
+                      <!-- Note a missing, thus falsy value, is used to reset to default -->
+                      <option selected>14px</option>
+                      <option value="large">16px</option>
+                      <option value="huge">18px</option>
                     </select>
                   </span>
                   <span class="ql-formats">
@@ -78,8 +83,8 @@
         </el-form>
         <div class="newBottom">
           <span class="rightBot">
-            <span class="bg_blue">保存</span> 
-            <span class="bg_cancle">取消</span> 
+            <span class="bg_blue" @click="saveBtn">保存</span> 
+            <span class="bg_cancle" @click="resetBtn">取消</span> 
           </span>
         </div>
       </div>
@@ -93,37 +98,148 @@ export default {
   name: 'test',
   data () {
     return {
-       options: [{
-          value: '0',
-          label: '动态资讯'
-        }, {
-          value: '1',
-          label: '学校新闻'
-        }],
+        // options: [{
+        //   value: '动态资讯',
+        //   label: '动态资讯'
+        // }, {
+        //   value: '学校新闻',
+        //   label: '学校新闻'
+        // }],
+        options:[],
         form: {
-          type:'0',
-          source: '浙江省教育厅',
-          link: 'http://www.news.zju.edu.cn/',
+          type:'',
+          source: '',
+          link: '',
           title: '',
-          date:'2016-05-11'
+          date:'',
+          text:''
         },
+        source:{},
+        quill:'',
+        id:'',
+        txt:'',
+        addId:'',
     }
   },
   methods:{
     handleInputClick:function(){},
     optionChangeHandler(){},
+    saveBtn(){
+      this.txt=document.querySelector("#editor .ql-editor").innerHTML;
+      var that=this;
+      if(this.id!=undefined){//编辑啊
+        $.when(editArticle(this.id,this.form.type,this.form.source,this.form.link,this.form.title,this.form.date,this.txt)).done(function(data){
+          if(data.state=="0"){
+            alert("已保存至内容筛选列表！");
+            that.addId=data.data.id;
+          }
+          else{
+            alert(data.data);
+          }
+        })
+      }
+      else{//新增
+        $.when(addArticle(this.form.type,this.form.source,this.form.link,this.form.title,this.form.date,this.txt)).done(function(data){
+          if(data.state=="0"){
+            alert("已保存至内容筛选列表！");
+          }
+          else{
+            alert(data.data);
+          }
+        })
+      }
+    },
+    resetBtn(){
+
+    },
+    releaseBtn(id){
+      if(this.id!=undefined){//编辑可直接发布
+        $.when(releaseArticle(id)).done(function(data){
+          if(data.state=="0"){
+            alert("文章发布成功！");
+          }
+          else{
+            alert(data.data);
+          }
+        })
+      }
+      else{//新增 先保存再发布
+        $.when(addArticle(this.form.type,this.form.source,this.form.link,this.form.title,this.form.date,this.txt)).done(function(data){
+          if(data.state=="0"){
+            $.when(releaseArticle(data.data.id)).done(function(res){
+              if(res.state=="0"){
+                alert("文章发布成功！");
+              }
+              else{
+                alert(res.data);
+              }
+            })
+          }
+          else{
+            alert(data.data);
+          }
+        })
+      }
+    },
   },
   mounted() {
-    var quill = new Quill('#editor', {
+    this.quill = new Quill('#editor', {
       modules: {
         toolbar: '#toolbar',
       },
       theme: 'snow'
     });
+    if(this.id!=undefined&&this.source!=undefined){
+      // document.querySelector("#editor").innerHTML=this.source.content;
+      this.quill.clipboard.dangerouslyPasteHTML(0, this.source.content);
+    }
+    else{}
   },
   created:function(){
+    var that=this;
     this.$nextTick(function(){
       matchMenu();
+    })
+    this.id = this.$route.query.id;
+    console.log(this.id);
+    if(this.id!=undefined){
+      this.source=JSON.parse(localStorage.getItem("editor"));
+      if(this.source){
+        // this.form.type=this.source.type;
+        this.form.source=this.source.source;
+        this.form.link=this.source.link;
+        this.form.title=this.source.title;
+        this.form.date=this.source.date;
+        this.form.text=this.source.content;
+      }
+    }
+    else{
+      this.form.source="";
+      this.form.link="";
+      this.form.title="";
+      this.form.date="";
+      this.form.text="";
+    }
+    $.when(getArticleType()).done(function(data){
+      if(data.state=="0"){
+        var res=data.data;
+        that.options=res.map(function(value,index){
+          return {
+            // "value":index+1,
+            "value":value,
+            "label":value,
+          }
+        })
+        if(that.id!=undefined&&that.source){
+          that.form.type=that.source.type;
+        }
+        else{
+          that.form.type=that.options[0].value;
+        }
+      }
+      else{
+        alert(data.data);
+      }
     })
   }
 }
@@ -162,6 +278,8 @@ export default {
       }
       #editor{
         min-height:400px;
+        // padding: 10px 20px;
+        line-height: 20px;
       }
       // border-radius:5px;
 

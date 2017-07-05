@@ -223,7 +223,7 @@ export default {
       }
     })
     this.userSource=JSON.parse(localStorage.getItem("userSource"));
-    if(this.userSource.level==0){
+    if(this.userSource&&this.userSource.level==0){
       this.$nextTick(function(){
         $(".psDown").children("li").eq(0).addClass("showBtn");
         $(".psDown").children("li").eq(2).addClass("showBtn");

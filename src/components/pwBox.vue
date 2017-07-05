@@ -6,13 +6,13 @@
         <el-form ref="form" :model="form" label-width="100px">
           <el-row :gutter="20">
             <el-form-item label="原密码：">
-            <el-input v-model="form.pwOld"></el-input>
+            <el-input v-model="form.pwOld" type="password"></el-input>
           </el-form-item>
-          <el-form-item label="新密码">
-            <el-input v-model="form.pwNew1"></el-input>
+          <el-form-item label="新密码：">
+            <el-input v-model="form.pwNew1" type="password"></el-input>
           </el-form-item>
-          <el-form-item label="确认密码">
-            <el-input v-model="form.pwNew2"></el-input>
+          <el-form-item label="确认密码：">
+            <el-input v-model="form.pwNew2" type="password"></el-input>
           </el-form-item>
         </el-row>
         </el-form>
@@ -50,9 +50,12 @@
         }
         else{
           pw2=md5(this.form.pwNew2);
-          $.when(changePassword(this.userId,pw1,pw2)).done(function(data){
+          $.when(changePassword(this.userId,pw2)).done(function(data){
             if(data.state==0){
-              alert('密码修改成功！')
+              alert('密码修改成功！');
+            }
+            else{
+              alert(data.data);
             }
           })
         }
@@ -65,7 +68,7 @@
     },
     created(){
       this.userSource=JSON.parse(localStorage.getItem("userSource"));
-      this.userId=this.userSource.id;
+      this.userId=this.userSource?this.userSource.id:'';
     }
   }
 </script>

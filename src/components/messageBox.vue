@@ -95,7 +95,7 @@ export default {
       $(".alertBox").addClass("showBtn");
     },
     optionChangeHandler:function(){
-
+      
     }
   },
    created: function () {
@@ -233,5 +233,8 @@ export default {
     right: 10px;
     top: 12px;
     font-size: 12px;
+  }
+  .grey{
+    color:#ccc;
   }
 </style>

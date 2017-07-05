@@ -19,3 +19,5 @@ export const clearAll=state=>state.clearAll//弹窗类型
 export const unitVal=state=>state.unitVal//弹窗类型
 
 export const userSource=state=>state.userSource//弹窗类型
+
+export const mesId=state=>state.mesId//弹窗类型

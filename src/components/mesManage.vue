@@ -5,12 +5,19 @@
         系统维护-消息管理
       </p>
       <el-button class="btn_position" @click="showMesBox">发送新消息</el-button>
-      <el-input
+      <!-- <el-input
         placeholder="搜索消息标题"
         icon="search"
         v-model="input2"
-        class="input_position" :on-icon-click="handleInputClick" @keyup.13="handleInputClick">
-      </el-input>
+        class="input_position" :on-icon-click="handleInputClick" @keyup.native.enter='handleInputClick'>
+      </el-input> -->
+      <el-select v-model="value" placeholder="" @change="optionChangeHandler" class="selectStyle">
+        <el-option
+          v-for="item in options"
+          :label="item.label"
+          :value="item.value">
+        </el-option>
+      </el-select>
     </div>
     <div class="rightContent">
       <table>
@@ -22,30 +29,19 @@
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td><span>#海外动态#</span>今日更新文章30篇！可点击海外动态进行查看！</td>
-            <td>2016-12-13 16:24</td>
-            <td>Admin</td>
-          </tr>
-          <tr>
-            <td><span>#海外动态#</span>今日更新文章30篇！可点击海外动态进行查看！</td>
-            <td>2016-12-13 16:24</td>
-            <td>Admin</td>
-          </tr>
-          <tr class="readAlready">
-            <td><span>#海外动态#</span>今日更新文章30篇！可点击海外动态进行查看！</td>
-            <td>2016-12-13 16:24</td>
-            <td>Admin</td>
-          </tr>
-          <tr>
-            <td><span>#海外动态#</span>今日更新文章30篇！可点击海外动态进行查看！</td>
-            <td>2016-12-13 16:24</td>
-            <td>Admin</td>
+          <tr v-for="item in filterArray" @click="showDetail(item.id)" :class="item.isRead=='1'?'grey':''">
+            <td>{{item.title}}</td>
+            <td>{{item.time}}</td>
+            <td>{{item.sender}}</td>
           </tr>
         </tbody>
       </table>
     </div>
-    <div class="M-box"></div>
+    <div class="rightBottom" ref="rightBottom" @click="loadMore">
+      <p>
+      点击加载更多内容
+      </p>
+    </div>
   </div>
 </template>
 <script>
@@ -58,42 +54,170 @@ export default {
   // props:['isActive'],
   data () {
     return {
-       list:[{name:"Foo"}, 
-          {name:"Bar"}, 
-          {name:"Baz"},
-           ],
         input2:'',
         options: [{
-          value: '1',
+          value: '0',
           label: '全部消息'
         }, {
-          value: '2',
+          value: '1',
           label: '已读消息'
         }, {
-          value: '3',
+          value: '2',
           label: '未读消息'
         }],
         value: '1',
+        filterArray:[],
+        type:'',
+        userId:'',
+        userSource:{},
+        testData:{
+          list:[
+             {
+              'id':'001',
+              'time':'2016-12-13 16:24',
+              'sender':'Admin ',
+              'title':"今日更新文章31篇！可点击海外动态进行查看！",
+              'isRead':'0',
+            },
+            {
+              'id':'002',
+              'time':'2016-12-13 16:24',
+              'sender':'Admin ',
+              'title':"今日更新文章32篇！可点击海外动态进行查看！",
+              'isRead':'1',
+            }
+          ],
+          totalNum:'139',
+          todayNum:'12',
+        },
+        pageNo:1,
+        category:'2',
       }
+  },
+  watch: { 
+    '$route': 'searchThis'
   },
   methods: {
     showSomething:function(){
       $(".mask").addClass("showBtn");
       $(".alertBox").addClass("showBtn");
     },
-    optionChangeHandler:function(){
-
+    optionChangeHandler:function(val){
+      this.category=val;
+      $.when(getMessageList(this.userId,this.type,this.pageNo,this.category)).done(function(data){
+        if(data.state=="0"){
+          that.insertData(data.data);
+          // that.filterArray=data.data.results;有用
+        }
+        else{
+          alert(data.data);
+        }
+      })
     },
-    handleInputClick:function(){},
+    handleInputClick:function(val){
+      this.pageNo=1,
+      $.when(getSearchMesList(this.userId,this.type,this.pageNo,val)).done(function(data){
+        if(data.state=="0"){
+          that.insertData(data.data);
+          // that.filterArray=data.data.results;有用
+        }
+        else{
+          alert(data.data);
+        }
+      })
+    },
     showMesBox(){
       $(".mask1").addClass("showBtn");
       $(".mesBox").addClass("showBtn");
+    },
+    showDetail(id){
+      $(".mask1").addClass("showBtn");
+      $(".mesDetailBox").addClass("showBtn");
+      this.$store.dispatch('changeMesId',{mesId:id}).then(function(resp){});
+    },
+    searchThis(){
+      this.pageNo=1,
+      this.type = this.$route.query.type;//type=0-消息管理（只有系统管理员可见），type=1-系统消息
+      this.userSource=JSON.parse(localStorage.getItem("userSource"));
+      this.userId=this.userSource?this.userSource.id:'';
+      if(this.type=='0'){//消息管理页面可以新增消息
+        this.$nextTick(function(){
+          $(".btn_position").show();
+        })
+      }
+      else{//系统消息
+        this.$nextTick(function(){
+          $(".btn_position").hide();
+        })
+      }
+      this.filterArray=this.testData.list;
+      var that=this;
+      $.when(getMessageList(this.userId,this.type,this.pageNo,this.category)).done(function(data){
+        if(data.state=="0"){
+          that.insertData(data.data);
+          // that.filterArray=data.data.results;有用
+        }
+        else{
+          alert(data.data);
+        }
+      })
+    },
+    insertData(data){
+      var that=this;
+      var res=data;
+      var len=that.filterArray.length;
+      that.totalNum=res.totalNum;
+      that.todayNum=res.todayNum; 
+      if(res.list&&res.list.length!=0){
+        $(that.$refs.rightBottom).children('p').text('点击加载更多消息');
+        res.list.map(function(value,index){
+          that.filterArray.push(value);
+        })
+      }
+      else{
+        if(that.pageNo==1){//只一页
+          $(that.$refs.rightBottom).children('p').text('暂无消息');
+          that.filterArray=[];
+        }
+        else{//多余一页
+          $(that.$refs.rightBottom).children('p').text('暂无更多消息');
+        }
+      }
+    },
+    loadMore(){
+      this.pageNo=this.pageNo+1;
+      console.log(this.pageNo);
+      var that=this;
+      if(this.input2==""){
+        $.when(getMessageList(this.userId,this.type,this.pageNo,this.category)).done(function(data){
+          if(data.state=="0"){
+            that.insertData(data.data);
+          }
+          else{
+            alert(data.data);
+          }
+        })
+      }
+      else{
+        $.when(getSearchMesList(this.userId,this.type,this.pageNo,this.input2)).done(function(data){
+          if(data.state=="0"){
+            that.insertData(data.data);
+          }
+          else{
+            alert(data.data);
+          }
+        })
+      }
     },
   },
   created: function () {
     this.$nextTick(function(){
       matchMenu();
     })
+    this.searchThis();
+
+    // this.insertData(this.testData);//localTest
+
   }
 }
 </script>
@@ -118,6 +242,9 @@ export default {
         font-size: 18px;
       }
     }
+    .btn_position{
+      right:150px!important;
+    }
   }
   .rightContent{
     border: 1px solid #ccc;
@@ -141,8 +268,9 @@ export default {
     }
     tbody{
       tr{
-       font-size:15px;
-       color:#333;
+        cursor:pointer;
+        font-size:15px;
+        color:#333;
         td{
           padding: 30px 20px;
           text-align: center;
@@ -239,11 +367,37 @@ export default {
   }
   .btn_position{
     position: absolute;
-    right:180px;
+    right:80px;
     top:12px;
     color:#0099FF;
     font-size: 12px;
     background-color: #fafafa!important;
     padding:11px 15px;
+  }
+  .grey{
+    color:#ccc;
+  }
+  .selectStyle{
+    width: 120px;
+    position: absolute;
+    right: 10px;
+    top: 12px;
+    font-size: 12px;
+  }
+  .rightBottom{
+    cursor:pointer;
+    margin-top:15px;
+    height:50px;
+    text-align: center;
+    color:#fff;
+    background-color: #0099FF;
+    line-height:50px;
+    // font-size:18px;
+    font-size: 16px;
+    border-radius:5px;
+    margin-bottom:15px;
+    span{
+      vertical-align:middle;
+    }
   }
 </style>

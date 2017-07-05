@@ -9,7 +9,7 @@ i<template>
         placeholder="搜索组织名称、上级单位"
         icon="search"
         v-model="input2"
-        class="input_position" :on-icon-click="handleInputClick" @keyup.enter="handleInputClick">
+        class="input_position" :on-icon-click="handleInputClick" @keyup.native.enter='handleInputClick'>
       </el-input>
     </div>
     <div class="rightContent">
@@ -102,6 +102,7 @@ export default {
         propsArr:[],
         pageSize:20,
         currentPage:1,
+        filterData:[],
       }
   },
   methods: {
@@ -112,21 +113,17 @@ export default {
     optionChangeHandler:function(){
     },
     handleInputClick:function(){
-      console.log("111");
       // this.$set(this.filterData,[]);
       // this.filterData=[];
       this.filterData.splice(0);
-      console.log(this.filterData);
       var that=this;
       for(var i=0;i<this.tableData.length;i++){
         if((this.tableData[i].name.indexOf(that.input2)!=-1)||(this.tableData[i].org.indexOf(that.input2)!=-1)){
-          console.log("1");
           this.filterData.push(this.tableData[i]);
         }
         else{
         }
       }
-      console.log(this.filterData);
     },
     showUserBox(){
       $(".mask1").addClass("showBtn");
@@ -175,10 +172,12 @@ export default {
       matchMenu();
     })
     var that=this;
-    this.filterData=this.copyArr(this.tableData).slice(0,this.pageSize);
-    this.propsArr=this.tableData.map(function(value){
-      return JSON.stringify(value);
-    })//测试 
+
+    // this.filterData=this.copyArr(this.tableData).slice(0,this.pageSize);
+    // this.propsArr=this.tableData.map(function(value){
+    //   return JSON.stringify(value);
+    // })//测试 
+
     $.when(getOrgList()).done(function(data){
       if(data.state==0){
         // var res=data.data.results;
@@ -190,7 +189,7 @@ export default {
             "org": value.organization,//组织名称
             "name": value.parentOrgName,//上级单位名称
             "level":value.level,
-            "id":value.orgId,
+            "id":value.id,
             "pid":value.parentOrgId,
           }
         })

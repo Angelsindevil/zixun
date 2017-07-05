@@ -54,18 +54,17 @@
               <!-- <router-link to="/homePage/instructions"> -->
               <router-link to="/homePage/instructions">
               <!-- <el-badge :value="3" :max="10" class="item">我的批示</el-badge> -->
-              批示内容
-              <span>3</span> 
+                <span class="redDot"><span>3</span>批示内容</span>
               </router-link>
           </li>
           <li @click="changeColor" class="clickStyle">
-              <router-link to="/homePage/mesManage">
+              <router-link :to="{path:'/homePage/mesManage',query: {type:'0'}}">
               消息管理
               <!-- <span>3</span>  -->
               </router-link>
           </li>
           <li @click="changeColor" class="clickStyle">
-              <router-link to="/homePage/messageBox">
+              <router-link :to="{path:'/homePage/messageBox',query: {type:'1'}}">
               系统消息
               </router-link>
           </li>
@@ -88,8 +87,7 @@
           </li>
           <li @click="changeColor" class="clickStyle">
               <router-link to="/homePage/managementCenter">
-              <span>2</span> 
-              批示管理
+              <span class="redDot"><span>2</span>批示管理</span>
               </router-link>
           </li>
         </ul>
@@ -140,20 +138,20 @@ export default {
         minHeight: "800px",
       },
       userSource:{},
-      // options: [],
-      options: [
-      {
-        value: '全部内容',
-        label: '全部内容'
-      }, 
-      {
-        value: '动态资讯',
-        label: '动态资讯'
-      }, 
-      {
-        value: '校内信息',
-        label: '校内信息'
-      }],
+      options: [],
+      // options: [
+      // {
+      //   value: '全部内容',
+      //   label: '全部内容'
+      // }, 
+      // {
+      //   value: '动态资讯',
+      //   label: '动态资讯'
+      // }, 
+      // {
+      //   value: '校内信息',
+      //   label: '校内信息'
+      // }],
     }
   },
   methods:{
@@ -182,34 +180,35 @@ export default {
         alert(data.data);
       }
     })
-    console.log(this.userSource);
 
     //可见菜单设置
     this.$nextTick(function(){
-      if(this.userSource.level==0){//系统管理员
-        $(".articleManage").addClass("showBtn");
-        $(".articleManage").css("margin-top",'20px');
-        $(".platManage").addClass("showBtn");
-        $(".messageManage").addClass("showBtn");
-        $(".messageManage").children("li").eq(1).hide();
-        $(".dataManage").addClass("showBtn");
-      }
-      else if(this.userSource.level==1){//内容管理员
-        $(".contentManage").addClass("showBtn");
-        $(".articleManage").addClass("showBtn");
-        $(".reporterManage").addClass("showBtn");
-        $(".messageManage").addClass("showBtn");
-        $(".messageManage").children("li").eq(2).hide();
-        $(".dataManage").addClass("showBtn");
-      }
-      else if(this.userSource.level==2||this.userSource.level==3){//批示用户
-        $(".articleManage").css("margin-top",'20px');
-        $(".articleManage").addClass("showBtn");
-        $(".messageManage").addClass("showBtn");
-        $(".messageManage").children("li").eq(2).hide();
-        $(".dataManage").addClass("showBtn");
-      }
-      else{//批示用户
+      if(this.userSource){
+        if(this.userSource.level==0){//系统管理员
+          $(".articleManage").addClass("showBtn");
+          $(".articleManage").css("margin-top",'20px');
+          $(".platManage").addClass("showBtn");
+          $(".messageManage").addClass("showBtn");
+          $(".messageManage").children("li").eq(1).hide();
+          $(".dataManage").addClass("showBtn");
+        }
+        else if(this.userSource.level==1){//内容管理员
+          $(".contentManage").addClass("showBtn");
+          $(".articleManage").addClass("showBtn");
+          $(".reporterManage").addClass("showBtn");
+          $(".messageManage").addClass("showBtn");
+          $(".messageManage").children("li").eq(2).hide();
+          $(".dataManage").addClass("showBtn");
+        }
+        else if(this.userSource.level==2||this.userSource.level==3){//批示用户
+          $(".articleManage").css("margin-top",'20px');
+          $(".articleManage").addClass("showBtn");
+          $(".messageManage").addClass("showBtn");
+          $(".messageManage").children("li").eq(2).hide();
+          $(".dataManage").addClass("showBtn");
+        }
+        else{//批示用户
+        }
       }
     })
   }
@@ -252,20 +251,26 @@ export default {
         margin:0;
         li{
           text-align: center;
-          padding:15px 0;
+          // padding:15px 0;
           a{
+            display:inline-block;
+            padding:15px 0;
+            width:100%;
             position: relative;
-            >span{
-              position: absolute;
-              display: inline-block;
-              width: 16px;
-              height: 16px;
-              border-radius: 50%;
-              top: -5px;
-              right: -10px;
-              font-size: 12px;
-              background-color: #ff6666;
-              color: #fff;
+            .redDot{
+              position: relative;
+              >span{
+                position: absolute;
+                display: inline-block;
+                width: 16px;
+                height: 16px;
+                border-radius: 50%;
+                top: -5px;
+                right: -10px;
+                font-size: 12px;
+                background-color: #ff6666;
+                color: #fff;
+              }
             }
           }
           img{

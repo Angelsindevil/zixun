@@ -1,4 +1,5 @@
 <template>
+  <!-- 弃用 -->
   <div class="test">
     <div class="rightBar">
       <p>消息反馈-我的反馈：

@@ -42,6 +42,7 @@ const state = {
 	},
 	clrId:'',
 	unitVal:'',
+	mesId:'',
 }
 const store = new Vuex.Store({
   state,

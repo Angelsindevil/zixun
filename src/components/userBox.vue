@@ -13,6 +13,7 @@
                   v-model="form.org"
                   @click="solvePeople();showCommonBox()"
                   @focus="solvePeople();showCommonBox()"
+                  :disabled="alreadyCancel"
                   >
                 </el-input>
               </el-form-item>
@@ -26,7 +27,7 @@
           <el-row :gutter="20">
             <el-col :span="6">
               <el-form-item label="用户姓名：">
-                <el-input v-model="form.name"></el-input>
+                <el-input v-model="form.name" :disabled="alreadyCancel"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="6">
@@ -39,7 +40,7 @@
                   @focus="solvePeople();showCommonBox()"
                   >
                 </el-input> -->
-                <el-select v-model="form.level" placeholder="" @change="optionChangeHandler">
+                <el-select v-model="form.level" placeholder="" @change="optionChangeHandler" :disabled="alreadyCancel">
                   <el-option
                     v-for="item in options"
                     :label="item.label"
@@ -64,11 +65,11 @@
       </div>
       <div class="alertBottom">
         <span class="leftBot">
-          <span class="user-wf" @click="cancelUser"><img src="../../static/img/zhuxiao.png">注销</span>   
+          <span class="user-wf" @click="cancelUser"><img src="../../static/img/zhuxiao.png">{{cancelTxt}}</span>   
           <span class="user-dele" @click="deleteUser"><img src="../../static/img/alert-delete.png">删除</span> 
         </span>
         <span class="rightBot">
-          <span class="bg_green" @click="hideUserBox(),operateUser()" >确定</span> 
+          <span class="bg_green" @click="operateUser" >确定</span> 
           <span @click="hideUserBox" class="bg_cancle">取消</span> 
         </span>
       </div>
@@ -87,10 +88,10 @@
 		      value: '1',
 		      label: '内容管理员'
 		    }, {
-		      value: '3',
+		      value: '2',
 		      label: '批示用户'
 		    }, {
-		      value: '4',
+		      value: '3',
 		      label: '普通用户'
 		    }],
 		    form: {
@@ -103,8 +104,10 @@
         userid:'',
         orgid:'',
         accountState:false,
-        password:'123456',
-        flag:'0',
+        password:'',
+        cancelTxt:'注销',
+        alreadyCancel:false,
+        // flag:'0',
 		  }
 		},
     computed: {
@@ -127,6 +130,13 @@
             this.userid=val.id;
             this.orgid=val.orgid;
             this.accountState=true;
+            if(val.state=="已注销"){
+              this.cancelTxt='反注销';
+              this.alreadyCancel=true;
+            }
+            else{
+              this.cancelTxt='注销'
+            }
           }
           else{//表示新增
             this.form={
@@ -194,45 +204,96 @@
 
         //此时列表中没有组织！！！！
 
-        
-        if(this.userid==""){//编辑用户的时候就有啦
-          // $.when(addUsers('1',this.form.account,this.form.name,this.form.level,pw)).done(function(data){
-          $.when(addUsers(this.orgid,this.form.account,this.form.name,this.form.level,pw)).done(function(data){
-            if(data.state=="0"){
-              var res=data.data;
-              window.location.reload();
-            }
-          })
+        if(this.orgid==""){
+          alert("所属组织不能为空！");
         }
-        else{
-          $.when(editUsers(this.userid,this.orgid,this.form.account,this.form.name,this.form.level,pw,this.flag)).done(function(data){
-            if(data.state=="0"){
-              var res=data.data;
-              window.location.reload();
-            }
-          })
+        else if(this.form.account==""){
+          alert("用户账号不能为空！");
+        }
+        else if(this.form.name){
+          alert("用户姓名不能为空！");
+        }
+        else 
+        {
+          if(this.userid==""){//编辑用户的时候就有啦
+            // $.when(addUsers('1',this.form.account,this.form.name,this.form.level,pw)).done(function(data){
+            $.when(addUsers(this.orgid,this.form.account,this.form.name,this.form.level,'')).done(function(data){
+              if(data.state=="0"){
+                var res=data.data;
+                alert("新增用户成功！");
+                // $(".mask1,.userBox").removeClass("showBtn userBoxAdd");
+                window.location.reload();
+              }
+              else{
+                alert(data.data);
+              }
+            })
+          }
+          else{
+            $.when(editUsers(this.userid,this.orgid,this.form.account,this.form.name,this.form.level,this.password)).done(function(data){
+              if(data.state=="0"){
+                var res=data.data;
+                alert("修改用户成功！");
+                window.location.reload();
+              }
+              else{
+                alert(data.data);
+              }
+            })
+          }
         }
       },
       cancelUser(){
-        $.when(cancelUsers(this.userid)).done(function(data){
-          if(data.state=="0"){
-            var res=data.data;
-            window.location.reload();
+        if(this.cancelTxt=="注销"){
+          if(confirm("确认注销该用户？")){
+            $.when(cancelUsers(this.userid)).done(function(data){
+              if(data.state=="0"){
+                var res=data.data;
+                alert("用户注销成功！");
+                window.location.reload();
+              }
+              else{
+                alert(data.data);
+              }
+            })
           }
-        })
+        }
+        else{
+          if(confirm("确认反注销该用户？")){
+            $.when(excancelUsers(this.userid)).done(function(data){
+              if(data.state=="0"){
+                var res=data.data;
+                alert("用户反注销成功！");
+                // this.alreadyCancel=false;//是否有这个需求，反注销后 不退出编辑
+                window.location.reload();
+              }
+              else{
+                alert(data.data);
+              }
+            })
+          }
+        }
       },
       deleteUser(){
-        $.when(deleteUsers(this.userid)).done(function(data){
-          if(data.state=="0"){
-            var res=data.data;
-            window.location.reload();
-          }
-        })
+        if(confirm("确认删除该用户？")){
+          $.when(deleteUsers(this.userid)).done(function(data){
+            if(data.state=="0"){
+              var res=data.data;
+              alert("用户删除成功！");
+              window.location.reload();
+            }
+            else{
+              alert(data.data);
+            }
+          })
+        }
       }
 		},
 		mounted() {
 		},
     created(){
+      var val=localStorage.getItem("initPassword");
+      this.password=val?val:'';
     }
 	}
 </script>

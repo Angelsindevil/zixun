@@ -6,7 +6,7 @@
         <el-form ref="form" :model="form" label-width="100px">
           <el-row :gutter="20">
             <el-form-item label="初始密码：">
-            <el-input v-model="form.password"></el-input>
+            <el-input v-model="form.password" type="password"></el-input>
           </el-form-item>
         </el-row>
         </el-form>
@@ -35,7 +35,13 @@
     },
     methods:{
       operateUser(){
-
+        var that=this;
+        $.when(changeDefaultpw(this.userId,this.form.password)).done(function(data){
+          if(data.state==0){
+            alert('初始密码设置成功！');
+            localStorage.setItem("initPassword",that.form.password);
+          }
+        })
       },
       hideUserBox:function(){
         $(".mask1,.initpwBox").removeClass("showBtn");
@@ -45,13 +51,8 @@
     },
     created(){
       this.userSource=JSON.parse(localStorage.getItem("userSource"));
-      this.userId=this.userSource.id;
-      this.form.password=this.userSource.pwDefault;
-      $.when(changeDefaultpw(this.userId,this.form.password)).done(function(data){
-        if(data.state==0){
-          alert('初始密码设置成功！')
-        }
-      })
+      this.userId=this.userSource?this.userSource.id:'';
+      this.form.password=this.userSource?this.userSource.pwDefault:'';
     }
   }
 </script>

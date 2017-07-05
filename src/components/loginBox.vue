@@ -1,4 +1,5 @@
 <template>
+	<!-- 弃用 -->
 	<div class="loginBox">
 		<div class="alertHeader">
 			<p>账号密码登录<img src="../../static/img/cancel_blue.png" alt="" @click="hideLogin"></p>

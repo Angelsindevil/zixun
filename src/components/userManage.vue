@@ -9,7 +9,7 @@ i<template>
         placeholder="搜索用户账号、用户姓名、所属组织"
         icon="search"
         v-model="input2"
-        class="input_position" :on-icon-click="handleInputClick" @keyup.13="handleInputClick">
+        class="input_position" :on-icon-click="handleInputClick" @keyup.native.enter='handleInputClick'>
       </el-input>
     </div>
     <div class="rightContent">
@@ -98,7 +98,7 @@ export default {
         totalItem:1,
         tableData: [
         // {
-        //   index: 0,
+        //   index: 1,
         //   org: '校长办公室',
         //   account: 'PK_admin',
         //   name: '张三',
@@ -106,16 +106,6 @@ export default {
         //   level: '系统管理员',
         //   id:'01',
         //   orgid:'3',
-        // }, 
-        // {
-        //   index: 1,
-        //   org: '数据与信息中心',
-        //   account:'TH_edit',
-        //   name: '李四',
-        //   state:'正常',
-        //   level: '内容管理员',
-        //   id:'02',
-        //   orgid:'4',
         // }, 
         // {
         //   index: 2,
@@ -169,46 +159,6 @@ export default {
         // }, 
         // {
         //   index: 7,
-        //   org: '数据与信息中心',
-        //   account:'TH_edit',
-        //   name: '李四',
-        //   state:'正常',
-        //   level: '内容管理员',
-        //   id:'02',
-        //   orgid:'4',
-        // }, 
-        // {
-        //   index: 8,
-        //   org: '数据与信息中心',
-        //   account:'TH_edit',
-        //   name: '李四',
-        //   state:'正常',
-        //   level: '内容管理员',
-        //   id:'02',
-        //   orgid:'4',
-        // }, 
-        // {
-        //   index: 9,
-        //   org: '数据与信息中心',
-        //   account:'TH_edit',
-        //   name: '李四',
-        //   state:'正常',
-        //   level: '内容管理员',
-        //   id:'02',
-        //   orgid:'4',
-        // }, 
-        // {
-        //   index: 10,
-        //   org: '数据与信息中心',
-        //   account:'TH_edit',
-        //   name: '李四',
-        //   state:'正常',
-        //   level: '内容管理员',
-        //   id:'02',
-        //   orgid:'4',
-        // }, 
-        // {
-        //   index: 11,
         //   org: '数据与信息中心',
         //   account:'TH_edit',
         //   name: '李四',
@@ -311,10 +261,12 @@ export default {
       this.$nextTick(function(){
         matchMenu();
       })
-      this.totalItem=this.tableData.length;
-      this.propsArr=this.tableData.map(function(value){
-        return JSON.stringify(value);
-      })//测试
+
+      // this.totalItem=this.tableData.length;
+      // this.propsArr=this.tableData.map(function(value){
+      //   return JSON.stringify(value);
+      // })//测试
+
       var that=this;
       this.filterData=this.copyArr(this.tableData).slice(0,this.pageSize);
       $.when(getAllUsers()).done(function(data){

@@ -45,3 +45,6 @@ export const changeClearAll= (state,payload) => {//将参数mes赋值给state的
 export const changeUserSource= (state,payload) => {//将参数mes赋值给state的变量subjectid 
 	state.userSource=payload.userSource;
 }
+export const changeMesId= (state,payload) => {//将参数mes赋值给state的变量subjectid 
+	state.mesId=payload.mesId;
+}

@@ -14,6 +14,7 @@ function scrollFun(){
 }
 window.onhashchange= matchMenu;
 function matchMenu(){
+	$("li").removeClass("blue");
 	var hash=window.location.hash;
 	if(hash.indexOf("contentManage")!=-1){
 		$(".contentManage").find("li").eq(1).addClass('blue');

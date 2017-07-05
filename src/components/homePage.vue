@@ -15,7 +15,7 @@
         </p>
         <p>
           <span>
-            <router-link to="/messageBox">
+            <router-link :to="{path:'/homePage/messageBox',query:{type:'1'}}">
               <img src="../../static/img/message.png" alt="">
               <span class="red-dot">3</span>
             </router-link>
@@ -24,7 +24,8 @@
                 <img src="../../static/img/user.png" alt="">
               </span>
               <el-dropdown-menu slot="dropdown" class="topDown">
-                <el-dropdown-item>用户名</el-dropdown-item>
+                <el-dropdown-item class="item_border">{{account}}</el-dropdown-item>
+                <!-- <el-dropdown-item>{{username}}</el-dropdown-item> -->
                 <el-dropdown-item command="changepw">修改密码</el-dropdown-item>
                 <el-dropdown-item style="display:none" command="resetpw">重置默认密码</el-dropdown-item>
                 <router-link to='/login'><el-dropdown-item>退出登录</el-dropdown-item></router-link>
@@ -75,6 +76,7 @@
     <loginBox></loginBox>
     <pwBox></pwBox>
     <initpwBox></initpwBox>
+    <mesDetailBox></mesDetailBox>
     <div class="mask mask1"></div>
     <div class="mask mask2"></div>
   </div>
@@ -94,14 +96,17 @@ import loginBox from '../components/loginBox.vue'
 import peopleBox from '../components/peopleBox.vue'
 import pwBox from '../components/pwBox.vue'
 import initpwBox from '../components/initpwBox.vue'
+import mesDetailBox from '../components/mesDetailBox.vue'
 export default {
   name: 'homePage',
   components: {
-    Hello,reportBox,psBox,articleBox,multiBox,userBox,peopleBox,mesBox,orgBox,unitBox,loginBox,initpwBox,pwBox},
+    Hello,reportBox,psBox,articleBox,multiBox,userBox,peopleBox,mesBox,orgBox,unitBox,loginBox,initpwBox,pwBox,mesDetailBox},
   data () {
     return {
       keyword:'',
       userSource:{},
+      account:'系统',
+      username:'xitong'
     }
   },
   methods:{
@@ -139,7 +144,7 @@ export default {
   },
   created(){
     this.userSource=JSON.parse(localStorage.getItem("userSource"));
-    if(this.userSource.level==0){
+    if(this.userSource&&this.userSource.level==0){
       this.$nextTick(function(){
         $(".topDown").children("li").eq(2).addClass("showBtn");
       })
@@ -149,6 +154,8 @@ export default {
         $(".topDown").children("li").eq(2).removeClass("showBtn");
       })
     }
+    // this.account=this.userSource?this.userSource.account:'';
+    this.username=this.userSource?this.userSource.username:'';
   }
 }
 </script>
@@ -326,5 +333,9 @@ body{
 .el-dropdown-menu a,.el-dropdown-menu .el-dropdown-menu__item{ 
   color:#333;
   font-size: 14px;
+  text-align: center;
+}
+.el-dropdown-menu .item_border{
+  border-bottom:1px solid #ccc;
 }
 </style>

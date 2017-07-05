@@ -1,6 +1,6 @@
 <template>
 	<div class="orgBox alertStyle">
-      <div class="alertTop">新增消息<span @click="hideUserBox"><img src="../../static/img/cancel.png"></span></div>
+      <div class="alertTop">组织编辑<span @click="hideUserBox"><img src="../../static/img/cancel.png"></span></div>
       <div class="alertContent">
         <el-form ref="form" :model="form" label-width="100px">
           <el-row :gutter="20">
@@ -55,12 +55,12 @@
 	    watch:{
 	      userState:{
 	        handler: function (val, oldVal) {//
-	          console.log(val);
 	          if(Object.keys(val).length!=0){
 	            this.form.org=val.org;　//这里编辑的时候 渲染组织名称
 	            this.form.unit=val.name;//渲染上级单位名称
 	            this.pid=val.pid;//上级单位的id
 	            this.orgid=val.id;//当前编辑的组织id
+	            console.log(this.orgid);
 	          }
 	          else{//表示新增
 	            this.form={
@@ -80,6 +80,10 @@
 	            this.pid=val[0].id;//获得修改之后的上级单位id
 	            this.form.unit=val[0].name;
 	          }
+	          else{
+	          	this.form.unit='';
+	          	this.pid='';//获得修改之后的上级单位id
+	          }
 	        },
 	        deep:true,
 	        immediate: true,
@@ -87,28 +91,39 @@
 	    },
 		methods:{
 		  operateUser(){
-	        console.log(this.orgid);
-	        if(this.orgid==""){//新增组织
-	          $.when(addOrg(this.form.org,this.pid)).done(function(data){
-	            if(data.state=="0"){
-	              var res=data.data;
-	            }
-	          })
+		  	if(this.form.org==""){
+	          alert("组织名称不能为空！");
 	        }
-	        else{//编辑组织
-	          $.when(editOrg(this.orgid,this.form.org,this.pid)).done(function(data){
-	            if(data.state=="0"){
-	              var res=data.data;
-	            }
-	          })
-	        }
+	        else{
+		        if(this.orgid==""){//新增组织
+		          $.when(addOrg(this.form.org,this.pid)).done(function(data){
+		            if(data.state=="0"){
+		              var res=data.data;
+		              alert("新增组织成功！");
+		              window.location.reload();
+		            }
+		          })
+		        }
+		        else{//编辑组织
+		          $.when(editOrg(this.orgid,this.form.org,this.pid)).done(function(data){
+		            if(data.state=="0"){
+		              var res=data.data;
+		              alert("编辑组织成功！");
+		              window.location.reload();
+		            }
+		          })
+		        }
+		    }
 	      },
 	      deleteUser(){
-	        $.when(deleteOrg(this.orgid)).done(function(data){
-	          if(data.state=="0"){
-	            var res=data.data;
-	          }
-	        })
+	      	if(confirm("确认删除该组织？")){
+	      	  $.when(deleteOrg(this.orgid)).done(function(data){
+		        if(data.state=="0"){
+		        	alert("删除成功！");
+		        	window.location.reload();
+		        }
+		      })
+	      	}
 	      },
 		  hideUserBox:function(){
 		    $(".mask1,.orgBox").removeClass("showBtn");

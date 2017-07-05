@@ -2,88 +2,34 @@
   <div class="contentPublish">
      <div class="rightBar">
       <p>发布内容-全部资讯：
-        <span>总共发布<span>136</span>篇,今日发布<span>12</span>篇</span>
+        <span>总共发布<span>{{totalNum}}</span>篇,今日发布<span>{{todayNum}}</span>篇</span>
       </p>
       <el-input
         placeholder="搜索内容"
         icon="search"
         v-model="input2"
-        class="input_position" :on-icon-click="handleInputClick" @keyup.13="handleInputClick">
+        class="input_position" :on-icon-click="handleInputClick" @keyup.native.enter='handleInputClick'>
       </el-input>
     </div>
-    <div class="rightContent_">
-      <span class="includeBtn" @click="clickBtn" @mouseover="overBtn" @mouseout="outBtn"><span>已发布</span></span>
-      <router-link to="/articleDetail">
+
+    <div class="rightContent_" v-for="(item,index) in articlesAarry">
+      <span class="includeBtn" @click="clickBtn($event,item.id)" @mouseover="overBtn" @mouseout="outBtn"><span>已发布</span></span>
+      <router-link :to="{ path: '/homePage/articleDetail', query: { id:item.id,edit:'0'}}">
         <div class="rightContent">
           <p class="title_bar">
-            <span>2016年度国家科学技术奖正式公布，128所高校获奖<span>
+            <span>{{item.title}}<span>
           </p>       
           <p class="title_bottom">
             <span>
-              <span class="bottom_item">来源：<span>山东大学新闻网（<span style="color:#0000FF;display:inline" @click="goSomewhere">http://www.news.zju.edu.cn/</span>）</span></span>
-              <span class="bottom_item">类别：<span>国家动态</span></span>
-              <span class="bottom_item">时间：<span>2014-06-11</span>&nbsp;&nbsp;<span>09:00</span></span>
-              <!-- <span class="bottom_item grey" @click="clickDel" @mouseover="overDel" @mouseout="outDel"><img src="../../static/img/alert-delete.png" alt=""><span class="dele-tips">删除</span></span> -->
+              <span class="bottom_item">来源：<span>{{item.source}}（<span style="color:#0000FF;display:inline" @click="goSomewhere">{{item.link}}</span>）</span></span>
+              <span class="bottom_item">类别：<span>{{item.type}}</span></span>
+              <span class="bottom_item">时间：<span>{{item.date}}</span></span>
             </span>
           </p>
         </div>
       </router-link>
     </div>
-    <div class="rightContent_">
-      <span class="includeBtn" @click="clickBtn" @mouseover="overBtn" @mouseout="outBtn"><span>已发布</span></span>
-      <router-link to="/articleDetail">
-        <div class="rightContent">
-          <p class="title_bar">
-            <span>2016年度国家科学技术奖正式公布，128所高校获奖<span>
-          </p>       
-          <p class="title_bottom">
-            <span>
-              <span class="bottom_item">来源：<span>山东大学新闻网（<span style="color:#0000FF;display:inline" @click="goSomewhere">http://www.news.zju.edu.cn/</span>）</span></span>
-              <span class="bottom_item">类别：<span>国家动态</span></span>
-              <span class="bottom_item">时间：<span>2014-06-11</span>&nbsp;&nbsp;<span>09:00</span></span>
-              <!-- <span class="bottom_item grey" @click="clickDel" @mouseover="overDel" @mouseout="outDel"><img src="../../static/img/alert-delete.png" alt=""><span class="dele-tips">删除</span></span> -->
-            </span>
-          </p>
-        </div>
-      </router-link>
-    </div>
-    <div class="rightContent_">
-      <span class="includeBtn" @click="clickBtn" @mouseover="overBtn" @mouseout="outBtn"><span>已发布</span></span>
-      <router-link to="/articleDetail">
-        <div class="rightContent">
-          <p class="title_bar">
-            <span>2016年度国家科学技术奖正式公布，128所高校获奖<span>
-          </p>       
-          <p class="title_bottom">
-            <span>
-              <span class="bottom_item">来源：<span>山东大学新闻网（<span style="color:#0000FF;display:inline" @click="goSomewhere">http://www.news.zju.edu.cn/</span>）</span></span>
-              <span class="bottom_item">类别：<span>国家动态</span></span>
-              <span class="bottom_item">时间：<span>2014-06-11</span>&nbsp;&nbsp;<span>09:00</span></span>
-              <!-- <span class="bottom_item grey" @click="clickDel" @mouseover="overDel" @mouseout="outDel"><img src="../../static/img/alert-delete.png" alt=""><span class="dele-tips">删除</span></span> -->
-            </span>
-          </p>
-        </div>
-      </router-link>
-    </div>
-    <div class="rightContent_">
-      <span class="includeBtn" @click="clickBtn" @mouseover="overBtn" @mouseout="outBtn"><span>已发布</span></span>
-      <router-link to="/articleDetail">
-        <div class="rightContent">
-          <p class="title_bar">
-            <span>2016年度国家科学技术奖正式公布，128所高校获奖<span>
-          </p>       
-          <p class="title_bottom">
-            <span>
-              <span class="bottom_item">来源：<span>山东大学新闻网（<span style="color:#0000FF;display:inline" @click="goSomewhere">http://www.news.zju.edu.cn/</span>）</span></span>
-              <span class="bottom_item">类别：<span>国家动态</span></span>
-              <span class="bottom_item">时间：<span>2014-06-11</span>&nbsp;&nbsp;<span>09:00</span></span>
-              <!-- <span class="bottom_item grey" @click="clickDel" @mouseover="overDel" @mouseout="outDel"><img src="../../static/img/alert-delete.png" alt=""><span class="dele-tips">删除</span></span> -->
-            </span>
-          </p>
-        </div>
-      </router-link>
-    </div>
-    <div class="rightBottom">
+    <div class="rightBottom" ref="rightBottom" @click="loadMore">
       <p>
       点击加载更多内容
       </p>
@@ -108,27 +54,35 @@ export default {
         label: '地方动态'
       }],
       value: '1',
+      pageNo:1,
       input2:'',
+      articlesAarry:[
+      ],
+      tableData:{
+        list:[
+          {
+              'id':'1',
+              "title":'湖南：每年遴选30名院士推荐名单，重点培养45岁以下人才！',
+              'source':'山东大学新闻网',
+              'link':'http://www.news.zju.edu.cn/',
+              'type':'国家动态',
+              'date':'2014-06-11',
+          },
+          {
+              'id':'2',
+              "title":'2016年度国家科学技术奖正式公布，128所高校获奖',
+              'source':'山东大学新闻网',
+              'link':'http://www.news.zju.edu.cn/',
+              'type':'国家动态',
+              'date':'2014-06-11',
+          }
+        ]
+      },
+      todayNum:'',
+      totalNum:'',
     }
   },
   methods:{
-    doThis:function(){
-
-    },
-    optionChangeHandler(val){
-        // if(val=='2'){
-        //   this.articlesFilter=this.articles.filter(this.filterCallback_1);
-        // }
-        // else if(val=='1'){
-        //   this.articlesFilter=this.articles
-        // }
-        // else if(val=='3'){
-        //   this.articlesFilter=this.articles.filter(this.filterCallback_2);
-        // }
-        // else if(val=='4'){
-        //   this.articlesFilter=this.articles.filter(this.filterCallback_3); 
-        // }
-    },
     outBtn:function(e){
       var el=$(e.target).closest(".includeBtn");
       var class_=el.hasClass('includeBtn_blue');
@@ -145,23 +99,98 @@ export default {
         el.addClass("includeBtn_blue").find("span").text("取消发布");
       }
     },
-    clickBtn:function(e){
+    clickBtn:function(e,id){
       console.log(e);
       e.stopPropagation();
       e.preventDefault();
+      $.when(releaseArticle(id)).done(function(data){
+        if(data.state=="0"){
+        }
+        else{
+          alert(data.data);
+        }
+      })
     },
     goSomewhere(e){
       var ele=e.currentTarget;
       e.preventDefault();
       window.open($(ele).text());
     },
+    insertData(data){
+      var that=this;
+      var res=data;
+      var len=that.articlesAarry.length;
+      that.totalNum=res.totalNum;
+      that.todayNum=res.todayNum; 
+      if(res.list&&res.list.length!=0){
+        $(that.$refs.rightBottom).children('p').text('点击加载更多内容');
+        res.list.map(function(value,index){
+          that.articlesAarry.push(value);
+        })
+      }
+      else{
+        if(that.pageNo==1){//只一页
+          $(that.$refs.rightBottom).children('p').text('暂无文章');
+          that.articlesAarry=[];
+        }
+        else{//多余一页
+          $(that.$refs.rightBottom).children('p').text('暂无更多文章');
+        }
+      }
+    },
     handleInputClick:function(){
-      
-    }
+      that.pageNo=1;
+      $.when(contentSearch(that.input2,that.pageNo)).done(function(data){
+        if(data.state=="0"){
+          that.insertData(data.data);
+        }
+        else{
+          alert(data.data);
+        }
+      })
+    },
+    loadMore(){
+      console.log("page");
+      console.log(this.pageNo);
+      this.pageNo=this.pageNo+1;
+      var that=this;
+      if(this.input2==""){
+        $.when(getReleasedList(that.pageNo)).done(function(data){
+          if(data.state=="0"){
+            that.insertData(data.data);
+          }
+          else{
+            alert(data.data);
+          }
+        })
+      }
+      else{
+        $.when(releasedSearch(that.input2,that.pageNo)).done(function(data){
+          if(data.state=="0"){
+            that.insertData(data.data);
+          }
+          else{
+            alert(data.data);
+          }
+        })
+      }
+    },
   },
   created:function(){
+    var that=this;
     this.$nextTick(function(){
       matchMenu();
+    })
+
+    that.insertData(that.tableData);//localTest
+
+    $.when(getReleasedList(that.pageNo)).done(function(data){
+      if(data.state=="0"){
+        that.insertData(data.data);
+      }
+      else{
+        alert(data.data);
+      }
     })
   }
 }

@@ -14,7 +14,7 @@
         placeholder="搜索已收录的内容"
         icon="search"
         v-model="input2"
-        class="input_position" :on-icon-click="handleInputClick" @keyup.13="handleInputClick">
+        class="input_position" :on-icon-click="handleInputClick" @keyup.native.enter='handleInputClick'>
       </el-input>
     </div>
     <div class="rightContent">

@@ -20,7 +20,7 @@ import homePage from '../components/homePage'
 const routes = [
   { path: '/login', component:login},
   // { path: '/', component:login},
-  {path: '/', redirect: '/homePage/dynamicArticle'},
+  {path: '/', redirect: '/login'},
   { path: '/homePage', component:homePage,children:[
     {path: 'dynamicArticle', component: AllInfomation},
     {path: 'manualArticle', component: AllInfomation},

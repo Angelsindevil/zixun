@@ -1,4 +1,5 @@
 <template>
+  <!-- 新增消息弹窗 -->
   <div class="mesBox alertStyle">
     <div class="alertTop">新增消息<span @click="hideMesBox"><img src="../../static/img/cancel.png"></span></div>
     <div class="alertContent">
@@ -26,13 +27,14 @@
     </div>
     <div class="alertBottom">
       <span class="rightBot">
-        <span class="bg_green" @click="hideMesBox">确定</span> 
+        <span class="bg_green" @click="hideMesBox(),addMes()">确定</span> 
         <span @click="hideMesBox" class="bg_cancle">取消</span> 
       </span>
     </div>
   </div>
 </template>
 <script>
+  import {mapGetters} from 'vuex'
   export default {
     name: 'app',
     data () {
@@ -43,25 +45,78 @@
           accept: '',
           send: '',
         },
-        state2:'',
-        isSelect:false,
+        userId:'',
+        userSource:{},
       }
+    },
+    computed: {
+      ...mapGetters({
+        selectArr: 'selectArr',
+      })
+    },
+    watch:{
+      selectArr:{
+        handler: function (val, oldVal) {//监听学校和指标数组，只要学科id没有变化，则不变化
+          if(val&&val.name.length<2){
+            this.form.accept=val.name[0];
+          }
+          else{
+            this.form.accept=val.name[0]+'...';
+          }
+        },
+        deep:true,
+        immediate: true,
+      },
     },
     methods:{
       hideMesBox:function(){
         $(".mask1,.mesBox").removeClass("showBtn");
       },
       showCommonBox:function(){
-        this.state2='';
         $(".mask2").addClass("showBtn");
         $(".mask1").removeClass("showBtn");
       },
       solvePeople:function(){
+        that.$store.dispatch('changeSelArr',{selectArr:{name:[],id:[]}}).then(function(resp){});
         $(".multiBox").addClass("showBtn");
         $(".printPs").removeClass("showBtn");
       },
+      addMes(){
+        var idArr=[];
+        if(this.selectArr.id&&this.selectArr.id.length>0){
+          idArr=this.selectArr.id;
+        }
+        else{
+        }
+        if(this.form.title==""){
+          alert("请输入消息标题！");
+        }
+        else if(this.form.content==""){
+          alert("请输入消息内容！");
+        }
+        else if(this.form.send==""){
+          alert("发送人不能为空！")
+        }
+        else if(idArr.length==0){
+          alert("还未选择接受人！");
+        }
+        else{
+          $.when(addMes(this.userId,this.form.title,this.form.area,idArr,this.form.send)).done(function(data){
+            if(data.state=='0'){
+              alert("新增系统消息成功！");
+              window.location.reload();
+              that.$store.dispatch('changeSelArr',{selectArr:{name:[],id:[]}}).then(function(resp){});
+            }
+            else{
+              alert(data.data);
+            }
+          })
+        }
+      },
     },
     mounted() {
+      this.userSource=JSON.parse(localStorage.getItem("userSource"));
+      this.userId=this.userSource?this.userSource.id:'';
     }
 
   }

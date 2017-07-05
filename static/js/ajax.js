@@ -6,7 +6,7 @@ var url="http://192.168.2.108:9000";//ct
 function getAllUsers(){
 	var ajax = $.ajax({
         url: url+"/api/user/fetchAllUser",
-        type: "POST",
+        type: "get",
         data:{}
 
     });
@@ -15,7 +15,7 @@ function getAllUsers(){
 function addUsers(orgid,account,username,level,password){
 	var ajax = $.ajax({
         url:url+ "/api/user/saveUser",
-        type: "POST",
+        type: "get",
         data:{
         	"orgId":orgid,
         	"account":account,
@@ -26,18 +26,18 @@ function addUsers(orgid,account,username,level,password){
     });
     return ajax;
 }
-function editUsers(id,orgid,account,username,level,password,method){
+function editUsers(id,orgid,account,username,level,password){
 	var ajax = $.ajax({
         url: url+"/api/user/updateUser",
-        type: "POST",
+        type: "get",
         data:{
         	"id":id,
         	"orgId":orgid,
         	"account":account,
         	"username":username,
         	"level":level,
-            "password":password,
-            "method":method,
+          "password":password,//重置的密码
+          // "method":method,
         }
 
     });
@@ -46,9 +46,20 @@ function editUsers(id,orgid,account,username,level,password,method){
 function cancelUsers(id){
 	var ajax = $.ajax({
         url: url+"/api/user/cancelUser",
-        type: "POST",
+        type: "get",
         data:{
         	"id":id,
+        }
+
+    });
+    return ajax;
+}
+function excancelUsers(id){
+  var ajax = $.ajax({
+        url: url+"/api/user/reinstateUser",
+        type: "get",
+        data:{
+          "id":id,
         }
 
     });
@@ -57,7 +68,7 @@ function cancelUsers(id){
 function deleteUsers(id){
 	var ajax = $.ajax({
         url: url+"/api/user/deleteUser",
-        type: "POST",
+        type: "get",
         data:{
         	"id":id,
         }
@@ -71,7 +82,7 @@ function getAllArticles(userid,method,type,pageNo){
     var ajax = $.ajax({
         url: url+"/api/article/getList",
         // contentType: 'application/json;charset=UTF-8',
-        type: "POST",
+        type: "get",
         data:{
             "userid":userid,
             "method":method,
@@ -86,7 +97,7 @@ function getAllArticles(userid,method,type,pageNo){
 function getArticleType(){
     var ajax = $.ajax({
         url: url+"/api/article/getType",
-        type: "POST",
+        type: "get",
         data:{
         }
 
@@ -96,7 +107,7 @@ function getArticleType(){
 function getArticleDetail(id){//获取文章详情
     var ajax = $.ajax({
         url: url+"/api/article/getContent",
-        type: "POST",
+        type: "get",
         data:{
             "id":id,
         }
@@ -106,8 +117,8 @@ function getArticleDetail(id){//获取文章详情
 }
 function canceled(id){//取消收录
     var ajax = $.ajax({
-        url: url+"/api/user/deleteUser",
-        type: "POST",
+        url: url+"/api/article/exclude",
+        type: "get",
         data:{
             "id":id,
         }
@@ -117,8 +128,8 @@ function canceled(id){//取消收录
 }
 function included(id){//收录
     var ajax = $.ajax({
-        url: url+"/api/user/deleteUser",
-        type: "POST",
+        url: url+"/api/article/include",
+        type: "get",
         data:{
             "id":id,
         }
@@ -129,12 +140,21 @@ function included(id){//收录
 function searchArticle(keyword,pageNo){//收录
     var ajax = $.ajax({
         url: url+"/api/article/searchArticle",
-        type: "POST",
+        // contentType: "application/json; charset=UTF-8",
+        // contentType : "application/x-www-form-urlencoded",
+        // contentType: "application/json",
+        type: "get",
+        // data:{
+        //     "keyword":keyword,
+        //     "pageNo":pageNo,
+        //     "pageSize":20,
+        // }
         data:{
-            "keyword":keyword,
-            "pageNo":pageNo,
-            "pageSize":20,
-        }
+          "keyword":keyword,
+          "pageNo":pageNo,
+          "pageSize":20,
+        },
+        // dataType: "json",
 
     });
     return ajax;
@@ -145,7 +165,7 @@ function searchArticle(keyword,pageNo){//收录
 function closeInstructions(instructionId){//关闭批示
     var ajax = $.ajax({
         url: url+"/api/article/close",
-        type: "POST",
+        type: "get",
         data:{
             "instructionId":instructionId,
         }
@@ -153,12 +173,15 @@ function closeInstructions(instructionId){//关闭批示
     });
     return ajax;
 }
-function getInstructionsList(userId){//获取批示列表
+function getInstructionsList(userId,type,pageNo){//获取批示列表
     var ajax = $.ajax({
         url: url+"/api/article/fetchAllInstruction",
-        type: "POST",
+        type: "get",
         data:{
             "userId":userId,
+            "pageNo":pageNo,
+            "type":type,
+            "pageSize":10,
         }
 
     });
@@ -167,17 +190,30 @@ function getInstructionsList(userId){//获取批示列表
 function addInstruction(formData){//新增批示
     var ajax = $.ajax({
         url: url+"/api/article/saveInstruction",
-        type: "POST",
+        type: "get",
         data: formData,
         processData: false,
         contentType: false,
     });
     return ajax;
 }
+function searchInstructionList(userId,keyword,pageNo){//搜索批示
+    var ajax = $.ajax({
+        url: url+"/api/article/saveInstruction",
+        type: "get",
+        data:{
+          "userId":userId,
+          "keyword":keyword,
+          "pageNo":pageNo,
+          "pageSize":10,
+        }
+    });
+    return ajax;
+}
 function addFeedback(formData){//新增反馈／分发
     var ajax = $.ajax({
         url: url+"/api/article/feedBackAndDis",
-        type: "POST",
+        type: "get",
         data: formData,
         processData: false,
         contentType: false,
@@ -187,7 +223,7 @@ function addFeedback(formData){//新增反馈／分发
 function getInstructionFlow(instructionId){//获取批示流程
     var ajax = $.ajax({
         url: url+"/api/article/viewInstructionDetial",
-        type: "POST",
+        type: "get",
         data:{
             "instructionId":instructionId,
         }
@@ -200,7 +236,7 @@ function getInstructionFlow(instructionId){//获取批示流程
 function loginPage(username,password){
   var ajax=$.ajax({
     url:url+'/api/user/login',
-    type:'POST',
+    type:'get',
     data:{
       "password":password,
       "account":username,
@@ -208,14 +244,13 @@ function loginPage(username,password){
   })
   return ajax;
 }
-function changePassword(userId,pwInit,pwModify){
+function changePassword(id,password){
   var ajax=$.ajax({
-    url:url+'/api/user/login',
-    type:'POST',
+    url:url+'/api/user/updateUser',
+    type:'get',
     data:{
-      "userId":userId,
-      "pwInit":pwInit,
-      "pwModify":pwModify,
+      "id":id,
+      "password":password,
     },
   })
   return ajax;
@@ -223,7 +258,7 @@ function changePassword(userId,pwInit,pwModify){
 function changeDefaultpw(userId,pwDefault){
   var ajax=$.ajax({
     url:url+'/api/user/login',
-    type:'POST',
+    type:'get',
     data:{
       "userId":userId,
       "pwDefault":pwDefault,
@@ -237,7 +272,7 @@ function changeDefaultpw(userId,pwDefault){
 function getOrgTree(){//获得组织树
   var ajax=$.ajax({
     url:url+'/api/org/getOrgTree',
-    type:'POST',
+    type:'get',
     data:{
     },
   })
@@ -246,7 +281,7 @@ function getOrgTree(){//获得组织树
 function getOrgList(){//获得组织列表
   var ajax=$.ajax({
     url:url+'/api/org/getOrgList',
-    type:'POST',
+    type:'get',
     data:{
     },
   })
@@ -255,7 +290,7 @@ function getOrgList(){//获得组织列表
 function addOrg(organization,superiors){
   var ajax=$.ajax({
     url:url+'/api/org/saveOrg',
-    type:'POST',
+    type:'get',
     data:{
         "organization":organization,
         "parentOrgId":superiors,
@@ -266,11 +301,11 @@ function addOrg(organization,superiors){
 function editOrg(id,organization,superiors){
   var ajax=$.ajax({
     url:url+'/api/org/updateOrg',
-    type:'POST',
+    type:'get',
     data:{
         "id":id,
         "organization":organization,
-        "superiors":superiors,
+        "parentOrgId":superiors,
     },
   })
   return ajax;
@@ -278,7 +313,7 @@ function editOrg(id,organization,superiors){
 function deleteOrg(id){
   var ajax=$.ajax({
     url:url+'/api/org/deleteOrg',
-    type:'POST',
+    type:'get',
     data:{
         "id":id,
     },
@@ -288,7 +323,7 @@ function deleteOrg(id){
 function searchOrg(keyword){
   var ajax=$.ajax({
     url:url+'/api/org/searchOrg',
-    type:'POST',
+    type:'get',
     data:{
         "keyword":keyword,
     },
@@ -297,16 +332,186 @@ function searchOrg(keyword){
 }
 
 //收录
-function getIncludedList(userid,type,pageCount,pageSize){
+function getIncludedList(userid,type,pageNo,pageSize){
   var ajax=$.ajax({
-    url:url+'/api/org/getOrgTree',
-    type:'POST',
+    url:url+'/api/org/deleteOrg',
+    type:'get',
     data:{
         "userid":userid,
         "type":type,
-        "pageCount":pageCount,
+        "pageNo":pageNo,
         "pageSize":10,
     },
   })
   return ajax;
 }
+
+function getContentList(pageNo){//获取文章列表（未发布）
+  var ajax=$.ajax({
+    url:url+'/api/org/deleteOrg',
+    type:'get',
+    data:{
+        // "userid":userid,
+        "method":'contentManage',
+        "pageNo":pageNo,
+        "pageSize":20,
+    },
+  })
+  return ajax;
+}
+function getReleasedList(pageNo){//获取已发布文章
+  var ajax=$.ajax({
+    url:url+'/api/org/deleteOrg',
+    type:'get',
+    data:{
+        "method":'contentManage',
+        "pageNo":pageNo,
+        "pageSize":20,
+        "isRelease":'1',
+    },
+  })
+  return ajax;
+}
+function releaseArticle(id){//发布文章
+  var ajax=$.ajax({
+    url:url+'/api/org/deleteOrg',
+    type:'get',
+    data:{
+       "id":id,
+    },
+  })
+  return ajax;
+}
+function cancelArticle(id){//取消发布文章
+  var ajax=$.ajax({
+    url:url+'/api/org/deleteOrg',
+    type:'get',
+    data:{
+       "id":id,
+    },
+  })
+  return ajax;
+}
+function deleteArticle(id){
+  var ajax=$.ajax({
+    url:url+'/api/org/deleteOrg',
+    type:'get',
+    data:{
+       "id":id,
+    },
+  })
+  return ajax;
+}
+function contentSearch(keyword,pageNo){//内容搜索
+  var ajax=$.ajax({
+    url:url+'/api/org/deleteOrg',
+    type:'get',
+    data:{
+       "id":id,
+       "pageNo":pageNo,
+       "pageSize":20,
+    },
+  })
+  return ajax;
+}
+function releasedSearch(keyword,pageNo){//内容搜索
+  var ajax=$.ajax({
+    url:url+'/api/org/deleteOrg',
+    type:'get',
+    data:{
+       "id":id,
+       "pageNo":pageNo,
+       "pageSize":20,
+       "isRelease":'1',
+    },
+  })
+  return ajax;
+}
+function addArticle(type,source,link,title,date,text){//新增文章
+  var ajax=$.ajax({
+    url:url+'/api/org/deleteOrg',
+    type:'get',
+    data:{
+       "type":type,
+       "source":source,
+       "link":link,
+       "title":title,
+       "date":date,
+       "text":text,
+    },
+  })
+  return ajax;
+}
+function editArticle(id,type,source,link,title,date,text){//编辑文章
+  var ajax=$.ajax({
+    url:url+'/api/org/deleteOrg',
+    type:'get',
+    data:{
+       "id":id,
+       "type":type,
+       "source":source,
+       "link":link,
+       "title":title,
+       "date":date,
+       "text":text,
+    },
+  })
+  return ajax;
+}
+
+//消息相关
+function messageDetail(id,method){//消息详情
+  var ajax=$.ajax({
+    url:url+'/api/message/getMessageList',
+    type:'get',
+    data:{
+       "id":id,
+       "method":method,
+    },
+  })
+  return ajax;
+}
+function getMessageList(userId,method,pageNo,type){//消息列表
+  var ajax=$.ajax({
+    url:url+'/api/message/getMessageList',
+    type:'get',
+    data:{
+       "userId":userId,
+       "method":method,
+       "pageSize":10,
+       "pageNo":pageNo,
+       "type":type,
+    },
+  })
+  return ajax;
+}
+function getSearchMesList(userId,method,pageNo,keyword){//消息搜索
+  var ajax=$.ajax({
+    url:url+'/api/message/getMessageList',
+    type:'get',
+    data:{
+       "userId":userId,
+       "method":method,
+       "pageSize":10,
+       "pageNo":pageNo,
+       "keyword":keyword,
+    },
+  })
+  return ajax;
+}
+function addMes(userId,title,content,receivers,sender){//新增消息
+  var ajax=$.ajax({
+    url:url+'/api/message/getMessageList',
+    type:'get',
+    data:{
+       "userId":userId,
+       // "method":method,
+       "title":title,
+       "content":content,
+       "receivers":receivers,
+       "sender":sender,
+    },
+  })
+  return ajax;
+}
+

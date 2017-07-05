@@ -12,7 +12,7 @@
         placeholder="搜索批示和反馈的内容"
         icon="search"
         v-model="input2"
-        class="input_position" :on-icon-click="handleInputClick" @keyup.13="handleInputClick">
+        class="input_position" :on-icon-click="handleInputClick" @keyup.native.enter='handleInputClick'>
       </el-input>
     </div>
     <div class="rightContent">

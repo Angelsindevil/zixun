@@ -28,10 +28,23 @@
      <!--  <ul>
         <li v-for="(item,index) in articlesAarry">
           <div class="rightContent_"> -->
-            <span class="includeBtn" :class="item.isInstructions=='0'?'':'grey'" :data-state="item.isInstructions" :data-pid="item.instructionId" :data-id="item.id" :data-title="item.title" :data-i="index" @click="includeThis" @mouseover="canceInclude" @mouseout="includeThis_" ref="includeBtn"><img src="../../static/img/plus.png" alt="" v-show="(level==0||level==2)?((item.isInstructions=='0')?true:false):((level==1)?true:false)">
+            <!-- <span class="includeBtn" :class="item.isInstructions=='0'?'':'grey'" :data-state="item.isInstructions" :data-pid="item.instructionId" :data-id="item.id" :data-title="item.title" :data-i="index" @click="includeThis" @mouseover="canceInclude" @mouseout="includeThis_" ref="includeBtn"><img src="../../static/img/plus.png" alt="" v-show="(level==0||level==2)?((item.isInstructions=='0')?true:false):((level==1)?true:false)"> -->
+
+
+              <span class="includeBtn" 
+              :v-show="(level!=3)?true:false"
+              :class="((level==0||level==2)?(item.isInstructions=='0'?'':'grey'):((level==1)?(item.isInclude=='0'?'':'grey'):''))"
+              :data-state="item.isInstructions" 
+              :data-pid="item.instructionId" 
+              :data-id="item.id" 
+              :data-title="item.title" 
+              :data-i="index" 
+              @click="includeThis" @mouseover="canceInclude" @mouseout="includeThis_" 
+              ref="includeBtn">
+              <img src="../../static/img/plus.png" alt="" 
+              v-show="(level==0||level==2)?((item.isInstructions=='0')?true:false):((level==1)?((item.isInclude=='0')?true:false):false)">
               <span>
               {{(level==0||(level==2))?(item.isInstructions=='0'?'批示':'批示中'):((level==1)?(item.isInclude=='0'?'收录':'已收录'):false)}}
-              <!-- {{item.isInstructions=='0'?'批示':'批示中'}} -->
               </span>
             </span>
             <router-link :to="{ path: '/homePage/articleDetail', query: { id:item.id,index:index,edit:'0'}}">
@@ -164,7 +177,7 @@ export default {
       }],
       // options: [],
       value: '全部内容',
-      userid:'001',
+      userid:'',
       totalNum:'',
       todayNum:'',
       keyword:'',
@@ -217,7 +230,6 @@ export default {
       }
       else{//this.add=='全部'以及其他所有可能
         // if(this.add=='全部'){
-          console.log("lala"); 
           $.when(getAllArticles(that.userid,that.value,that.type,that.pageNo)).done(function(data){
             if(data.state=="0"){
               that.insertData(data);
@@ -238,7 +250,6 @@ export default {
         var that=this;
         this.pageNo=1,
         this.articlesAarry=[];
-        console.log("lalala");
         $.when(getAllArticles(this.userid,val,this.type,that.pageNo)).done(function(data){
           if(data.state=="0"){
             that.insertData(data);
@@ -250,7 +261,7 @@ export default {
       // }
     },
     includeThis_:function(e){
-      console.log(this.btnState);
+      // e.stopPropagation();
       var el=$(e.target).closest(".includeBtn");
       var class_=el.hasClass('grey');
       if(this.btnState!='批示'){
@@ -292,17 +303,31 @@ export default {
       }
     },
     includeThis:function(e){
-      console.log(this.btnState);
+      // e.stopPropagation();
       if(this.btnState!='批示'){
-        console.log("收录fun")
         e.stopPropagation();
         var el=$(e.target).closest(".includeBtn");
         var class_=el.hasClass('red');
+        var id=$(el).attr("data-id");
         if(class_){
+          $.when(canceled(id)).done(function(data){
+            if(data.state=="0"){
+            }
+            else{
+              alert(data.data);
+            }
+          })
           el.removeClass("grey red").find("span").text("收录");
           el.find("img").attr("src","./static/img/plus.png");
         }
         else{
+          $.when(included(id)).done(function(data){
+            if(data.state=="0"){
+            }
+            else{
+              alert(data.data);
+            }
+          })
           el.addClass("grey").find("span").text("已收录");
           el.find("img").attr("src","./static/img/plus_grey.png");
         }
@@ -366,20 +391,21 @@ export default {
       // $('.contentBox').empty();
       var res=data.data;
       var len=that.articlesAarry.length;
-      console.log(len);
       that.totalNum=res.updateNum;
       that.todayNum=res.includeNum; 
       if(res.list&&res.list.length!=0){
-        $(that.$refs.rightBottom).children('p').text('点击加载更多内容');
+        if(res.list.length<20){
+          $(that.$refs.rightBottom).children('p').text('暂无更多文章');
+        }
+        else{
+          $(that.$refs.rightBottom).children('p').text('点击加载更多内容');
+        }
         res.list.map(function(value,index){
           that.articlesAarry.push(value);
         })
-        console.log(that.articlesAarry);
         // that.articlesAarry.concat(that.copyArr(res.list));
-        // console.log(that.articlesAarry);
       }
       else{
-        console.log("new");
         if(that.pageNo==1){//只一页
           $(that.$refs.rightBottom).children('p').text('暂无文章');
           that.articlesAarry=[];
@@ -390,10 +416,9 @@ export default {
       }
     },
     loadMore(){
-      this.pageNo+=this.pageNo;
-      console.log(this.flag);
+      this.pageNo=this.pageNo+1;
       var that=this;
-      if(!this.flag){
+      // if(!this.flag){
         if(this.keyword!=''&&this.keyword!=undefined){
           $.when(searchArticle(that.keyword,that.pageNo)).done(function(data){
             if(data.state=="0"){
@@ -405,9 +430,8 @@ export default {
             }
           })
         }
-      }
+      // }
       else{
-        console.log("lalalala")
         $.when(getAllArticles(that.userid,that.value,that.type,that.pageNo)).done(function(data){
           if(data.state=="0"){
             that.insertData(data);
@@ -426,13 +450,11 @@ export default {
     this.keyword = this.$route.query.keyword;
     this.add = this.$route.query.add;
     this.type=this.$route.query.type;//获得左侧菜单type
-    console.log(this.type);
     var that=this;
     if(this.keyword!=''&&this.keyword!=undefined){//有关键词的时候
       this.searchThis();
     }
     else{
-      console.log("la5")
       $.when(getAllArticles(that.userid,that.value,that.type,that.pageNo)).done(function(data){
         if(data.state=="0"){
           that.insertData(data);
@@ -464,12 +486,12 @@ export default {
     // })
     scrollFun();
     this.userSource=JSON.parse(localStorage.getItem("userSource"));
-    this.level=this.userSource.level;
+    this.level=this.userSource?this.userSource.level:'';
+    this.userid=this.userSource?this.userSource.id:'';
     if(this.level==0||this.level==2){
       this.btnState='批示';
     }
     else if(this.level==1){
-      console.log("收录");
       this.btnState='收录';
     }
     else{}

@@ -12,7 +12,7 @@
         placeholder="搜索批示和反馈的内容"
         icon="search"
         v-model="input2"
-        class="input_position" :on-icon-click="handleInputClick" @keyup.enter="handleInputClick">
+        class="input_position" :on-icon-click="handleInputClick" @keyup.native.enter='handleInputClick'>
       </el-input>
     </div>
     <div class="rightContent">
@@ -37,10 +37,10 @@
           </div> -->
         </p>
       </div>
-      <!-- <div class="title_content" v-for="(item,index) in articlesFilter"> -->
+      <!-- <div class="title_content" v-for="(item,index) in articlesAarry"> -->
       <div class="title_content">
         <ul>
-          <li v-for="(item,index) in articlesFilter">
+          <li v-for="(item,index) in articlesAarry">
             <span class="ellipsis" style="display:block;padding-right:250px">批示内容：<span>{{item.title}}</span>  - <span>{{item.date}}</span></span>
             <span class="includeBtn_" :class="(item.rowState!=0)?'orange':'grey'"><span>{{item.btn_con}}</span></span>
             <!-- <router-link to="/instructionsDetail"><span class="includeBtn"><span>查看</span><img src="../../static/img/arrow_blue.png" alt=""></span></router-link> -->
@@ -50,7 +50,7 @@
         </ul>
       </div>
     </div>  
-    <div class="rightBottom">
+    <div class="rightBottom" ref="rightBottom" @click="loadMore">
       <p>
       点击加载更多内容
       </p>
@@ -65,25 +65,25 @@ export default {
   data () {
     return {
        options: [{
-          value: '1',
+          value: '0',
           label: '全部内容'
         }, {
-          value: '2',
+          value: '1',
           label: '流程已结束'
         }, {
-          value: '3',
+          value: '2',
           label: '新反馈'
         }, {
-          value: '4',
+          value: '3',
           label: '新批示'
         },
         {
-          value: '5',
+          value: '4',
           label: '新分发'
         }
         ],
         userId:'d733ed4b5afd11e79ea400269e28ab11',
-        value: '1',
+        value: '0',
         input2: '',
         articles:[
         // {title:'国家“双一流”实施方案正式出台，预计2017年上半年公布名单',date:"2016/12/10",rowState:'0',btn_con:'流程已结束',instructionsId:'01'},
@@ -94,10 +94,12 @@ export default {
         // {title:'测试文章2',date:"2016/12/10",rowState:'0',btn_con:'流程已结束',instructionsId:'06'},
         // {title:'测试文章3',date:"2016/12/10",rowState:'0',btn_con:'流程已结束',instructionsId:'07'},
         ],
-        articlesFilter:[],
+        articlesAarry:[],
         totalNum:'',
         todayNum:'',
-
+        pageNo:1,
+        userSource:{},
+        userid:'',
     }
   },
   methods:{
@@ -109,63 +111,79 @@ export default {
       this.$store.dispatch('changePsShow',{psShow:{}}).then(function(resp){});
     },
     handleInputClick() {
-      console.log("1");
-      　this.articlesFilter=this.articles.filter(this.filterCallback_4); 
+      var that=this;
+      that.pageNo=1;
+      $.when(searchInstructionList(that.userid,that.input2,that.pageNo)).done(function(data){
+        if(data.state=="0"){
+          that.insertData(data.data);
+        }
+        else{
+          alert(data.data);
+        }
+      })
     },
     optionChangeHandler(val){
-        if(val=='2'){
-          this.articlesFilter=this.articles.filter(this.filterCallback_1);
-        }
-        else if(val=='1'){
-          this.articlesFilter=this.articles
-        }
-        else if(val=='3'){
-          this.articlesFilter=this.articles.filter(this.filterCallback_2);
-        }
-        else if(val=='4'){
-          this.articlesFilter=this.articles.filter(this.filterCallback_3); 
-        }
-        else if(val=='5'){
-          this.articlesFilter=this.articles.filter(this.filterCallback_5); 
-        }
+        var that=this;
+        this.pageNo=1,
+        this.articlesAarry=[];
+        $.when(getInstructionsList(this.userid,val,that.pageNo)).done(function(data){
+          if(data.state=="0"){
+            that.insertData(data);
+          }
+          else{
+            alert(data.data);
+          }
+        })
+        // if(val=='2'){
+        //   this.articlesAarry=this.articles.filter(this.filterCallback_1);
+        // }
+        // else if(val=='1'){
+        //   this.articlesAarry=this.articles
+        // }
+        // else if(val=='3'){
+        //   this.articlesAarry=this.articles.filter(this.filterCallback_2);
+        // }
+        // else if(val=='4'){
+        //   this.articlesAarry=this.articles.filter(this.filterCallback_3); 
+        // }
+        // else if(val=='5'){
+        //   this.articlesAarry=this.articles.filter(this.filterCallback_5); 
+        // }
+
     },
-    filterCallback_1(item,index,array){
-      if(item.rowState=='0'){
-        return true;
-      }
-    },
-    filterCallback_2(item,index,array){
-      if(item.rowState=='1'){
-        return true;
-      }
-    },
-    filterCallback_3(item,index,array){
-      if(item.rowState=='2'){
-        return true;
-      }
-    },
-    filterCallback_4(item,index,array){//搜索过滤
-      if(item.title.indexOf(this.input2)!=-1){
-        return true;
-      }
-    },
-    filterCallback_5(item,index,array){//搜索过滤
-      if(item.rowState=='3'){
-        return true;
-      }
-    }
-  },
-  created(){
-    // this.articlesFilter=this.articles;
-    var that=this;
-    this.$nextTick(function(){
-      matchMenu();
-    });
-    $.when(getInstructionsList(this.userId)).done(function(data){
-      if(data.state=='0'){
-        var res=data.data;
-        that.totalNum=res.totalNum;
-        that.todayNum=res.todayNum;
+    // filterCallback_1(item,index,array){
+    //   if(item.rowState=='0'){
+    //     return true;
+    //   }
+    // },
+    // filterCallback_2(item,index,array){
+    //   if(item.rowState=='1'){
+    //     return true;
+    //   }
+    // },
+    // filterCallback_3(item,index,array){
+    //   if(item.rowState=='2'){
+    //     return true;
+    //   }
+    // },
+    // filterCallback_4(item,index,array){//搜索过滤
+    //   if(item.title.indexOf(this.input2)!=-1){
+    //     return true;
+    //   }
+    // },
+    // filterCallback_5(item,index,array){//搜索过滤
+    //   if(item.rowState=='3'){
+    //     return true;
+    //   }
+    // }
+    insertData(data){
+      var that=this;
+      var res=data.data;
+      var len=that.articlesAarry.length;
+      that.totalNum=res.totalNum;
+      that.todayNum=res.todayNum;
+      if(res.list&&res.list.length!=0){
+        $(that.$refs.rightBottom).children('p').text('点击加载更多批示');
         that.articles=res.results.map(function(value,index){
           var btn_con;
           if(value.rowState=='0'){
@@ -189,7 +207,81 @@ export default {
             "instructionsId":value.instructionsId,
           }
         })
-        that.articlesFilter=that.articles;
+        that.articlesAarry=that.articles;
+      }
+      else{
+        if(that.pageNo==1){//只一页
+          $(that.$refs.rightBottom).children('p').text('暂无批示');
+          that.articlesAarry=[];
+        }
+        else{//多余一页
+          $(that.$refs.rightBottom).children('p').text('暂无更多批示');
+        }
+      }
+    },
+    loadMore(){
+      this.pageNo=this.pageNo+1;
+      var that=this;
+      if(this.input2==""){
+        $.when(getInstructionsList(that.userid,that.value,that.pageNo)).done(function(data){
+          if(data.state=="0"){
+            that.insertData(data.data);
+          }
+          else{
+            alert(data.data);
+          }
+        })
+      }
+      else{
+        $.when(searchInstructionList(that.userid,that.input2,that.pageNo)).done(function(data){
+          if(data.state=="0"){
+            that.insertData(data.data);
+          }
+          else{
+            alert(data.data);
+          }
+        })
+      }
+    },
+  },
+  created(){
+    // this.articlesAarry=this.articles;
+    var that=this;
+    this.userSource=JSON.parse(localStorage.getItem("userSource"));
+    this.userid=this.userSource?this.userSource.id:'';
+    this.$nextTick(function(){
+      matchMenu();
+    });
+    $.when(getInstructionsList(that.userid,that.value,that.pageNo)).done(function(data){
+      if(data.state=='0'){
+        // var res=data.data
+        that.insertData(data);;
+        // that.totalNum=res.totalNum;
+        // that.todayNum=res.todayNum;
+        // that.articles=res.results.map(function(value,index){
+        //   var btn_con;
+        //   if(value.rowState=='0'){
+        //     btn_con="流程已结束";
+        //   }
+        //   else if(value.rowState=='1'){
+        //     btn_con="新反馈"
+        //   }
+        //   else if(value.rowState=='2'){
+        //     btn_con="新批示"
+        //   }
+        //   else if(value.rowState=='3'){
+        //     btn_con="新分发"
+        //   }
+        //   else{}
+        //   return {
+        //     "title":value.title,
+        //     "date":value.date,
+        //     "rowState":value.rowState,
+        //     "btn_con":btn_con,
+        //     "instructionsId":value.instructionsId,
+        //   }
+        // })
+        // that.articlesAarry=that.articles;
       }
       else{
         alert(data.data);

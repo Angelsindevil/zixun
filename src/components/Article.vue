@@ -41,6 +41,14 @@ export default {
       btnState:'批示',
       instructionId:'',
       edit:'',
+      datanew:{
+        'id':'1',
+        "title":'湖南：每年遴选30名院士推荐名单，重点培养45岁以下人才！',
+        'source':'山东大学新闻网',
+        'type':'国家动态',
+        'date':'2014-06-11',
+        'content':'<br>今天上午，湖南省科协第十次全省代表大会闭幕。会议中《湖南省科协事业发展“十三五”规划纲要》（下称《规划》)获通过，明确了我省科协事业“十三五”期间的<span style="color:red">发展目标</span>和主要任务。...',
+      }
     }
   },
   methods:{
@@ -197,6 +205,7 @@ export default {
       })
     }
     else{
+      localStorage.setItem("editor",JSON.stringify(this.datanew));
       this.$nextTick(function(){
         $(".art_edit").addClass("showBtn");
       })
@@ -207,6 +216,7 @@ export default {
       $.when(getArticleDetail(that.id)).done(function(data){
         if(data.state=="0"){
           var res=data.data;
+          localStorage.setItem("editor",JSON.stringify(res));
           that.content=res.content;
           that.date=res.time;
           that.type=res.type;

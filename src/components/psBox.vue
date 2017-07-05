@@ -139,7 +139,8 @@
         // for (var i=0;i<val.length;i++) {
         //   this.input3+=val[i]+' ';
         // }
-        if(val.length<2){
+        console.log("123");
+        if(val.length<2){//待测试
           this.input3=val.name[0];
         }
         else{

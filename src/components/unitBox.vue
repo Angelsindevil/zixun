@@ -169,6 +169,10 @@
             }
             else{}
             console.log(this.orgid);
+
+            // $.fn.zTree.init($("#tree"), that.setting, that.data2);//insert。弃之
+            // that.rootObj=$.fn.zTree.getZTreeObj("tree");//弃之
+
             this.rootObj.expandAll(false);
             for(var i=0;i<this.nodeAll.length;i++){
               if(this.nodeAll[i].id==this.orgid){//编辑的渲染
@@ -182,6 +186,11 @@
             // this.rootObj.expandNode(this.rootObj.getNodes()[0], true);
             // this.rootObj.checkNode(this.rootObj.getNodes()[0], true, true);
             var that=this;
+
+            // this.$nextTick(function(){
+            //   that.initTree();//弃之
+            // })
+
             $.when(getOrgTree()).done(function(data){
               if(data.state=='0'){
                 that.data2=data.data;

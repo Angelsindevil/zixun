@@ -26,7 +26,7 @@
           <img src="../../static/img/pw_full.png" alt="">
         </div> 
 				<div class="remember_me">
-          <el-checkbox v-model="checked">记住我</el-checkbox>
+          <el-checkbox v-model="checked" @change="rememberMe">记住我</el-checkbox>
         </div>
         <div class="forgetPw">
           <el-tooltip class="item" effect="dark" content="请联系学校管理员" placement="right">
@@ -62,15 +62,51 @@ export default {
           // that.$store.dispatch('changeUserSource',{userSource:data.data}).then(function(resp){});
           that.$router.push({path:'/homePage/articleList',query: { index: 0 ,type:'全部内容'}});
           localStorage.setItem("userSource",JSON.stringify(data.data));
+          localStorage.setItem("initPassword",data.pwDefault);
+        }
+        else{
+          alert(data.data);
         }
       })
-    }
+    },
+    rememberMe(){
+      console.log(this.checked);
+      // if($('#rememberMe:checked').length>0){//设置cookie  
+      if(this.checked){
+        // $.cookie('absms_crm2_userName', this.input1,{ expires: 7 });  
+        // $.cookie('absms_crm2_password', this.input2,{ expires: 7 }); 
+        this.$cookie.set('absms_crm2_userName',this.input1,{ expires: 7 }); 
+        this.$cookie.set('absms_crm2_password',this.input2,{ expires: 7 }); 
+      }else{//清除cookie  
+        this.$cookie.delete('absms_crm2_userName');
+        this.$cookie.delete('absms_crm2_password');
+        // $.removeCookie('absms_crm2_userName');  
+        // $.removeCookie('absms_crm2_password');  
+      }  
+    },
   },
   mounted(){
+    if(this.$cookie.get('absms_crm2_userName')!=undefined){  
+      this.checked=true;
+    }else{ 
+      this.checked=false;
+    }     
+    //读取cookie  
+    if(this.checked){ 
+      this.input1=this.$cookie.get('absms_crm2_userName'); 
+      this.input2=this.$cookie.get('absms_crm2_password'); 
+      // this.input1=$.cookie('absms_crm2_userName');
+      // this.input2=$.cookie('absms_crm2_password');
+    }       
+    //监听【记住我】事件  
   }
 }
 </script>
 
 <style lang="less">
   @import '../../static/less/loginPage.less';
+  // background-image: url('./static/img/background_new.png');
+  .loginPage{
+    background-image: url('../../static/img/background_new.png');
+  }
 </style>
