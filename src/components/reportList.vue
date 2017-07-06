@@ -239,6 +239,7 @@ export default {
     }
     .btn_position{
       font-size: 13px;
+      padding:10px 15px;
     }
   }
   .rightBar{
@@ -310,13 +311,15 @@ export default {
   .rightContent{
     width:100%;
     margin-top:10px;
-    border:1px solid #ccc;
+    // border:1px solid #ccc;
     background-color: #fff;
-    border-radius:8px;
+    // border-radius:8px;
     .title_bar{
       font-size:16px;
       padding:20px;
       position: relative;
+      border: 1px solid #e4e4e4;
+      border-radius:5px;
       // border-bottom:1px solid #eee;
       img{
         display:inline-block;

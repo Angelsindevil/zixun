@@ -1,6 +1,6 @@
 <template>
   <!-- 登录页面 -->
-  <div class="loginPage">
+  <div class="loginPage" style="background-image: url('./static/img/bgImage.png');">
     <p class="topTips">
       <img src="../../static/img/logo.png" alt="">
       <span>西安交通大学资讯平台</span> 
@@ -57,6 +57,7 @@ export default {
     doLogin(){
       var pw=md5(this.input2);
       var that=this;
+      this.rememberMe();
       $.when(loginPage(this.input1,pw)).done(function(data){
         if(data.state==0){
           // that.$store.dispatch('changeUserSource',{userSource:data.data}).then(function(resp){});
@@ -90,14 +91,15 @@ export default {
       this.checked=true;
     }else{ 
       this.checked=false;
-    }     
+    }
+    console.log(this.$cookie.get('absms_crm2_userName'));     
     //读取cookie  
     if(this.checked){ 
       this.input1=this.$cookie.get('absms_crm2_userName'); 
       this.input2=this.$cookie.get('absms_crm2_password'); 
       // this.input1=$.cookie('absms_crm2_userName');
       // this.input2=$.cookie('absms_crm2_password');
-    }       
+    }   
     //监听【记住我】事件  
   }
 }
@@ -107,6 +109,6 @@ export default {
   @import '../../static/less/loginPage.less';
   // background-image: url('./static/img/background_new.png');
   .loginPage{
-    background-image: url('../../static/img/background_new.png');
+    // background-image: url('../../static/img/background_new.png');
   }
 </style>

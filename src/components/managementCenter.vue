@@ -19,7 +19,7 @@
       <div class="title_bar">
         <p>
           <span><img src="../../static/img/edit_reporter.png" alt="">收到的批示和反馈</span>
-          <el-button type="success" class="button_style" @click="showPSBox">发起新流程</el-button>
+          <el-button type="success" class="button_style addPsBtn" @click="showPSBox">发起新流程</el-button>
           <!-- <span class="includeBtn_ green">发起新流程</span> -->
           <el-select v-model="value" placeholder="" @change="optionChangeHandler">
             <el-option
@@ -100,6 +100,7 @@ export default {
         pageNo:1,
         userSource:{},
         userid:'',
+        level:'',
     }
   },
   methods:{
@@ -113,9 +114,9 @@ export default {
     handleInputClick() {
       var that=this;
       that.pageNo=1;
-      $.when(searchInstructionList(that.userid,that.input2,that.pageNo)).done(function(data){
+      $.when(searchInstructionList(that.userid,that.input2,that.value,that.pageNo)).done(function(data){
         if(data.state=="0"){
-          that.insertData(data.data);
+          that.insertData(data);
         }
         else{
           alert(data.data);
@@ -126,7 +127,7 @@ export default {
         var that=this;
         this.pageNo=1,
         this.articlesAarry=[];
-        $.when(getInstructionsList(this.userid,val,that.pageNo)).done(function(data){
+        $.when(searchInstructionList(that.userid,that.input2,val,that.pageNo)).done(function(data){
           if(data.state=="0"){
             that.insertData(data);
           }
@@ -182,8 +183,18 @@ export default {
       var len=that.articlesAarry.length;
       that.totalNum=res.totalNum;
       that.todayNum=res.todayNum;
-      if(res.list&&res.list.length!=0){
-        $(that.$refs.rightBottom).children('p').text('点击加载更多批示');
+      if(res.results&&res.results.length!=0){
+        if(res.results.length<20){
+          $(that.$refs.rightBottom).children('p').text('暂无更多批示');
+          if(that.pageNo==1){
+            that.articlesAarry=[];
+          }
+          else{}
+        }
+        else{
+          $(that.$refs.rightBottom).children('p').text('点击加载更多批示');
+        }
+        // $(that.$refs.rightBottom).children('p').text('点击加载更多批示');
         that.articles=res.results.map(function(value,index){
           var btn_con;
           if(value.rowState=='0'){
@@ -222,26 +233,26 @@ export default {
     loadMore(){
       this.pageNo=this.pageNo+1;
       var that=this;
-      if(this.input2==""){
-        $.when(getInstructionsList(that.userid,that.value,that.pageNo)).done(function(data){
+      // if(this.input2==""){
+      //   $.when(getInstructionsList(that.userid,that.pageNo)).done(function(data){
+      //     if(data.state=="0"){
+      //       that.insertData(data.data);
+      //     }
+      //     else{
+      //       alert(data.data);
+      //     }
+      //   })
+      // }
+      // else{
+        $.when(searchInstructionList(that.userid,that.input2,that.value,that.pageNo)).done(function(data){
           if(data.state=="0"){
-            that.insertData(data.data);
+            that.insertData(data);
           }
           else{
             alert(data.data);
           }
         })
-      }
-      else{
-        $.when(searchInstructionList(that.userid,that.input2,that.pageNo)).done(function(data){
-          if(data.state=="0"){
-            that.insertData(data.data);
-          }
-          else{
-            alert(data.data);
-          }
-        })
-      }
+      // }
     },
   },
   created(){
@@ -249,10 +260,21 @@ export default {
     var that=this;
     this.userSource=JSON.parse(localStorage.getItem("userSource"));
     this.userid=this.userSource?this.userSource.id:'';
+    this.level=this.userSource?this.userSource.level:'';
+    if(this.level==2||this.level==0){
+      this.$nextTick(function(){
+        $(".addPsBtn").show();
+      });
+    }
+    else{
+      this.$nextTick(function(){
+        $(".addPsBtn").hide();
+      });
+    }
     this.$nextTick(function(){
       matchMenu();
     });
-    $.when(getInstructionsList(that.userid,that.value,that.pageNo)).done(function(data){
+    $.when(getInstructionsList(that.userid,that.pageNo)).done(function(data){
       if(data.state=='0'){
         // var res=data.data
         that.insertData(data);;

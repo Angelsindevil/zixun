@@ -207,7 +207,7 @@ export default {
           $(".messageManage").children("li").eq(2).hide();
           $(".dataManage").addClass("showBtn");
         }
-        else{//批示用户
+        else{//普通用户
         }
       }
     })
@@ -245,7 +245,7 @@ export default {
       border-radius:5px;
       float: left;
       .ulStyle{
-        display:none;
+        // display:none;
       }
       ul{
         margin:0;
@@ -274,7 +274,7 @@ export default {
             }
           }
           img{
-            margin-bottom: -2px;
+            margin-bottom: -4px;
             display:inline-block;
             padding-right:10px;
             width:21px;
@@ -299,10 +299,12 @@ export default {
       }
       ul:after{
         content:'';
-        background-color: #fff;
+        background-color: #aaa;
         height:1px;
         position: absolute;
         width:100%;
+        // left:20px;
+        // right:20px;
         left:0;
         bottom:-10px;
       }

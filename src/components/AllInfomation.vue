@@ -1,9 +1,9 @@
 <template>
   <!-- 动态资讯列表 -->
   <div class="test allInfomations">
-    <div class="showTop" @click="showTop">
+    <!-- <div class="showTop" @click="showTop">
       <img src="../../static/img/toTop.png" title="点击回到顶部">
-    </div>
+    </div> -->
     <div class="rightBar">
       <p>信息平台-全部信息：
         <!-- <span>今日更新<span>136</span>篇，今日收录<span>12</span>篇</span> -->
@@ -41,8 +41,12 @@
               :data-i="index" 
               @click="includeThis" @mouseover="canceInclude" @mouseout="includeThis_" 
               ref="includeBtn">
-              <img src="../../static/img/plus.png" alt="" 
-              v-show="(level==0||level==2)?((item.isInstructions=='0')?true:false):((level==1)?((item.isInclude=='0')?true:false):false)">
+              <!-- <img src="../../static/img/plus.png" alt="" 
+              v-show="(level==0||level==2)?((item.isInstructions=='0')?true:false):((level==1)?((item.isInclude=='0')?true:false):false)"> -->
+              <img 
+              :src="(level==1)?((item.isInclude=='0')?'./static/img/plus.png':'./static/img/plus_grey.png'):'./static/img/plus.png'" 
+              alt="" 
+              v-show="(level==0||level==2)?((item.isInstructions=='0')?true:false):((level==1)?true:false)">
               <span>
               {{(level==0||(level==2))?(item.isInstructions=='0'?'批示':'批示中'):((level==1)?(item.isInclude=='0'?'收录':'已收录'):false)}}
               </span>
@@ -168,11 +172,11 @@ export default {
         label: '全部内容'
       }, 
       {
-        value: '动态资讯',
+        value: 'dynamic',
         label: '动态资讯'
       }, 
       {
-        value: '校内信息',
+        value: 'manual',
         label: '校内信息'
       }],
       // options: [],
@@ -202,9 +206,9 @@ export default {
     '$route': 'searchThis'
   },
   methods:{
-    showTop(){
-      $(document).scrollTop(0);
-    },
+    // showTop(){
+    //   $(document).scrollTop(0);
+    // },
     searchThis:function(){
       this.pageNo=1,
       this.flag=true;
@@ -396,6 +400,10 @@ export default {
       if(res.list&&res.list.length!=0){
         if(res.list.length<20){
           $(that.$refs.rightBottom).children('p').text('暂无更多文章');
+          if(that.pageNo==1){
+            that.articlesAarry=[];
+          }
+          else{}
         }
         else{
           $(that.$refs.rightBottom).children('p').text('点击加载更多内容');
@@ -484,7 +492,7 @@ export default {
     //     alert(data.data);
     //   }
     // })
-    scrollFun();
+    // scrollFun();
     this.userSource=JSON.parse(localStorage.getItem("userSource"));
     this.level=this.userSource?this.userSource.level:'';
     this.userid=this.userSource?this.userSource.id:'';
@@ -512,29 +520,29 @@ export default {
     }
   }
   .allInfomations{
-    .showTop{
-      cursor:pointer;
-      display:none;
-      position: fixed;
-      bottom:100px;
-      right:30px;
-      width:40px;
-      height:40px;
-      background-color: rgba(204,204,204,.8);
-      border-radius: 50%;
-      text-align: center;
-      box-shadow:0 0 10px #aaa;
-      img{
-        display: inline-block;
-          width: 22px;
-          height: 22px;
-          vertical-align: middle;
-          margin-top: 10px;
-      }
-    }
-    .showTop:hover,.showTop:active{
-      background-color: #b5b5b5;
-    }
+    // .showTop{
+    //   cursor:pointer;
+    //   display:none;
+    //   position: fixed;
+    //   bottom:100px;
+    //   right:30px;
+    //   width:40px;
+    //   height:40px;
+    //   background-color: rgba(204,204,204,.8);
+    //   border-radius: 50%;
+    //   text-align: center;
+    //   box-shadow:0 0 10px #aaa;
+    //   img{
+    //     display: inline-block;
+    //       width: 22px;
+    //       height: 22px;
+    //       vertical-align: middle;
+    //       margin-top: 10px;
+    //   }
+    // }
+    // .showTop:hover,.showTop:active{
+    //   background-color: #b5b5b5;
+    // }
     .rightBar{
       height:60px;
       width:100%;

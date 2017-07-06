@@ -102,6 +102,9 @@
 		              alert("新增组织成功！");
 		              window.location.reload();
 		            }
+		            else{
+		            	alert(data.data);
+		            }
 		          })
 		        }
 		        else{//编辑组织
@@ -110,6 +113,9 @@
 		              var res=data.data;
 		              alert("编辑组织成功！");
 		              window.location.reload();
+		            }
+		            else{
+		            	alert(data.data);
 		            }
 		          })
 		        }
@@ -122,6 +128,9 @@
 		        	alert("删除成功！");
 		        	window.location.reload();
 		        }
+		        else{
+	            	alert(data.data);
+	            }
 		      })
 	      	}
 	      },

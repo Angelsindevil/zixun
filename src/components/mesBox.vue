@@ -77,6 +77,7 @@
         $(".mask1").removeClass("showBtn");
       },
       solvePeople:function(){
+        var that=this;
         that.$store.dispatch('changeSelArr',{selectArr:{name:[],id:[]}}).then(function(resp){});
         $(".multiBox").addClass("showBtn");
         $(".printPs").removeClass("showBtn");

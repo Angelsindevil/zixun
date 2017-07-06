@@ -105,6 +105,7 @@
         orgid:'',
         accountState:false,
         password:'',
+        pwDefault:'',
         cancelTxt:'注销',
         alreadyCancel:false,
         // flag:'0',
@@ -136,6 +137,7 @@
             }
             else{
               this.cancelTxt='注销'
+              this.alreadyCancel=false;
             }
           }
           else{//表示新增
@@ -168,7 +170,8 @@
 		methods:{
       changepw(){
         if(confirm('确认重置密码吗？')){
-          this.flag='1';
+          // this.flag='1';
+          this.password=this.pwDefault;
         }
       },
       levelJudge(value){
@@ -200,17 +203,18 @@
 		  optionChangeHandler(val){
 		  },
       operateUser(){
-        var pw=md5(this.password);
-
         //此时列表中没有组织！！！！
-
+        if(this.password==undefined){
+          this.password="";
+        }
+        else{}
         if(this.orgid==""){
           alert("所属组织不能为空！");
         }
         else if(this.form.account==""){
           alert("用户账号不能为空！");
         }
-        else if(this.form.name){
+        else if(this.form.name==""){
           alert("用户姓名不能为空！");
         }
         else 
@@ -293,7 +297,9 @@
 		},
     created(){
       var val=localStorage.getItem("initPassword");
-      this.password=val?val:'';
+      if(val){
+        this.pwDefault=val?val:'';
+      }
     }
 	}
 </script>

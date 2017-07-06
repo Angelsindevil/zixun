@@ -4,7 +4,7 @@
     <div class="alertContent">
       <div class="contentTop">
         <p class="mesTitle">{{filterData.title}}</p>
-        <p><span>发送人：<span>{{filterData.sender}}</span></span><span>接收时间：<span>{{filterData.date}}</span></span></p>
+        <p><span>发送人：<span>{{filterData.sender}}</span></span><span>接收时间：<span>{{filterData.receiveTime}}</span></span></p>
       </div>
       <div class="contentBottom">
         {{filterData.content}}
@@ -30,7 +30,14 @@
           sender:'admin',
           date:'2016-11-24 08:52',
           content:'今天上午，湖南省科协第十次全省代表大会闭幕。会议中《湖南省科协事业发展“十三五”规划纲要》（下称《规划》',
-        }
+        },
+        // filterData:{
+        //   title:'',
+        //   sender:'',
+        //   date:'',
+        //   content:'',
+        // },
+        filterData:{},
       }
     },
     computed: {
@@ -44,9 +51,9 @@
           console.log(val);//用来渲染从文章列表或者文章详情点击进入的批示弹窗 选取文章的时候 事先渲染选中值
           var that=this;
           if(val!=""){
-            $.when(getArticleDetail(val)).done(function(data){
+            $.when(messageDetail(val)).done(function(data){
               if(data.state=="0"){
-                that.filterData=data.data.results;
+                that.filterData=data.data;
               }
               else{
                 alert(data.data);
@@ -66,8 +73,8 @@
     mounted(){
     },
     created(){
-      this.filterData=this.tableData;
-      // $.when(getArticleDetail()).done(function(data){
+      // this.filterData=this.tableData;
+      // $.when(messageDetail()).done(function(data){
       //   if(data.state=="0"){
       //   }
       //   else{
@@ -94,11 +101,11 @@
     >p:first-child{
       font-size: 16px;
       font-weight: 500;
-      color:#000;
+      color:#333;
     }
     >p:nth-child(2n){
-      margin-top:10px;
-      font-size: 13px;
+      margin-top:20px;
+      font-size: 12px;
       color:#868686;
       >span{
         margin-right:30px;
@@ -109,7 +116,7 @@
   .contentBottom{
     padding:20px 0;
     font-size: 14px;
-    color:#666;
+    color:#333;
     text-indent: 2em;
     line-height: 25px;
   }

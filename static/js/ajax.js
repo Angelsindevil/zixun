@@ -1,8 +1,8 @@
 //以下用户管理
-var url="http://192.168.2.108:9000";//ct
+// var url="http://192.168.2.108:9000";//ct
 // var url="http://192.168.2.129:9000";//bh
 // var url="127.0.0.1:9000";
-// var url="";
+var url="";
 function getAllUsers(){
 	var ajax = $.ajax({
         url: url+"/api/user/fetchAllUser",
@@ -173,14 +173,14 @@ function closeInstructions(instructionId){//关闭批示
     });
     return ajax;
 }
-function getInstructionsList(userId,type,pageNo){//获取批示列表
+function getInstructionsList(userId,pageNo){//获取批示列表
     var ajax = $.ajax({
         url: url+"/api/article/fetchAllInstruction",
         type: "get",
         data:{
             "userId":userId,
             "pageNo":pageNo,
-            "type":type,
+            // "type":type,
             "pageSize":10,
         }
 
@@ -190,20 +190,21 @@ function getInstructionsList(userId,type,pageNo){//获取批示列表
 function addInstruction(formData){//新增批示
     var ajax = $.ajax({
         url: url+"/api/article/saveInstruction",
-        type: "get",
+        type: "post",
         data: formData,
         processData: false,
         contentType: false,
     });
     return ajax;
 }
-function searchInstructionList(userId,keyword,pageNo){//搜索批示
+function searchInstructionList(userId,keyword,type,pageNo){//搜索批示
     var ajax = $.ajax({
         url: url+"/api/article/saveInstruction",
         type: "get",
         data:{
           "userId":userId,
           "keyword":keyword,
+          "type":type,
           "pageNo":pageNo,
           "pageSize":10,
         }
@@ -346,35 +347,36 @@ function getIncludedList(userid,type,pageNo,pageSize){
   return ajax;
 }
 
-function getContentList(pageNo){//获取文章列表（未发布）
+function getContentList(userId,pageNo,isRelease){//获取文章列表（未发布/已发布）
   var ajax=$.ajax({
-    url:url+'/api/org/deleteOrg',
+    url:url+'/api/article/getList',
     type:'get',
     data:{
-        // "userid":userid,
+        "userId":userId,
         "method":'contentManage',
         "pageNo":pageNo,
         "pageSize":20,
+        "isRelease":isRelease,//0未发布 1已发布
     },
   })
   return ajax;
 }
-function getReleasedList(pageNo){//获取已发布文章
-  var ajax=$.ajax({
-    url:url+'/api/org/deleteOrg',
-    type:'get',
-    data:{
-        "method":'contentManage',
-        "pageNo":pageNo,
-        "pageSize":20,
-        "isRelease":'1',
-    },
-  })
-  return ajax;
-}
+// function getReleasedList(pageNo){//获取已发布文章
+//   var ajax=$.ajax({
+//     url:url+'/api/org/deleteOrg',
+//     type:'get',
+//     data:{
+//         "method":'contentManage',
+//         "pageNo":pageNo,
+//         "pageSize":20,
+//         "isRelease":'1',
+//     },
+//   })
+//   return ajax;
+// }
 function releaseArticle(id){//发布文章
   var ajax=$.ajax({
-    url:url+'/api/org/deleteOrg',
+    url:url+'/api/article/release',
     type:'get',
     data:{
        "id":id,
@@ -384,7 +386,7 @@ function releaseArticle(id){//发布文章
 }
 function cancelArticle(id){//取消发布文章
   var ajax=$.ajax({
-    url:url+'/api/org/deleteOrg',
+    url:url+'/api/article/cancelRelease',
     type:'get',
     data:{
        "id":id,
@@ -394,7 +396,7 @@ function cancelArticle(id){//取消发布文章
 }
 function deleteArticle(id){
   var ajax=$.ajax({
-    url:url+'/api/org/deleteOrg',
+    url:url+'/api/article/delete',
     type:'get',
     data:{
        "id":id,
@@ -402,71 +404,85 @@ function deleteArticle(id){
   })
   return ajax;
 }
-function contentSearch(keyword,pageNo){//内容搜索
+function contentSearch(keyword,pageNo){//未发布内容搜索
   var ajax=$.ajax({
-    url:url+'/api/org/deleteOrg',
+    url:url+'/api/article/searchArticle',
     type:'get',
     data:{
-       "id":id,
-       "pageNo":pageNo,
-       "pageSize":20,
+      // "userId":userId,
+      "keyword":keyword,
+      "method":'contentManage',
+      "pageNo":pageNo,
+      "pageSize":20,
+      "isRelease":'0',
     },
   })
   return ajax;
 }
-function releasedSearch(keyword,pageNo){//内容搜索
+function releasedSearch(keyword,pageNo){//已发布内容搜索
   var ajax=$.ajax({
-    url:url+'/api/org/deleteOrg',
+    url:url+'/api/article/searchArticle',
     type:'get',
     data:{
-       "id":id,
-       "pageNo":pageNo,
-       "pageSize":20,
-       "isRelease":'1',
+      // "userId":userId,
+      "keyword":keyword,
+      "method":'contentManage',
+      "pageNo":pageNo,
+      "pageSize":20,
+      "isRelease":'1',
     },
   })
   return ajax;
 }
 function addArticle(type,source,link,title,date,text){//新增文章
   var ajax=$.ajax({
-    url:url+'/api/org/deleteOrg',
-    type:'get',
-    data:{
+    url:url+'/api/article/save',
+    type:'post',
+    contentType: "application/json;",
+    data:JSON.stringify({
        "type":type,
        "source":source,
        "link":link,
        "title":title,
-       "date":date,
-       "text":text,
-    },
+       "time":date,
+       "content":text,
+    }),
+    // data:{
+    //    "type":type,
+    //    "source":source,
+    //    "link":link,
+    //    "title":title,
+    //    "date":date,
+    //    "content":text,
+    // },
   })
   return ajax;
 }
 function editArticle(id,type,source,link,title,date,text){//编辑文章
   var ajax=$.ajax({
-    url:url+'/api/org/deleteOrg',
-    type:'get',
-    data:{
+    url:url+'/api/article/update',
+    type:'post',
+    contentType: "application/json;",
+    data:JSON.stringify({
        "id":id,
        "type":type,
        "source":source,
        "link":link,
        "title":title,
-       "date":date,
-       "text":text,
-    },
+       "time":date,
+       "content":text,
+    }),
   })
   return ajax;
 }
 
 //消息相关
-function messageDetail(id,method){//消息详情
+function messageDetail(id){//消息详情
   var ajax=$.ajax({
-    url:url+'/api/message/getMessageList',
+    url:url+'/api/message/getMessageDetail',
     type:'get',
     data:{
        "id":id,
-       "method":method,
     },
   })
   return ajax;
@@ -501,7 +517,7 @@ function getSearchMesList(userId,method,pageNo,keyword){//消息搜索
 }
 function addMes(userId,title,content,receivers,sender){//新增消息
   var ajax=$.ajax({
-    url:url+'/api/message/getMessageList',
+    url:url+'/api/message/saveMessage',
     type:'get',
     data:{
        "userId":userId,

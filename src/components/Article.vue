@@ -12,11 +12,35 @@
       <router-link :to="{path:'/homePage/contentAdd', query: { id:id}}" class="art_edit">
         <el-button type="text" size="small" class="editBtn">编辑</el-button>
       </router-link>
-      <span class="includeBtn" :class="isInstructions=='0'?'':'grey'" :data-state="isInstructions" :data-id="id" :data-pid="instructionId" :data-title="title" :data-i="number" @click="includeThis" @mouseover="canceInclude" @mouseout="includeThis_"><img src="../../static/img/plus.png" alt="" v-show="isInstructions=='0'?true:false"><span>{{isInstructions=='0'?'批示':'批示中'}}</span></span>
+      <span class="includeBtn includeBtn_fb" @click="releaseBtn(id)" style="width:80px;font-size:12px"><span>发布</span></span>
+      <span class="includeBtn includeBtn_sl" 
+        :v-show="(level!=3)?true:false"
+        :class="((level==0||level==2)?(isInstructions=='0'?'':'grey'):((level==1)?(isInclude=='0'?'':'grey'):''))"
+        :data-state="isInstructions" 
+        :data-pid="instructionId" 
+        :data-id="id" 
+        :data-title="title" 
+        :data-i="number" 
+        @click="includeThis" @mouseover="canceInclude" @mouseout="includeThis_" 
+        ref="includeBtn">
+        <!-- <img src="../../static/img/plus.png" alt="" 
+        v-show="(level==0||level==2)?((isInstructions=='0')?true:false):((level==1)?((isInclude=='0')?true:false):false)">
+        <span>
+        {{(level==0||(level==2))?(isInstructions=='0'?'批示':'批示中'):((level==1)?(isInclude=='0'?'收录':'已收录'):false)}}
+        </span> -->
+        <img 
+        :src="(level==1)?((isInclude=='0')?'../../static/img/plus.png':'../../static/img/plus_grey.png'):'../../static/img/plus.png'" 
+        alt="" 
+        v-show="(level==0||level==2)?((isInstructions=='0')?true:false):((level==1)?true:false)">
+        <span>
+        {{(level==0||(level==2))?(isInstructions=='0'?'批示':'批示中'):((level==1)?(isInclude=='0'?'收录':'已收录'):false)}}
+        </span>
+      </span>
+      <!-- <span class="includeBtn" :class="isInstructions=='0'?'':'grey'" :data-state="isInstructions" :data-id="id" :data-pid="instructionId" :data-title="title" :data-i="number" @click="includeThis" @mouseover="canceInclude" @mouseout="includeThis_"><img src="../../static/img/plus.png" alt="" v-show="isInstructions=='0'?true:false"><span>{{isInstructions=='0'?'批示':'批示中'}}</span></span> -->
     </div>
     <div class="content_bar">
       <div class="article_content">
-        <p v-html="content">
+        <p v-html="content" class="ql-editor">
          <!-- 今天上午，湖南省科协第十次全省代表大会闭幕。会议中《湖南省科协事业发展“十三五”规划纲要》（下称《规划》)获通过，明确了我省科协事业“十三五”期间的发展目标和主要任务。“十二五”是我省科协事业快速发展、成效明显的五年。《全民科学素质行动计划纲要》深入实施，全省公民具备科学素质比例达到5.14%，比“十一五”末提高2.96个百分点。根据《规划》，“十三五”时期我省将健全科协组织、创新创业服务和科学普及三大体系，并建设科技工作者之家、科普主题公园、科技传播中心等三大服务平台。同时，实施科技人才托举、创新驱动助力、科普惠民提升和精准扶贫科技助力等四大工程，打造“科技湘军”“科普湖南”“湖湘智库”“湖南智造”四大品牌建设。力争到“十三五”末，基本形成符合科技创新规律和湖南发展需要的科协事业发展体制机制。《规划》还提出，我省将继续深入实施《全民科学素质行动计划纲要(20162020年)》，创新科普机制，形成全方位联合协作的社会化科普大格局，力争到“十三五”末，全省公民具备科学素质 -->
          <!-- {{content}} -->
         </p>
@@ -48,12 +72,26 @@ export default {
         'type':'国家动态',
         'date':'2014-06-11',
         'content':'<br>今天上午，湖南省科协第十次全省代表大会闭幕。会议中《湖南省科协事业发展“十三五”规划纲要》（下称《规划》)获通过，明确了我省科协事业“十三五”期间的<span style="color:red">发展目标</span>和主要任务。...',
-      }
+      },
+      userSource:{},
+      level:'',
     }
   },
   methods:{
     doThis:function(){
 
+    },
+    releaseBtn(id){
+      var that=this;
+      $.when(releaseArticle(id)).done(function(data){
+        if(data.state=="0"){
+          alert("文章发布成功！")
+          that.$router.push({path:'/homePage/contentPublish'});
+        } 
+        else{
+          alert(data.data);
+        }
+      })
     },
     // includeThis_:function(e){
     //   var el=$(e.target).closest(".includeBtn");
@@ -104,7 +142,7 @@ export default {
     includeThis_:function(e){
       var el=$(e.target).closest(".includeBtn");
       var class_=el.hasClass('grey');
-      if(!this.btnState=='批示'){
+      if(this.btnState!='批示'){
         // var state=el.attr("data-state");
         // if(state=="false"){//文章不在批示中，可新增批示
         //   this.showPSBox();
@@ -131,7 +169,7 @@ export default {
       // }
     },
     canceInclude:function(e){
-      if(!this.btnState=='批示'){
+      if(this.btnState!='批示'){
         var el=$(e.target).closest(".includeBtn");
         var class_=el.hasClass('grey');
         if(class_){
@@ -149,15 +187,30 @@ export default {
       this.$store.dispatch('changeAlertBox',{"type":'0'}).then(function(resp){});
     },
     includeThis:function(e){
-      if(!this.btnState=='批示'){
+      if(this.btnState!='批示'){
         e.stopPropagation();
         var el=$(e.target).closest(".includeBtn");
         var class_=el.hasClass('red');
+        var id=$(el).attr("data-id");
         if(class_){
+          $.when(canceled(id)).done(function(data){
+            if(data.state=="0"){
+            }
+            else{
+              alert(data.data);
+            }
+          })
           el.removeClass("grey red").find("span").text("收录");
           el.find("img").attr("src","./static/img/plus.png");
         }
         else{
+          $.when(included(id)).done(function(data){
+            if(data.state=="0"){
+            }
+            else{
+              alert(data.data);
+            }
+          })
           el.addClass("grey").find("span").text("已收录");
           el.find("img").attr("src","./static/img/plus_grey.png");
         }
@@ -179,7 +232,6 @@ export default {
           "value":title,//表示在文章列表或者详情页跳转
           "id":id,
         }
-        console.log(state);
         if(state=="0"){//文章不在批示中，可新增批示
           this.$store.dispatch('changeNewArticle',{newArcticle:articleObj}).then(function(resp){});
           this.$store.dispatch('changePsShow',{psShow:psObj}).then(function(resp){});
@@ -199,19 +251,24 @@ export default {
     this.id = this.$route.query.id;
     this.number=this.$route.query.index;
     this.edit=this.$route.query.edit;
+
     if(this.edit=='0'){
       this.$nextTick(function(){
         $(".art_edit").removeClass("showBtn");
+        $(".includeBtn").hide();
+        $(".includeBtn_sl").show();
       })
     }
     else{
+
       localStorage.setItem("editor",JSON.stringify(this.datanew));
       this.$nextTick(function(){
         $(".art_edit").addClass("showBtn");
+        $(".includeBtn").hide();
+        $(".includeBtn_fb").show();
       })
     }
     var that=this;
-    console.log(this.id);
     if(this.id!=''){
       $.when(getArticleDetail(that.id)).done(function(data){
         if(data.state=="0"){
@@ -231,6 +288,16 @@ export default {
         }
       })
     }
+    this.userSource=JSON.parse(localStorage.getItem("userSource"));
+    this.level=this.userSource?this.userSource.level:'';
+    // this.userid=this.userSource?this.userSource.id:'';
+    if(this.level==0||this.level==2){
+      this.btnState='批示';
+    }
+    else if(this.level==1){
+      this.btnState='收录';
+    }
+    else{}
   },
 }
 </script>

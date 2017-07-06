@@ -16,14 +16,18 @@
       <span class="includeBtn" @click="clickBtn($event,item.id)" @mouseover="overBtn" @mouseout="outBtn"><span>已发布</span></span>
       <router-link :to="{ path: '/homePage/articleDetail', query: { id:item.id,edit:'0'}}">
         <div class="rightContent">
-          <p class="title_bar">
+          <!-- <p class="title_bar">
             <span>{{item.title}}<span>
-          </p>       
+          </p>  -->
+          <p class="title_bar" style="padding-right: 160px;">
+            <span class="ellipsis" style="display:block">{{item.title}}<span>
+          </p>        
           <p class="title_bottom">
             <span>
-              <span class="bottom_item">来源：<span>{{item.source}}（<span style="color:#0000FF;display:inline" @click="goSomewhere">{{item.link}}</span>）</span></span>
+              <span class="bottom_item">来源：<span>{{item.source}}<span @click="goSomewhere" class="bottomLink ellipsis">（{{item.link}}）</span></span></span>
               <span class="bottom_item">类别：<span>{{item.type}}</span></span>
-              <span class="bottom_item">时间：<span>{{item.date}}</span></span>
+              <!-- <span class="bottom_item">时间：<span>{{item.time}}</span></span> -->
+              <span class="bottom_item">时间：<span>{{item.time}}</span></span>
             </span>
           </p>
         </div>
@@ -80,6 +84,8 @@ export default {
       },
       todayNum:'',
       totalNum:'',
+      userSource:{},
+      userid:'',
     }
   },
   methods:{
@@ -103,8 +109,9 @@ export default {
       console.log(e);
       e.stopPropagation();
       e.preventDefault();
-      $.when(releaseArticle(id)).done(function(data){
+      $.when(cancelArticle(id)).done(function(data){
         if(data.state=="0"){
+          window.location.reload();
         }
         else{
           alert(data.data);
@@ -123,7 +130,17 @@ export default {
       that.totalNum=res.totalNum;
       that.todayNum=res.todayNum; 
       if(res.list&&res.list.length!=0){
-        $(that.$refs.rightBottom).children('p').text('点击加载更多内容');
+        if(res.list.length<20){
+          $(that.$refs.rightBottom).children('p').text('暂无更多文章');
+          if(that.pageNo==1){
+            that.articlesAarry=[];
+          }
+          else{}
+        }
+        else{
+          $(that.$refs.rightBottom).children('p').text('点击加载更多内容');
+        }
+        // $(that.$refs.rightBottom).children('p').text('点击加载更多内容');
         res.list.map(function(value,index){
           that.articlesAarry.push(value);
         })
@@ -139,9 +156,11 @@ export default {
       }
     },
     handleInputClick:function(){
+      var that=this;
       that.pageNo=1;
-      $.when(contentSearch(that.input2,that.pageNo)).done(function(data){
+      $.when(releasedSearch(that.input2,that.pageNo)).done(function(data){
         if(data.state=="0"){
+          that.articlesAarry=[];
           that.insertData(data.data);
         }
         else{
@@ -155,7 +174,7 @@ export default {
       this.pageNo=this.pageNo+1;
       var that=this;
       if(this.input2==""){
-        $.when(getReleasedList(that.pageNo)).done(function(data){
+        $.when(getContentList(this.userid,that.pageNo,'0')).done(function(data){
           if(data.state=="0"){
             that.insertData(data.data);
           }
@@ -182,9 +201,10 @@ export default {
       matchMenu();
     })
 
-    that.insertData(that.tableData);//localTest
-
-    $.when(getReleasedList(that.pageNo)).done(function(data){
+    // that.insertData(that.tableData);//localTest
+    this.userSource=JSON.parse(localStorage.getItem("userSource"));
+    this.userid=this.userSource?this.userSource.id:'';
+    $.when(getContentList(this.userid,that.pageNo,'1')).done(function(data){
       if(data.state=="0"){
         that.insertData(data.data);
       }
@@ -297,6 +317,7 @@ export default {
       width: 100%;
       // border-top: 2px dashed #eee;
       padding: 20px 0;
+      padding-bottom:25px;
       font-size:0;
       >span{
         color:#868686;
@@ -317,6 +338,17 @@ export default {
           display:none;
         }
         // width:33.3%;
+      }
+      .bottom_item{
+        position: relative;
+        .bottomLink{
+          color: rgb(0, 0, 255);
+          display: inline-block;
+          width: 80%;
+          position: absolute;
+          bottom: -20px;
+          left: 0;
+        }
       }
       .bottom_item:first-child{
         width:60%;

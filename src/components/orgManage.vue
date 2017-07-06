@@ -117,8 +117,9 @@ export default {
       // this.filterData=[];
       this.filterData.splice(0);
       var that=this;
+      console.log(this.tableData);
       for(var i=0;i<this.tableData.length;i++){
-        if((this.tableData[i].name.indexOf(that.input2)!=-1)||(this.tableData[i].org.indexOf(that.input2)!=-1)){
+        if(((this.tableData[i].name?this.tableData[i].name:'').indexOf(that.input2)!=-1)||((this.tableData[i].org?this.tableData[i].org:'').indexOf(that.input2)!=-1)){
           this.filterData.push(this.tableData[i]);
         }
         else{

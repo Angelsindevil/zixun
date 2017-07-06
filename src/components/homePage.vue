@@ -49,6 +49,9 @@
         </p>
       </div>
     </div>
+    <div class="showTop" @click="showTop">
+      <img src="../../static/img/toTop.png" title="点击回到顶部">
+    </div>
     <div class="bottomBar">
       <div class="bottomContent">
         <p>
@@ -83,6 +86,7 @@
 </template>
 
 <script>
+import {scrollFun} from '../../static/js/public.js'
 import Hello from '../components/Hello.vue'
 import reportBox from '../components/reportBox.vue'
 import psBox from '../components/psBox.vue'
@@ -110,6 +114,9 @@ export default {
     }
   },
   methods:{
+    showTop(){
+      $(document).scrollTop(0);
+    },
     showLoginBox(command){
       // if(command=="a"){
       //   $(".loginBox,.mask1").addClass("showBtn");
@@ -156,6 +163,7 @@ export default {
     }
     // this.account=this.userSource?this.userSource.account:'';
     this.username=this.userSource?this.userSource.username:'';
+    scrollFun();
   }
 }
 </script>
@@ -329,6 +337,29 @@ body{
     }
     .after;
   }
+}
+.showTop{
+  cursor:pointer;
+  display:none;
+  position: fixed;
+  bottom:100px;
+  right:30px;
+  width:40px;
+  height:40px;
+  background-color: rgba(204,204,204,.8);
+  border-radius: 50%;
+  text-align: center;
+  box-shadow:0 0 10px #aaa;
+  img{
+    display: inline-block;
+      width: 22px;
+      height: 22px;
+      vertical-align: middle;
+      margin-top: 10px;
+  }
+}
+.showTop:hover,.showTop:active{
+  background-color: #b5b5b5;
 }
 .el-dropdown-menu a,.el-dropdown-menu .el-dropdown-menu__item{ 
   color:#333;

@@ -2,7 +2,9 @@
   <div class="message">
     <div class="rightBar">
       <p>
-        系统维护-消息管理
+        消息中心-{{titleTop}}：
+        <!-- <span class="mesTop">共<span>{{totalNum}}</span>条消息，未读消息<span>{{todayNum}}</span>条</span> -->
+        <span class="mesTop">未读消息<span>{{todayNum}}</span>条</span>
       </p>
       <el-button class="btn_position" @click="showMesBox">发送新消息</el-button>
       <!-- <el-input
@@ -23,15 +25,15 @@
       <table>
         <thead>
           <tr>
-            <td>消息内容</td>
-            <td>接收时间</td>
-            <td>发送人</td>
+            <th style="width:50%">消息内容</th>
+            <th style="width:20%">接收时间</th>
+            <th style="width:30%">发送人</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="item in filterArray" @click="showDetail(item.id)" :class="item.isRead=='1'?'grey':''">
-            <td>{{item.title}}</td>
-            <td>{{item.time}}</td>
+            <td><span class="oneLine">{{item.title}}</span></td>
+            <td>{{item.receiveTime}}</td>
             <td>{{item.sender}}</td>
           </tr>
         </tbody>
@@ -65,33 +67,36 @@ export default {
           value: '2',
           label: '未读消息'
         }],
-        value: '1',
+        value: '2',
         filterArray:[],
         type:'',
         userId:'',
         userSource:{},
-        testData:{
-          list:[
-             {
-              'id':'001',
-              'time':'2016-12-13 16:24',
-              'sender':'Admin ',
-              'title':"今日更新文章31篇！可点击海外动态进行查看！",
-              'isRead':'0',
-            },
-            {
-              'id':'002',
-              'time':'2016-12-13 16:24',
-              'sender':'Admin ',
-              'title':"今日更新文章32篇！可点击海外动态进行查看！",
-              'isRead':'1',
-            }
-          ],
-          totalNum:'139',
-          todayNum:'12',
-        },
+        // testData:{
+        //   list:[
+        //      {
+        //       'id':'001',
+        //       'time':'2016-12-13 16:24',
+        //       'sender':'Admin ',
+        //       'title':"今日更新文章31篇！可点击海外动态进行查看！",
+        //       'isRead':'0',
+        //     },
+        //     {
+        //       'id':'002',
+        //       'time':'2016-12-13 16:24',
+        //       'sender':'Admin ',
+        //       'title':"今日更新文章32篇！可点击海外动态进行查看！",
+        //       'isRead':'1',
+        //     }
+        //   ],
+        //   totalNum:'139',
+        //   todayNum:'12',
+        // },
         pageNo:1,
-        category:'2',
+        totalNum:'',
+        todayNum:'',
+        titleTop:'消息管理'
+        // category:'2',
       }
   },
   watch: { 
@@ -103,11 +108,12 @@ export default {
       $(".alertBox").addClass("showBtn");
     },
     optionChangeHandler:function(val){
+      var that=this;
       this.category=val;
-      $.when(getMessageList(this.userId,this.type,this.pageNo,this.category)).done(function(data){
+      $.when(getMessageList(this.userId,this.type,this.pageNo,this.value)).done(function(data){
         if(data.state=="0"){
           that.insertData(data.data);
-          // that.filterArray=data.data.results;有用
+          // that.filterArray=data.data.list;有用
         }
         else{
           alert(data.data);
@@ -115,11 +121,12 @@ export default {
       })
     },
     handleInputClick:function(val){
-      this.pageNo=1,
+      this.pageNo=1;
+      var that=this;
       $.when(getSearchMesList(this.userId,this.type,this.pageNo,val)).done(function(data){
         if(data.state=="0"){
           that.insertData(data.data);
-          // that.filterArray=data.data.results;有用
+          // that.filterArray=data.data.list;有用
         }
         else{
           alert(data.data);
@@ -136,26 +143,30 @@ export default {
       this.$store.dispatch('changeMesId',{mesId:id}).then(function(resp){});
     },
     searchThis(){
-      this.pageNo=1,
+      this.pageNo=1;
       this.type = this.$route.query.type;//type=0-消息管理（只有系统管理员可见），type=1-系统消息
       this.userSource=JSON.parse(localStorage.getItem("userSource"));
       this.userId=this.userSource?this.userSource.id:'';
       if(this.type=='0'){//消息管理页面可以新增消息
         this.$nextTick(function(){
+          this.titleTop="消息管理";
           $(".btn_position").show();
+          $(".mesTop").hide();
         })
       }
       else{//系统消息
+        this.titleTop="系统消息";
         this.$nextTick(function(){
           $(".btn_position").hide();
+          $(".mesTop").show();
         })
       }
-      this.filterArray=this.testData.list;
+      // this.filterArray=this.testData.list;
       var that=this;
-      $.when(getMessageList(this.userId,this.type,this.pageNo,this.category)).done(function(data){
+      $.when(getMessageList(this.userId,this.type,this.pageNo,this.value)).done(function(data){
         if(data.state=="0"){
           that.insertData(data.data);
-          // that.filterArray=data.data.results;有用
+          that.filterArray=data.data.list;
         }
         else{
           alert(data.data);
@@ -165,11 +176,20 @@ export default {
     insertData(data){
       var that=this;
       var res=data;
-      var len=that.filterArray.length;
-      that.totalNum=res.totalNum;
-      that.todayNum=res.todayNum; 
+      var len=that.filterArray?that.filterArray.length:false;
+      // that.totalNum=res.totalNum;
+      that.todayNum=res.num; 
       if(res.list&&res.list.length!=0){
-        $(that.$refs.rightBottom).children('p').text('点击加载更多消息');
+        if(res.list.length<10){
+          $(that.$refs.rightBottom).children('p').text('暂无更多消息');
+          if(that.pageNo==1){
+            that.filterArray=[];
+          }
+          else{}
+        }
+        else{
+          $(that.$refs.rightBottom).children('p').text('点击加载更多消息');
+        }
         res.list.map(function(value,index){
           that.filterArray.push(value);
         })
@@ -189,7 +209,7 @@ export default {
       console.log(this.pageNo);
       var that=this;
       if(this.input2==""){
-        $.when(getMessageList(this.userId,this.type,this.pageNo,this.category)).done(function(data){
+        $.when(getMessageList(this.userId,this.type,this.pageNo,this.value)).done(function(data){
           if(data.state=="0"){
             that.insertData(data.data);
           }
@@ -247,7 +267,7 @@ export default {
     }
   }
   .rightContent{
-    border: 1px solid #ccc;
+    border: 1px solid #eee;
     margin-top:15px;
     border-radius:5px;
     position: relative;
@@ -258,25 +278,35 @@ export default {
     border-collapse:collapse;
     thead{
       tr{
-        border-bottom: 1px solid #ccc;
-        font-weight: 600;
+        border-bottom: 1px solid #eee;
       }
-      td{
-        padding:20px;
+      th{
+        font-size: 14px;
+        padding:15px 11px;
         text-align: center;
+        font-weight: 500;
+        color: #565656;
       }
     }
     tbody{
       tr{
         cursor:pointer;
-        font-size:15px;
-        color:#333;
+        color:#454545;
         td{
-          padding: 30px 20px;
+          // display:inline-block;
+          font-size: 14px;
+          padding:20px;
           text-align: center;
+          .oneLine{
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+          }
         }
         td:nth-child(1){
-          text-align: left;
+          // text-align: left;
         }
       }
       tr:after{
@@ -290,7 +320,8 @@ export default {
         position: absolute;
         left: 20px;
         right: 20px;
-        border-bottom: 2px dashed #e4e4e4;
+        // border-bottom: 2px dashed #eee;
+        border-bottom: 1px dashed #f0f0f0;
       }
       tr:first-child{
         &:after{
@@ -374,6 +405,7 @@ export default {
     background-color: #fafafa!important;
     padding:11px 15px;
   }
+
   .grey{
     color:#ccc;
   }

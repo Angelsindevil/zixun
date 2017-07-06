@@ -75,6 +75,7 @@
                       <option value="right"></option>
                       <option value="justify"></option>
                     </select>
+                    <button class="ql-image" type="button"></button>
                   </span>
                 </div>
                <div id="editor"></div>
@@ -119,19 +120,28 @@ export default {
         id:'',
         txt:'',
         addId:'',
+        initType:'',
     }
   },
   methods:{
     handleInputClick:function(){},
     optionChangeHandler(){},
     saveBtn(){
+      console.log("saveBtn");
       this.txt=document.querySelector("#editor .ql-editor").innerHTML;
       var that=this;
       if(this.id!=undefined){//编辑啊
         $.when(editArticle(this.id,this.form.type,this.form.source,this.form.link,this.form.title,this.form.date,this.txt)).done(function(data){
           if(data.state=="0"){
             alert("已保存至内容筛选列表！");
-            that.addId=data.data.id;
+            that.resetBtn();
+            // that.form.type=that.initType;
+            // that.form.source="";
+            // that.form.link="";
+            // that.form.title="";
+            // that.form.date="";
+            // that.quill.setText("");
+            // that.addId=data.data.id;
           }
           else{
             alert(data.data);
@@ -142,6 +152,7 @@ export default {
         $.when(addArticle(this.form.type,this.form.source,this.form.link,this.form.title,this.form.date,this.txt)).done(function(data){
           if(data.state=="0"){
             alert("已保存至内容筛选列表！");
+            that.resetBtn();
           }
           else{
             alert(data.data);
@@ -150,13 +161,20 @@ export default {
       }
     },
     resetBtn(){
-
+      var that=this;
+      that.form.type=that.initType;
+      that.form.source="";
+      that.form.link="";
+      that.form.title="";
+      that.form.date="";
+      that.quill.setText("");
     },
     releaseBtn(id){
       if(this.id!=undefined){//编辑可直接发布
         $.when(releaseArticle(id)).done(function(data){
           if(data.state=="0"){
             alert("文章发布成功！");
+            that.resetBtn();
           }
           else{
             alert(data.data);
@@ -235,6 +253,7 @@ export default {
         }
         else{
           that.form.type=that.options[0].value;
+          that.initType=that.options[0].value;
         }
       }
       else{
@@ -250,6 +269,13 @@ export default {
   .contentAdd{
     .ql-editor{
       height:400px!important;
+    }
+    .ql-toolbar.ql-snow,.ql-container.ql-snow{
+      border-color:#bfcbd9;
+    }
+    .ql-toolbar{
+      border-top-right-radius: 3px;
+      border-top-left-radius: 3px;
     }
     .rightContent{
       border:1px solid #eee;

@@ -79,7 +79,7 @@
       </span>
       <span class="rightBot">
         <span class="bg_green" @click="addPs()">确定</span> 
-        <span class="bg_blue printPs"><img src="../../static/img/print.png" alt="">打印批示</span> 
+        <!-- <span class="bg_blue printPs"><img src="../../static/img/print.png" alt="">打印批示</span>  -->
         <span @click="hidePSBox" class="bg_cancle">取消</span> 
       </span>
   </div>
@@ -139,8 +139,7 @@
         // for (var i=0;i<val.length;i++) {
         //   this.input3+=val[i]+' ';
         // }
-        console.log("123");
-        if(val.length<2){//待测试
+        if(val.name.length<2){//待测试
           this.input3=val.name[0];
         }
         else{
