@@ -80,6 +80,7 @@
     <pwBox></pwBox>
     <initpwBox></initpwBox>
     <mesDetailBox></mesDetailBox>
+    <wordBox></wordBox>
     <div class="mask mask1"></div>
     <div class="mask mask2"></div>
   </div>
@@ -101,10 +102,11 @@ import peopleBox from '../components/peopleBox.vue'
 import pwBox from '../components/pwBox.vue'
 import initpwBox from '../components/initpwBox.vue'
 import mesDetailBox from '../components/mesDetailBox.vue'
+import wordBox from '../components/word.vue'
 export default {
   name: 'homePage',
   components: {
-    Hello,reportBox,psBox,articleBox,multiBox,userBox,peopleBox,mesBox,orgBox,unitBox,loginBox,initpwBox,pwBox,mesDetailBox},
+    Hello,reportBox,psBox,articleBox,multiBox,userBox,peopleBox,mesBox,orgBox,unitBox,loginBox,initpwBox,pwBox,mesDetailBox,wordBox},
   data () {
     return {
       keyword:'',

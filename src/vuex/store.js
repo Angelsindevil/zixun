@@ -43,6 +43,8 @@ const state = {
 	clrId:'',
 	unitVal:'',
 	mesId:'',
+	reportObj:[],
+	wordObj:{},
 }
 const store = new Vuex.Store({
   state,

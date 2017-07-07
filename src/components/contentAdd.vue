@@ -170,6 +170,8 @@ export default {
       that.quill.setText("");
     },
     releaseBtn(id){
+      this.txt=document.querySelector("#editor .ql-editor").innerHTML;
+      var that=this;
       if(this.id!=undefined){//编辑可直接发布
         $.when(releaseArticle(id)).done(function(data){
           if(data.state=="0"){
@@ -187,6 +189,7 @@ export default {
             $.when(releaseArticle(data.data.id)).done(function(res){
               if(res.state=="0"){
                 alert("文章发布成功！");
+                that.resetBtn();
               }
               else{
                 alert(res.data);

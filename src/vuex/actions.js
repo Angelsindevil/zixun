@@ -76,3 +76,15 @@ export const changeMesId=(store,payload)=>{//传入一个store参数 和store拥
         resolve("ok");
     })
 }
+export const changeReporter=(store,payload)=>{//传入一个store参数 和store拥有相同的属性和方法，传入另一个参数msg，最终在mutations中赋值给state中的变量subjectid
+    return new Promise(function(resolve, reject) {
+        store.commit('changeReporter',{"reportObj":payload.reportObj});
+        resolve("ok");
+    })
+}
+export const changeWord=(store,payload)=>{//传入一个store参数 和store拥有相同的属性和方法，传入另一个参数msg，最终在mutations中赋值给state中的变量subjectid
+    return new Promise(function(resolve, reject) {
+        store.commit('changeWord',{"wordObj":payload.wordObj});
+        resolve("ok");
+    })
+}

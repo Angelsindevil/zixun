@@ -14,7 +14,7 @@
       </router-link>
       <span class="includeBtn includeBtn_fb" @click="releaseBtn(id)" style="width:80px;font-size:12px"><span>发布</span></span>
       <span class="includeBtn includeBtn_sl" 
-        :v-show="(level!=3)?true:false"
+        v-show="(level!=3)?true:false"
         :class="((level==0||level==2)?(isInstructions=='0'?'':'grey'):((level==1)?(isInclude=='0'?'':'grey'):''))"
         :data-state="isInstructions" 
         :data-pid="instructionId" 

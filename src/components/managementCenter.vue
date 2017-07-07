@@ -65,20 +65,20 @@ export default {
   data () {
     return {
        options: [{
-          value: '0',
+          value: '5',
           label: '全部内容'
         }, {
-          value: '1',
+          value: '0',
           label: '流程已结束'
         }, {
-          value: '2',
+          value: '1',
           label: '新反馈'
         }, {
-          value: '3',
+          value: '2',
           label: '新批示'
         },
         {
-          value: '4',
+          value: '3',
           label: '新分发'
         }
         ],
@@ -114,6 +114,7 @@ export default {
     handleInputClick() {
       var that=this;
       that.pageNo=1;
+      this.articlesAarry=[];
       $.when(searchInstructionList(that.userid,that.input2,that.value,that.pageNo)).done(function(data){
         if(data.state=="0"){
           that.insertData(data);

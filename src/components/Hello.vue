@@ -54,7 +54,7 @@
               <!-- <router-link to="/homePage/instructions"> -->
               <router-link to="/homePage/instructions">
               <!-- <el-badge :value="3" :max="10" class="item">我的批示</el-badge> -->
-                <span class="redDot"><span>3</span>批示内容</span>
+                <span class="redDot" ref="redDot"><span>{{psNum}}</span>批示内容</span>
               </router-link>
           </li>
           <li @click="changeColor" class="clickStyle">
@@ -65,7 +65,8 @@
           </li>
           <li @click="changeColor" class="clickStyle">
               <router-link :to="{path:'/homePage/messageBox',query: {type:'1'}}">
-              系统消息
+              <!-- 系统消息 -->
+              <span class="redDot"><span>{{xtNum}}</span>系统消息</span>
               </router-link>
           </li>
         </ul>
@@ -87,7 +88,7 @@
           </li>
           <li @click="changeColor" class="clickStyle">
               <router-link to="/homePage/managementCenter">
-              <span class="redDot"><span>2</span>批示管理</span>
+              <span class="redDot" ref="redDot"><span>{{psNum}}</span>批示管理</span>
               </router-link>
           </li>
         </ul>
@@ -139,6 +140,11 @@ export default {
       },
       userSource:{},
       options: [],
+      psNum:'',
+      xtNum:'',
+      userid:'',
+      // url:'http://192.168.2.129:9000',
+      url:'',
       // options: [
       // {
       //   value: '全部内容',
@@ -160,10 +166,66 @@ export default {
       $(".clickStyle").removeClass("blue");
       liItem.addClass("blue");
     },
+    getpsRed(){
+      var that=this;
+      // console.
+      // getpsFlag(this.userid)
+      // $.when(getpsFlag(this.userid)).done(function(data){
+      //   if(data.state=="0"){
+      //     that.psNum=data.data.num;
+      //   }
+      //   else{
+      //     alert(data.data);
+      //   }
+      // })
+      // $.post(that.url+"/api/article/instructionChangeMark",
+      //     JSON.stringify({
+      //       "userId":that.userid,
+      //     })
+      //   ,function(data){
+      //     if(data.state=="0"){
+      //       that.psNum=data.data.num;
+      //     }
+      //     else{
+      //       alert(data.data);
+      //     }
+      //   });
+       // $.post({
+       //  url: url+"/api/article/instructionChangeMark",
+       //  type: "post",
+       //  contentType: "application/json;",
+       //  data:JSON.stringify({
+       //      "userId":id,
+       //  })
+      // }
+      $.ajax({
+        url: that.url+"/api/article/instructionChangeMark",
+        type: "post",
+        contentType: "application/json;",
+        data:JSON.stringify({
+            "userId":that.userid,
+        }),
+        success:function(data){
+          if(data.state=="0"){
+            if(data.data==0){
+              $(that.$refs.redDot).children('span').hide();
+            }
+            else{
+              that.psNum=data.data;
+              $(that.$refs.redDot).children('span').show();
+            }
+          }
+          else{
+            alert(data.data);
+          }
+        }
+    });
+    }
   },
   created(){
     var that=this;
     this.userSource=JSON.parse(localStorage.getItem("userSource"));
+    this.userid=this.userSource?this.userSource.id:'';
     $.when(getArticleType()).done(function(data){
       if(data.state=="0"){
         var res=data.data;
@@ -180,7 +242,7 @@ export default {
         alert(data.data);
       }
     })
-
+    setInterval(this.getpsRed,3000000);
     //可见菜单设置
     this.$nextTick(function(){
       if(this.userSource){
@@ -211,6 +273,7 @@ export default {
         }
       }
     })
+
   }
   // beforeMount(){
   //   var self=this;
@@ -245,7 +308,7 @@ export default {
       border-radius:5px;
       float: left;
       .ulStyle{
-        // display:none;
+        display:none;
       }
       ul{
         margin:0;
@@ -258,18 +321,21 @@ export default {
             width:100%;
             position: relative;
             .redDot{
+              // display:none;
               position: relative;
               >span{
                 position: absolute;
-                display: inline-block;
-                width: 16px;
-                height: 16px;
+                // display: inline-block;
+                width: 19px;
+                height: 19px;
                 border-radius: 50%;
-                top: -5px;
+                top: -10px;
                 right: -10px;
+                line-height: 19px;
                 font-size: 12px;
                 background-color: #ff6666;
                 color: #fff;
+                display:none;
               }
             }
           }

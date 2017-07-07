@@ -48,3 +48,9 @@ export const changeUserSource= (state,payload) => {//将参数mes赋值给state�
 export const changeMesId= (state,payload) => {//将参数mes赋值给state的变量subjectid 
 	state.mesId=payload.mesId;
 }
+export const changeReporter= (state,payload) => {//将参数mes赋值给state的变量subjectid 
+	state.reportObj=payload.reportObj;
+}
+export const changeWord= (state,payload) => {//将参数mes赋值给state的变量subjectid 
+	state.wordObj=payload.wordObj;
+}

@@ -32,7 +32,7 @@
 
 
               <span class="includeBtn" 
-              :v-show="(level!=3)?true:false"
+              v-show="(level!=3)?true:false"
               :class="((level==0||level==2)?(item.isInstructions=='0'?'':'grey'):((level==1)?(item.isInclude=='0'?'':'grey'):''))"
               :data-state="item.isInstructions" 
               :data-pid="item.instructionId" 

@@ -28,7 +28,7 @@
           :value="item.value">
         </el-option>
       </el-select>
-        <span class="includeBtn_" id="reportProduce" @click="showSomething"><img src="../../static/img/report.png" alt=""><span>生成报告</span><span class="redFlag" ref="red">{{num}}</span></span>
+        <span class="includeBtn_" id="reportProduce" @click="showSomething"><img src="../../static/img/report.png" alt="" style="margin-bottom: -3px;"><span>生成报告</span><span class="redFlag" ref="red">{{num}}</span></span>
       </div>
       <div class="title_content">
         <ul>
@@ -38,9 +38,9 @@
               <!-- <el-checkbox v-model="checked"></el-checkbox> -->
             <!-- </label> -->
             <el-checkbox  @change="checkItem($event,index)" class="checkItem" v-model="checkedList[index]"></el-checkbox>
-            <span>{{item.title}} - <span class="dateStyle">{{item.date}}</span></span>
+            <span><span class="ellipsis titleEll">{{item.title}}</span> - <span class="dateStyle">{{item.date}}</span></span>
             <span class="includeBtn_" :class="item.isGenerate==1?'grey':''" :data-id="item.id"><span>{{item.isGenerate==1?'已生成报告':'未生成报告'}}</span></span>
-            <span class="includeBtn grey" @click="includeThis" @mouseover="canceInclude" @mouseout="includeThis_"><img src="../../static/img/plus_grey.png" alt=""><span>已收录</span></span>
+            <span class="includeBtn grey" @click="includeThis($event,item.isGenerate)" @mouseover="canceInclude" @mouseout="includeThis_"><img src="../../static/img/plus_grey.png" alt="" style="margin-bottom: -7px;"><span>已收录</span></span>
           </li>
           <!-- <li>
             <label for="selItem_2">
@@ -61,9 +61,9 @@
         </ul>
       </div>
     </div>  
-    <div class="rightBottom">
+    <div class="rightBottom" ref="rightBottom" @click="loadMore">
       <p>
-      点击加载更多历史收录内容
+      点击加载更多内容
       </p>
     </div>
     <!-- <ul v-sortable="{ onUpdate: onUpdate }">
@@ -101,7 +101,6 @@ export default {
           label: '未生成报告'
         }],
         value: '2',
-        articlesAarry:[],
         num:0,
         tableData: {
           results:[
@@ -109,25 +108,85 @@ export default {
               'id':'001',
               'date':'2016-07-12',
               'isGenerate':'0',
-              'title':"高等教育信息动态-20161208-V01",
+              'title':"高等教育信息动态1-20161208-V01",
             },
             {
-              'id':'001',
-              'date':'2016-07-12',
+              'id':'002',
+              'date':'2016-07-15',
               'isGenerate':'1',
-              'title':"高等教育信息动态-20161208-V01",
+              'title':"高等教育信息动态2-20161208-V02",
+            },
+            {
+              'id':'003',
+              'date':'2016-07-15',
+              'isGenerate':'1',
+              'title':"高等教育信息动态2-20161208-V02",
+            },
+            {
+              'id':'004',
+              'date':'2016-07-15',
+              'isGenerate':'1',
+              'title':"高等教育信息动态2-20161208-V02",
+            },
+            {
+              'id':'005',
+              'date':'2016-07-15',
+              'isGenerate':'1',
+              'title':"高等教育信息动态2-20161208-V02",
             }
         ],
         "totalNum":"136",
         "todayNum":"12",
       },
-       checkedList:[],
+      checkedList:[],
+      articlesAarry:[],
+      totalNum:'',
+      todayNum:'',
+      pageNo:1,
+      userSource:{},
+      userid:'',
+      article_id:[],
     }
   },
   methods: {
     showSomething:function(){
-      $(".mask1").addClass("showBtn");
-      $(".alertBox").addClass("showBtn");
+      this.article_id=[];
+      console.log(this.checkedList);
+      console.log(this.articlesAarry);
+      var that=this;
+
+      var storeObj=[];//test
+
+      this.checkedList.map(function(value,index){
+        console.log(value);
+        var id=that.articlesAarry[index].id;
+        if(value){
+          that.article_id.push(id);
+          storeObj.push(that.articlesAarry[index]);
+        }
+        else{
+        }
+      },that);
+      if(this.article_id.length==0){
+        alert("还未选择收录的文章！");
+      }
+      else{
+        $(".mask1").addClass("showBtn");
+        $(".alertBox").addClass("showBtn");
+
+        console.log(storeObj);
+        this.$store.dispatch('changeReporter',{reportObj:storeObj}).then(function(resp){});//test
+
+        $.when(buildReporter(that.userid,that.article_id)).done(function(data){
+          if(data.state=="0"){
+            var results=data.data.results;
+            this.$store.dispatch('changeReporter',{reportObj:results}).then(function(resp){});
+          }
+          else{
+            // alert(data.data);
+          }
+        })
+      }
     },
     checkAll:function(e){
       if(this.checked){
@@ -177,31 +236,112 @@ export default {
         el.find("img").attr("src","./static/img/reduce.png");
       }
     },
-    includeThis:function(e){
+    includeThis:function(e,item){
       e.stopPropagation();
       var el=$(e.target).closest(".includeBtn");
       var class_=el.hasClass('red');
       var id=$(el).attr("data-id");
       if(class_){
         //执行取消
-        $.when(canceled(id)).done(function(data){
-          if(data.state=="0"){
-          }
-          else{
-            alert(data.data);
-          }
-        })
-        el.removeClass("grey red").find("span").text("收录");
-        el.find("img").attr("src","./static/img/plus.png");
+        if(item==1){//已生成报告 不允许取消
+          alert("已生成报告，不可取消收录！");
+        }
+        else{
+          $.when(canceled(id)).done(function(data){
+            if(data.state=="0"){
+              el.removeClass("grey red").find("span").text("收录");
+              el.find("img").attr("src","./static/img/plus.png");
+            }
+            else{
+              alert(data.data);
+            }
+          })
+        }
       }
       else{
       }
     },
-    handleInputClick:function(){},
+    handleInputClick:function(){
+      var that=this;
+      that.pageNo=1;
+      this.articlesAarry=[];
+      $.when(getIncludedSearch(that.userid,that.input2,that.value,that.pageNo)).done(function(data){
+        if(data.state=="0"){
+          that.insertData(data);
+        }
+        else{
+          alert(data.data);
+        }
+      })
+    },
     optionChangeHandler(val){
+      var that=this;
+      this.pageNo=1,
+      this.articlesAarry=[];
+      $.when(getIncludedSearch(that.userid,that.input2,val,that.pageNo)).done(function(data){
+        if(data.state=="0"){
+          that.insertData(data);
+        }
+        else{
+          alert(data.data);
+        }
+      })
+    },
+    insertData(data){
+      var that=this;
+      var res=data.data;
+      var len=that.articlesAarry.length;
+      that.totalNum=res.totalNum;
+      that.todayNum=res.todayNum;
+      if(res.results&&res.results.length!=0){
+        if(res.results.length<20){
+          $(that.$refs.rightBottom).children('p').text('暂无更多历史收录内容');
+          if(that.pageNo==1){
+            that.articlesAarry=[];
+          }
+          else{}
+        }
+        else{
+          $(that.$refs.rightBottom).children('p').text('点击加载更多历史收录内容');
+        }
+        // $(that.$refs.rightBottom).children('p').text('点击加载更多批示');
+        that.articles=res.results.map(function(value,index){
+          return {
+            "id":value.id,
+            "title":value.title,
+            "date":value.date,
+            "isGenerate":value.isGenerate,
+          }
+        })
+        that.articlesAarry=that.articles;
+      }
+      else{
+        if(that.pageNo==1){//只一页
+          $(that.$refs.rightBottom).children('p').text('暂无历史收录内容');
+          that.articlesAarry=[];
+        }
+        else{//多余一页
+          $(that.$refs.rightBottom).children('p').text('暂无更多历史收录内容');
+        }
+      }
+    },
+    loadMore(){
+      this.pageNo=this.pageNo+1;
+      var that=this;
+      $.when(getIncludedSearch(that.userid,that.input2,that.value,that.pageNo)).done(function(data){
+        if(data.state=="0"){
+          that.insertData(data);
+        }
+        else{
+          alert(data.data);
+        }
+      })
     },
   },
   created:function(){
+    var that=this;
+    this.userSource=JSON.parse(localStorage.getItem("userSource"));
+    this.userid=this.userSource?this.userSource.id:'';
     this.$nextTick(function(){
       matchMenu();
     })
@@ -209,6 +349,14 @@ export default {
     this.checkedList=this.articlesAarry.map(function(value,index){
       return false;
     })
+    // $.when(getInstructionsList(that.userid,that.value,that.pageNo)).done(function(data){
+    //   if(data.state=='0'){
+    //     that.insertData(data);;
+    //   }
+    //   else{
+    //     // alert(data.data);
+    //   }
+    // })
   }
 }
 </script>
@@ -221,6 +369,11 @@ export default {
     >a{
       display: block;
       color: #000;
+    }
+    .titleEll{
+      display: inline-block;
+      max-width: 50%;
+      vertical-align: middle;
     }
     .rightContent{
     width:100%;
@@ -274,7 +427,7 @@ export default {
     border:1px solid #0099cc;
     text-align: center;
     line-height: 30px;
-    font-size: 16px;
+    font-size: 15px;
     color: #0099cc;
     border-radius:5px;
     >span:nth-child(3){

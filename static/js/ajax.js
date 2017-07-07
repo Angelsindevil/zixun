@@ -1,8 +1,8 @@
 //以下用户管理
 // var url="http://192.168.2.108:9000";//ct
-// var url="http://192.168.2.129:9000";//bh
+var url="http://192.168.2.129:9000";//bh
 // var url="127.0.0.1:9000";
-var url="";
+// var url="";
 function getAllUsers(){
 	var ajax = $.ajax({
         url: url+"/api/user/fetchAllUser",
@@ -162,13 +162,25 @@ function searchArticle(keyword,pageNo){//收录
 
 
 //批示相关
+function getpsFlag(id){//关闭批示
+    var ajax = $.ajax({
+        url: url+"/api/article/instructionChangeMark",
+        type: "post",
+        contentType: "application/json;",
+        data:JSON.stringify({
+            "userId":id,
+        })
+    });
+    return ajax;
+}
 function closeInstructions(instructionId){//关闭批示
     var ajax = $.ajax({
         url: url+"/api/article/close",
-        type: "get",
-        data:{
+        type: "post",
+        contentType: "application/json;",
+        data:JSON.stringify({
             "instructionId":instructionId,
-        }
+        })
 
     });
     return ajax;
@@ -176,13 +188,14 @@ function closeInstructions(instructionId){//关闭批示
 function getInstructionsList(userId,pageNo){//获取批示列表
     var ajax = $.ajax({
         url: url+"/api/article/fetchAllInstruction",
-        type: "get",
-        data:{
+        type: "post",
+        contentType: "application/json;",
+        data:JSON.stringify({
             "userId":userId,
             "pageNo":pageNo,
             // "type":type,
             "pageSize":10,
-        }
+        })
 
     });
     return ajax;
@@ -199,22 +212,23 @@ function addInstruction(formData){//新增批示
 }
 function searchInstructionList(userId,keyword,type,pageNo){//搜索批示
     var ajax = $.ajax({
-        url: url+"/api/article/saveInstruction",
-        type: "get",
-        data:{
+        url: url+"/api/article/searchInstruction",
+        type: "post",
+        contentType: "application/json;",
+        data:JSON.stringify({
           "userId":userId,
           "keyword":keyword,
           "type":type,
           "pageNo":pageNo,
           "pageSize":10,
-        }
+        })
     });
     return ajax;
 }
 function addFeedback(formData){//新增反馈／分发
     var ajax = $.ajax({
         url: url+"/api/article/feedBackAndDis",
-        type: "get",
+        type: "post",
         data: formData,
         processData: false,
         contentType: false,
@@ -224,10 +238,11 @@ function addFeedback(formData){//新增反馈／分发
 function getInstructionFlow(instructionId){//获取批示流程
     var ajax = $.ajax({
         url: url+"/api/article/viewInstructionDetial",
-        type: "get",
-        data:{
+        type: "post",
+        contentType: "application/json;",
+        data:JSON.stringify({
             "instructionId":instructionId,
-        }
+        })
 
     });
     return ajax;
@@ -327,21 +342,6 @@ function searchOrg(keyword){
     type:'get',
     data:{
         "keyword":keyword,
-    },
-  })
-  return ajax;
-}
-
-//收录
-function getIncludedList(userid,type,pageNo,pageSize){
-  var ajax=$.ajax({
-    url:url+'/api/org/deleteOrg',
-    type:'get',
-    data:{
-        "userid":userid,
-        "type":type,
-        "pageNo":pageNo,
-        "pageSize":10,
     },
   })
   return ajax;
@@ -531,3 +531,100 @@ function addMes(userId,title,content,receivers,sender){//新增消息
   return ajax;
 }
 
+//收录管理
+function getIncludedList(userid,type,pageNo,pageSize){
+  var ajax=$.ajax({
+    url:url+'/api/org/deleteOrg',
+    type:'get',
+    data:{
+        "userId":userid,
+        "type":type,
+        "pageNo":pageNo,
+        "pageSize":10,
+    },
+  })
+  return ajax;
+}
+function getIncludedSearch(userid,keyword,type,pageNo,pageSize){
+  var ajax=$.ajax({
+    url:url+'/api/org/deleteOrg',
+    type:'get',
+    data:{
+        "userId":userid,
+        "type":type,
+        "keyword":keyword,
+        "pageNo":pageNo,
+        "pageSize":10,
+    },
+  })
+  return ajax;
+}
+function buildReporter(userid,articleId){
+  var ajax=$.ajax({
+    url:url+'/api/org/deleteOrg',
+    type:'get',
+    data:{
+        "userId":userid,
+        "articleId":articleId,
+    },
+  })
+  return ajax;
+}
+function buildWord(userid,articleId){
+  var ajax=$.ajax({
+    url:url+'/api/org/deleteOrg',
+    type:'get',
+    data:{
+        "userId":userid,
+        "articleId":articleId,
+    },
+  })
+  return ajax;
+}
+function uploadReporter(formData){//新增批示
+  var ajax = $.ajax({
+      url: url+"/api/article/saveInstruction",
+      type: "post",
+      data: formData,
+      processData: false,
+      contentType: false,
+  });
+  return ajax;
+}
+function getReporter(userid,type,pageNo){
+  var ajax=$.ajax({
+    url:url+'/api/org/deleteOrg',
+    type:'get',
+    data:{
+        "userId":userid,
+        "type":type,
+        "pageNo":pageNo,
+        "pageSize":10,
+    },
+  })
+  return ajax;
+}
+function searchReporter(userid,keyword,type,pageNo){
+  var ajax=$.ajax({
+    url:url+'/api/org/deleteOrg',
+    type:'get',
+    data:{
+        "userId":userid,
+        "keyword":keyword,
+        "type":type,
+        "pageNo":pageNo,
+        "pageSize":10,
+    },
+  })
+  return ajax;
+}
+function deleteReporter(id){
+  var ajax=$.ajax({
+    url:url+'/api/org/deleteOrg',
+    type:'get',
+    data:{
+      "id":id,
+    },
+  })
+  return ajax;
+}
