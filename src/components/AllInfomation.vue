@@ -33,7 +33,7 @@
 
               <span class="includeBtn" 
               v-show="(level!=3)?true:false"
-              :class="((level==0||level==2)?(item.isInstructions=='0'?'':'grey'):((level==1)?(item.isInclude=='0'?'':'grey'):''))"
+              :class="((level==0||level==2)?(item.isInstructions=='0'?'':'grey'):((level==1||level==4)?(item.isInclude=='0'?'':'grey'):''))"
               :data-state="item.isInstructions" 
               :data-pid="item.instructionId" 
               :data-id="item.id" 
@@ -44,11 +44,11 @@
               <!-- <img src="../../static/img/plus.png" alt="" 
               v-show="(level==0||level==2)?((item.isInstructions=='0')?true:false):((level==1)?((item.isInclude=='0')?true:false):false)"> -->
               <img 
-              :src="(level==1)?((item.isInclude=='0')?'./static/img/plus.png':'./static/img/plus_grey.png'):'./static/img/plus.png'" 
+              :src="(level==1||level==4)?((item.isInclude=='0')?'./static/img/plus.png':'./static/img/plus_grey.png'):'./static/img/plus.png'" 
               alt="" 
-              v-show="(level==0||level==2)?((item.isInstructions=='0')?true:false):((level==1)?true:false)">
+              v-show="(level==0||level==2)?((item.isInstructions=='0')?true:false):((level==1||level==4)?true:false)">
               <span>
-              {{(level==0||(level==2))?(item.isInstructions=='0'?'批示':'批示中'):((level==1)?(item.isInclude=='0'?'收录':'已收录'):false)}}
+              {{(level==0||(level==2))?(item.isInstructions=='0'?'批示':'批示中'):((level==1||level==4)?(item.isInclude=='0'?'收录':'已收录'):false)}}
               </span>
             </span>
             <router-link :to="{ path: '/homePage/articleDetail', query: { id:item.id,index:index,edit:'0'}}">
@@ -225,6 +225,9 @@ export default {
             //   $(".rightContent_").remove();
             // })
             that.insertData(data); 
+            that.$nextTick(function(){
+              $(document).scrollTop(0);
+            })
             that.flag=false;
           }
           else{
@@ -237,7 +240,10 @@ export default {
           $.when(getAllArticles(that.userid,that.value,that.type,that.pageNo)).done(function(data){
             if(data.state=="0"){
               that.insertData(data);
-              // that.articlesAarry=data.data.list;
+              that.$nextTick(function(){
+                $(document).scrollTop(0);
+              })
+                  // that.articlesAarry=data.data.list;
             }
             else{
               alert(data.data);
@@ -314,7 +320,7 @@ export default {
         var class_=el.hasClass('red');
         var id=$(el).attr("data-id");
         if(class_){
-          $.when(canceled(id)).done(function(data){
+          $.when(canceled(id,this.userid)).done(function(data){
             if(data.state=="0"){
             }
             else{
@@ -325,7 +331,7 @@ export default {
           el.find("img").attr("src","./static/img/plus.png");
         }
         else{
-          $.when(included(id)).done(function(data){
+          $.when(included(id,this.userid)).done(function(data){
             if(data.state=="0"){
             }
             else{
@@ -425,13 +431,20 @@ export default {
     },
     loadMore(){
       this.pageNo=this.pageNo+1;
+      var height;
+      this.$nextTick(function(){
+        height=$(".rightContent_").last().offset().top;
+      })
       var that=this;
       // if(!this.flag){
         if(this.keyword!=''&&this.keyword!=undefined){
           $.when(searchArticle(that.keyword,that.pageNo)).done(function(data){
             if(data.state=="0"){
               that.insertData(data); 
-              this.flag=false;
+              that.flag=false;
+              that.$nextTick(function(){
+                $(document).scrollTop(height-350);
+              })
             }
             else{
               alert(data.data);
@@ -443,6 +456,10 @@ export default {
         $.when(getAllArticles(that.userid,that.value,that.type,that.pageNo)).done(function(data){
           if(data.state=="0"){
             that.insertData(data);
+            that.$nextTick(function(){
+              // $(document).scrollTop(height);
+              $(document).scrollTop(height-350);
+            })
             // that.articlesAarry=data.data.list;
           }
           else{
@@ -458,6 +475,16 @@ export default {
     this.keyword = this.$route.query.keyword;
     this.add = this.$route.query.add;
     this.type=this.$route.query.type;//获得左侧菜单type
+    this.userSource=JSON.parse(localStorage.getItem("userSource"));
+    this.level=this.userSource?this.userSource.level:'';
+    this.userid=this.userSource?this.userSource.id:'';
+    if(this.level==0||this.level==2){
+      this.btnState='批示';
+    }
+    else if(this.level==1||this.level==4){
+      this.btnState='收录';
+    }
+    else{}
     var that=this;
     if(this.keyword!=''&&this.keyword!=undefined){//有关键词的时候
       this.searchThis();
@@ -466,6 +493,9 @@ export default {
       $.when(getAllArticles(that.userid,that.value,that.type,that.pageNo)).done(function(data){
         if(data.state=="0"){
           that.insertData(data);
+          that.$nextTick(function(){
+            $(document).scrollTop(0);
+          })
           // that.articlesAarry=data.data.list;
         }
         else{
@@ -493,17 +523,6 @@ export default {
     //   }
     // })
     // scrollFun();
-    this.userSource=JSON.parse(localStorage.getItem("userSource"));
-    this.level=this.userSource?this.userSource.level:'';
-    this.userid=this.userSource?this.userSource.id:'';
-    if(this.level==0||this.level==2){
-      this.btnState='批示';
-    }
-    else if(this.level==1){
-      this.btnState='收录';
-    }
-    else{}
-
   },
 }
 </script>

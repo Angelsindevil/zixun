@@ -45,6 +45,13 @@ const state = {
 	mesId:'',
 	reportObj:[],
 	wordObj:{},
+	mesObj:{
+	  title: '',
+      area: '',
+      accept: '',
+      send: '',
+	},
+	mesCount:'',
 }
 const store = new Vuex.Store({
   state,

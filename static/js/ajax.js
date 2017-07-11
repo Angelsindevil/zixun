@@ -1,8 +1,8 @@
 //以下用户管理
 // var url="http://192.168.2.108:9000";//ct
-var url="http://192.168.2.129:9000";//bh
+// var url="http://192.168.2.129:9000";//bh
 // var url="127.0.0.1:9000";
-// var url="";
+var url="";
 function getAllUsers(){
 	var ajax = $.ajax({
         url: url+"/api/user/fetchAllUser",
@@ -21,7 +21,7 @@ function addUsers(orgid,account,username,level,password){
         	"account":account,
         	"username":username,
         	"level":level,
-            "password":password
+          "password":password
         }
     });
     return ajax;
@@ -115,23 +115,25 @@ function getArticleDetail(id){//获取文章详情
     });
     return ajax;
 }
-function canceled(id){//取消收录
+function canceled(id,userid){//取消收录
     var ajax = $.ajax({
-        url: url+"/api/article/exclude",
+        url: url+"/api/bulletin/exclude",
         type: "get",
         data:{
             "id":id,
+            "userId":userid,
         }
 
     });
     return ajax;
 }
-function included(id){//收录
+function included(id,userid){//收录
     var ajax = $.ajax({
-        url: url+"/api/article/include",
+        url: url+"/api/bulletin/include",
         type: "get",
         data:{
             "id":id,
+            "userId":userid,
         }
 
     });
@@ -189,7 +191,7 @@ function getInstructionsList(userId,pageNo){//获取批示列表
     var ajax = $.ajax({
         url: url+"/api/article/fetchAllInstruction",
         type: "post",
-        contentType: "application/json;",
+        contentType: "application/json",
         data:JSON.stringify({
             "userId":userId,
             "pageNo":pageNo,
@@ -534,11 +536,12 @@ function addMes(userId,title,content,receivers,sender){//新增消息
 //收录管理
 function getIncludedList(userid,type,pageNo,pageSize){
   var ajax=$.ajax({
-    url:url+'/api/org/deleteOrg',
+    url:url+'/api/bulletin/getIncludedList',
     type:'get',
     data:{
         "userId":userid,
         "type":type,
+        // "keyword":keyword,
         "pageNo":pageNo,
         "pageSize":10,
     },
@@ -547,7 +550,7 @@ function getIncludedList(userid,type,pageNo,pageSize){
 }
 function getIncludedSearch(userid,keyword,type,pageNo,pageSize){
   var ajax=$.ajax({
-    url:url+'/api/org/deleteOrg',
+    url:url+'/api/bulletin/getIncludedList',
     type:'get',
     data:{
         "userId":userid,
@@ -561,29 +564,30 @@ function getIncludedSearch(userid,keyword,type,pageNo,pageSize){
 }
 function buildReporter(userid,articleId){
   var ajax=$.ajax({
-    url:url+'/api/org/deleteOrg',
+    url:url+'/api/bulletin/generateBulletin',
     type:'get',
     data:{
         "userId":userid,
-        "articleId":articleId,
+        "articleIds":articleId,
     },
   })
   return ajax;
 }
-function buildWord(userid,articleId){
+function buildWord(userid,articleId,title){
   var ajax=$.ajax({
-    url:url+'/api/org/deleteOrg',
+    url:url+'/api/bulletin/generateBulletin',
     type:'get',
     data:{
         "userId":userid,
-        "articleId":articleId,
+        "articleIds":articleId,
+        "title":title
     },
   })
   return ajax;
 }
 function uploadReporter(formData){//新增批示
   var ajax = $.ajax({
-      url: url+"/api/article/saveInstruction",
+      url: url+"/api/bulletin/uploadBulletin",
       type: "post",
       data: formData,
       processData: false,
@@ -593,7 +597,7 @@ function uploadReporter(formData){//新增批示
 }
 function getReporter(userid,type,pageNo){
   var ajax=$.ajax({
-    url:url+'/api/org/deleteOrg',
+    url:url+'/api/bulletin/getBulletinList',
     type:'get',
     data:{
         "userId":userid,
@@ -606,7 +610,7 @@ function getReporter(userid,type,pageNo){
 }
 function searchReporter(userid,keyword,type,pageNo){
   var ajax=$.ajax({
-    url:url+'/api/org/deleteOrg',
+    url:url+'/api/bulletin/getBulletinList',
     type:'get',
     data:{
         "userId":userid,
@@ -620,7 +624,7 @@ function searchReporter(userid,keyword,type,pageNo){
 }
 function deleteReporter(id){
   var ajax=$.ajax({
-    url:url+'/api/org/deleteOrg',
+    url:url+'/api/bulletin/deleteBulletin',
     type:'get',
     data:{
       "id":id,

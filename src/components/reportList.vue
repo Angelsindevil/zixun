@@ -17,13 +17,13 @@
     </div>
     <div class="reporterContainer">
       <el-tabs v-model="activeName" @tab-click="handleClick">
-        <el-tab-pane label="系统报告" name="first">
+        <el-tab-pane label="系统报告" name="first" class="tab1">
           <div class="rightContent" v-for="(item,index) in listFilter_1">
             <div class="title_bar">
               <img src="../../static/img/multi-report.png" alt="">
-              <span class="title_new"><span class="ellipsis titleEll">{{item.title}}</span><span class="date_new">生成日期：<span>{{item.date}}</span></span></span>
+              <span class="title_new"><span class="ellipsis titleEll">{{item.title}}</span><span class="date_new">生成日期：<span>{{item.createTime}}</span></span></span>
               <img src="../../static/img/delete.png" alt="" class="delete" @click="delete_(item.id)" :data-id='item.id'>
-              <a :href="item.link" class="downloadBtn" target="blank">
+              <a :href="item.bulletinUrl" class="downloadBtn" target="blank">
                 <!-- <span class="includeBtn"> -->
                   <img src="../../static/img/download.png" alt="">
                   <!-- <span>下载报告</span> -->
@@ -47,19 +47,19 @@
               <span class="includeBtn"><img src="../../static/img/download.png" alt=""><span>下载报告</span></span>
             </div>
           </div>   -->
-          <div class="rightBottom" @click="loadMore">
+          <!-- <div class="rightBottom" ref="rightBottom1" @click="loadMore">
             <p>
             点击加载更多历史报告
             </p>
-          </div>
+          </div> -->
         </el-tab-pane>
-        <el-tab-pane label="手工报告" name="second">
+        <el-tab-pane label="手工报告" name="second" class="tab2">
           <div class="rightContent" v-for="(item,index) in listFilter_2">
             <div class="title_bar">
               <img src="../../static/img/multi-report.png" alt="">
-              <span class="title_new"><span class="ellipsis titleEll">{{item.title}}</span><span class="date_new">生成日期：<span>{{item.date}}</span></span></span>
+              <span class="title_new"><span class="ellipsis titleEll">{{item.title}}</span><span class="date_new">生成日期：<span>{{item.createTime}}</span></span></span>
               <img src="../../static/img/delete.png" alt="" class="delete" @click="delete_(item.id)" :data-id='item.id'>
-              <a :href="item.link" class="downloadBtn" target="blank">
+              <a :href="item.bulletinUrl" class="downloadBtn" target="blank">
                 <!-- <span class="includeBtn"> -->
                   <img src="../../static/img/download.png" alt="">
                   <!-- <span>下载报告</span> -->
@@ -91,13 +91,18 @@
               <span class="includeBtn"><img src="../../static/img/download.png" alt=""><span>下载报告</span></span>
             </div>
           </div>   -->
-          <div class="rightBottom" @click="loadMore">
+          <!-- <div class="rightBottom" ref="rightBottom2" @click="loadMore">
             <p>
-            点击加载更多历史报告
+            点击加载更多内容
             </p>
-          </div>
+          </div> -->
         </el-tab-pane>
       </el-tabs>
+      <div class="rightBottom" ref="rightBottom" @click="loadMore">
+        <p>
+        点击加载更多内容
+        </p>
+      </div>
     </div>
   </div>
 </template>
@@ -109,39 +114,38 @@ export default {
     return {
       input2:'',
       activeName: 'first',
-      userId:'d733ed4b5afd11e79ea400269e28ab11',
-      userName:'系统管理员',//想一想 先存哪里去 登录的时候存
-      type:'系统报告',
-      totalNum:'136',
+      // type:'系统报告',
+      type:'0',
+      totalNum:'',
       todayNum:'',
       listFilter:[],
       listFilter_1:[
-        {
-          'id':'001',
-          'link':'http://www.baidu.com',
-          'title':'高等教育信息动态-20161208-V01',
-          'date':'2016/12/08 16：45',
-        },
-        {
-          'id':'002',
-          'link':'http://www.baidu.com',
-          'title':'高等教育信息动态-20161208-V02',
-          'date':'2016/12/08 16：45',
-        },
+        // {
+        //   'id':'001',
+        //   'link':'http://www.baidu.com',
+        //   'title':'高等教育信息动态-20161208-V01',
+        //   'date':'2016/12/08 16：45',
+        // },
+        // {
+        //   'id':'002',
+        //   'link':'http://www.baidu.com',
+        //   'title':'高等教育信息动态-20161208-V02',
+        //   'date':'2016/12/08 16：45',
+        // },
       ],
       listFilter_2:[
-        {
-          'id':'003',
-          'link':'http://www.baidu.com',
-          'title':'高等教育信息动态-20161208-V03',
-          'date':'2016/12/08 16：45',
-        },
-        {
-          'id':'004',
-          'link':'http://www.baidu.com',
-          'title':'高等教育信息动态-20161208-V04',
-          'date':'2016/12/08 16：45',
-        },
+        // {
+        //   'id':'003',
+        //   'link':'http://www.baidu.com',
+        //   'title':'高等教育信息动态-20161208-V03',
+        //   'date':'2016/12/08 16：45',
+        // },
+        // {
+        //   'id':'004',
+        //   'link':'http://www.baidu.com',
+        //   'title':'高等教育信息动态-20161208-V04',
+        //   'date':'2016/12/08 16：45',
+        // },
       ],
       pageCount_1:1,
       pageCount_2:1,
@@ -150,6 +154,7 @@ export default {
       linkName:'',
       userSource:{},
       userid:'',
+      username:'',
     }
   },
   methods:{
@@ -172,28 +177,38 @@ export default {
       // console.log(tab, event);
       console.log(tab.label);
       var pageNo=1;
-      if(that.type=='手工报告'){
+      // if(that.type=='手工报告'){
+      if(tab.label=='手工报告'){
+        that.type='1';
         that.pageCount_2=1;
       }
       else{
+        that.type='0';
         that.pageCount_1=1;
       }
-      that.type=tab.label;
+      // if(that.type=='1'){
+      //   that.pageCount_2=1;
+      // }
+      // else{
+      //   that.pageCount_1=1;
+      // }
+      // that.type=tab.label;
       // this.listFilter=[];
-      $.when(getReporter(this.userId,tab.label,pageNo)).done(function(data){
+      $.when(getReporter(this.userid,that.type,pageNo)).done(function(data){
         if(data.state=="0"){
-          var res=data.data;
-          that.totalNum=res.totalNum;
-          // that.listFilter=res.list;
-          if(tab.label=="手工报告"){
-            that.listFilter_2=res.list;
-            // that.type="手工报告";
-          }
-          else if(tab.label=='系统报告'){
-            that.listFilter_1=res.list;
-            // that.type="系统报告";
-          }
-          else{}
+          // var res=data.data;
+          // that.totalNum=res.totalNum;
+          // // that.listFilter=res.list;
+          // if(tab.label=="手工报告"){
+          //   that.listFilter_2=res.list;
+          //   // that.type="手工报告";
+          // }
+          // else if(tab.label=='系统报告'){
+          //   that.listFilter_1=res.list;
+          //   // that.type="系统报告";
+          // }
+          // else{}
+          that.insertData(data,that.type);
         }
         else{
           alert(data.data);
@@ -202,7 +217,8 @@ export default {
     },
     handleInputClick:function(){
       var that=this;
-      if(that.type=='手工报告'){
+      // if(that.type=='手工报告'){
+      if(that.type=='1'){
         that.pageCount_2=1;
         that.listFilter_2=[];
       }
@@ -212,11 +228,17 @@ export default {
       }
       var pageNo=1;
       console.log(that.type);
-      $.when(searchReporter(that.userId,that.input2,that.type,pageNo)).done(function(data){
+      $.when(searchReporter(that.userid,that.input2,that.type,pageNo)).done(function(data){
         if(data.state=="0"){
-          var res=data.data;
-          that.totalNum=res.totalNum;
-          that.listFilter=res.list;
+          // var res=data.data;
+          // that.totalNum=res.totalNum;
+          // if(that.type=='0'){
+          //   that.listFilter_1=res.list;
+          // }
+          // else{
+          //   that.listFilter_2=res.list;
+          // }
+          that.insertData(data,that.type);
         }
         else{
           alert(data.data);
@@ -235,6 +257,7 @@ export default {
           $.when(uploadReporter(formData)).done(function(data){
             if(data.state=="0"){
               alert("报告上传成功！");
+              window.location.reload();
             }
             else{
               alert(data.data);
@@ -245,13 +268,31 @@ export default {
     },
     loadMore(){
       var that=this;
+      var height;
+      // if(that.type=='0'){
+        this.$nextTick(function(){
+          if(that.type=='0'){
+            height=$(".tab1 .rightContent").last().offset().top;
+          }
+          else{
+            height=$(".tab2 .rightContent").last().offset().top;
+          }
+        })
+      // }
+      // else{
+
+      // }
       if(this.activeName=='first'){
         this.pageCount_1++;
-        $.when(searchReporter(that.userId,that.input2,that.type,that.pageCount_1)).done(function(data){
+        $.when(searchReporter(that.userid,that.input2,that.type,that.pageCount_1)).done(function(data){
           if(data.state=="0"){
-            var res=data.data;
-            that.totalNum=res.totalNum;
-            that.listFilter=res.list;
+            // var res=data.data;
+            // that.totalNum=res.totalNum;
+            // that.listFilter_1=res.list;
+            that.insertData(data,that.type);
+            that.$nextTick(function(){
+              $(document).scrollTop(height);
+            })
           }
           else{
             alert(data.data);
@@ -260,11 +301,15 @@ export default {
       }
       else if(this.activeName=='second'){
         this.pageCount_2++;
-        $.when(searchReporter(that.userId,that.input2,that.type,that.pageCount_2)).done(function(data){
+        $.when(searchReporter(that.userid,that.input2,that.type,that.pageCount_2)).done(function(data){
           if(data.state=="0"){
-            var res=data.data;
-            that.totalNum=res.totalNum;
-            that.listFilter=res.list;
+            // var res=data.data;
+            // that.totalNum=res.totalNum;
+            // that.listFilter_2=res.list;
+            that.insertData(data,that.type);
+            that.$nextTick(function(){
+              $(document).scrollTop(height);
+            })
           }
           else{
             alert(data.data);
@@ -273,23 +318,88 @@ export default {
       }
       else{}
     },
+    insertData(data,type){
+      var that=this;
+      var res=data.data;
+      that.totalNum=res.totalNum;
+      console.log(res.list.length);
+      if(res.list&&res.list.length!=0){
+        if(res.list.length<10){
+          $(that.$refs.rightBottom).children('p').text('暂无更多历史报告');
+          if((that.pageCount_1==1)&&(type=='0')){
+            that.listFilter_1=[];
+          }
+          else{}
+          if((that.pageCount_2==1)&&(type=='1')){
+            that.listFilter_2=[];
+          }
+          else{}
+            // if(type=='0'){
+            //   // $(that.$refs.rightBottom).children('p').text('暂无更多历史报告');
+            //   that.listFilter_1=[];
+            // }
+            // else{
+            //   // $(that.$refs.rightBottom).children('p').text('暂无更多历史报告');
+            //   that.listFilter_2=[]
+            // }
+          // }
+          // else{}
+        }
+        else{
+          $(that.$refs.rightBottom).children('p').text('点击加载更多历史报告');
+        }
+        res.list.map(function(value,index){
+          if(type=='0'){
+            that.listFilter_1.push(value);
+          }
+          else{
+            that.listFilter_2.push(value);
+          }
+        })
+      }
+      else{
+        if(that.pageNo==1){//只一页
+          $(that.$refs.rightBottom).children('p').text('暂无历史报告');
+          if((that.pageCount_1==1)&&(type=='0')){
+            that.listFilter_1=[];
+          }
+          else{}
+          if((that.pageCount_2==1)&&(type=='1')){
+            that.listFilter_2=[];
+          }
+          else{}
+          // if(type=='0'){
+          //   that.listFilter_1=[]
+          // }
+          // else{
+          //   that.listFilter_2=[]
+          // }
+        }
+        else{//多余一页
+          $(that.$refs.rightBottom).children('p').text('暂无更多历史报告');
+        }
+      }
+    },
   },
-  create(){
+  created(){
     // var that=this;
     this.userSource=JSON.parse(localStorage.getItem("userSource"));
+    this.username=this.userSource?this.userSource.username:'';
     this.userid=this.userSource?this.userSource.id:'';
-    this.listFilter_1=this.listFilter_1;
+    console.log(this.userid);
+    // this.listFilter_1=this.listFilter_1;
     this.$nextTick(function(){
       matchMenu();
     })
   },
   mounted(){
     var that=this;
-    $.when(getReporter(that.userId,that.type,that.pageCount_1)).done(function(data){
+    $.when(getReporter(that.userid,that.type,that.pageCount_1)).done(function(data){
       if(data.state=="0"){
-        var res=data.data;
-        that.totalNum=res.totalNum;
-        that.listFilter=res.list;
+        // var res=data.data;
+        // that.totalNum=res.totalNum;
+        // that.listFilter_1=res.list;
+        that.insertData(data,that.type);
       }
       else{
         alert(data.data);

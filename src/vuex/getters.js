@@ -25,3 +25,7 @@ export const mesId=state=>state.mesId//弹窗类型
 export const reportObj=state=>state.reportObj//弹窗类型
 
 export const wordObj=state=>state.wordObj//弹窗类型
+
+export const mesObj=state=>state.mesObj//弹窗类型
+
+export const mesCount=state=>state.mesCount//弹窗类型

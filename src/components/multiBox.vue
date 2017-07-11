@@ -121,30 +121,24 @@
 	      console.log(item.value);
 	      for (var i=0;i<this.commonData.length;i++) {
 	        if(this.commonData[i].value==item.value){
-	          if(this.isSelect){
-	            this.commonSelHandler('.multiBox',i,item);
-	          }
-	          else{
-	            this.commonSelHandler('.articleBox',i,item);
-	          }
+	          // if(this.isSelect){
+	          //   this.commonSelHandler('.multiBox',i,item);
+	          // }
+	          // else{
+	          //   this.commonSelHandler('.articleBox',i,item);
+	          // }
+	          this.commonSelHandler('.multiBox',i,item);
 	        }
 	      }
 	    },
 	    commonSelHandler(selector,i,item){
-	      $(selector).find(".article_table tbody").children("tr").removeClass("current-row");
-	      $(selector).find(".article_table tbody").children("tr").eq(i).addClass("current-row");
-	      this.radio=i;
-	      if(this.commonData==this.alltableData){
-	        this.currentRow=item.value;
-	        // this.radio1=this.radio;
-	      }
-	      else if(!this.isSelect){
-	        console.log("success");
-	        this.input2=item.value;
-	        // this.radio2=this.radio;
-	      }
-	      var height=$(selector).find(".article_table tbody").children("tr").eq(i).position().top;
-	      $(selector).find(".alertContent .el-table__body-wrapper").scrollTop(height)
+	      this.$nextTick(function(){
+	      	$(selector).find(".article_table tbody").children("tr").removeClass("current-row");
+	        $(selector).find(".article_table tbody").children("tr").eq(i).addClass("current-row");
+	      	var height=$(selector).find(".article_table tbody").children("tr").eq(i).position().top;
+	      	$(selector).find(".alertContent .el-table__body-wrapper").scrollTop(height)
+	      	$(selector).find(".article_table tbody").children("tr").eq(i).find(".el-checkbox__input").addClass("is-checked");
+	      	})
 	    },
 	    handleTableCurrentChange(val){//点击具体表格中的条目
 	      if(val){

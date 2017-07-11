@@ -1,5 +1,5 @@
 i<template>
-  <div class="message">
+  <div class="message userManage">
     <div class="rightBar">
       <p>
         用户管理
@@ -231,7 +231,9 @@ export default {
       else if(value=='3'){
         return "普通用户";
       }
-      else{}
+      else if(value=='4'){
+        return "超级管理员";
+      }
     },
     copyArr(arr){
       return arr.map((e)=>{
@@ -361,6 +363,12 @@ export default {
     }
     .el-table__empty-block{
       width:100%!important;
+    }
+  }
+  .userManage{
+    .el-table__body-wrapper {
+      overflow: hidden!important;
+      position: relative;
     }
   }
   .selectStyle{

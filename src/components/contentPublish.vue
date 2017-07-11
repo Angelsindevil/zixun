@@ -14,7 +14,7 @@
 
     <div class="rightContent_" v-for="(item,index) in articlesAarry">
       <span class="includeBtn" @click="clickBtn($event,item.id)" @mouseover="overBtn" @mouseout="outBtn"><span>已发布</span></span>
-      <router-link :to="{ path: '/homePage/articleDetail', query: { id:item.id,edit:'0'}}">
+      <router-link :to="{ path: '/homePage/articleDetail', query: { id:item.id,edit:'2'}}">
         <div class="rightContent">
           <!-- <p class="title_bar">
             <span>{{item.title}}<span>
@@ -24,7 +24,9 @@
           </p>        
           <p class="title_bottom">
             <span>
-              <span class="bottom_item">来源：<span>{{item.source}}<span @click="goSomewhere" class="bottomLink ellipsis">（{{item.link}}）</span></span></span>
+              <span class="bottom_item">来源：<span>{{item.source}}
+              <span class="bottomLink ellipsis">（<span @click="goSomewhere">{{item.link}}</span>）</span>
+              </span></span>
               <span class="bottom_item">类别：<span>{{item.type}}</span></span>
               <!-- <span class="bottom_item">时间：<span>{{item.time}}</span></span> -->
               <span class="bottom_item">时间：<span>{{item.time}}</span></span>
@@ -169,14 +171,19 @@ export default {
       })
     },
     loadMore(){
-      console.log("page");
-      console.log(this.pageNo);
       this.pageNo=this.pageNo+1;
+      var height;
+      this.$nextTick(function(){
+        height=$(".rightContent_").last().offset().top;
+      })
       var that=this;
       if(this.input2==""){
         $.when(getContentList(this.userid,that.pageNo,'0')).done(function(data){
           if(data.state=="0"){
             that.insertData(data.data);
+            that.$nextTick(function(){
+              $(document).scrollTop(height);
+            })
           }
           else{
             alert(data.data);
@@ -187,6 +194,9 @@ export default {
         $.when(releasedSearch(that.input2,that.pageNo)).done(function(data){
           if(data.state=="0"){
             that.insertData(data.data);
+            that.$nextTick(function(){
+              $(document).scrollTop(height);
+            })
           }
           else{
             alert(data.data);
@@ -342,12 +352,16 @@ export default {
       .bottom_item{
         position: relative;
         .bottomLink{
+          padding-right:10px;
           color: rgb(0, 0, 255);
           display: inline-block;
           width: 80%;
           position: absolute;
           bottom: -20px;
           left: 0;
+          span{
+            vertical-align:initial;
+          }
         }
       }
       .bottom_item:first-child{

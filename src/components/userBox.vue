@@ -90,10 +90,16 @@
 		    }, {
 		      value: '2',
 		      label: '批示用户'
-		    }, {
+		    }, 
+        {
 		      value: '3',
 		      label: '普通用户'
-		    }],
+		    },
+        {
+          value: '4',
+          label: '超级管理员'
+        }
+        ],
 		    form: {
 		      org:'',
 		      account: '',

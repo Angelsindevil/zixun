@@ -13,9 +13,10 @@
         <el-button type="text" size="small" class="editBtn">编辑</el-button>
       </router-link>
       <span class="includeBtn includeBtn_fb" @click="releaseBtn(id)" style="width:80px;font-size:12px"><span>发布</span></span>
+      <span class="includeBtn includeBtn_cfb" @click="clickBtn($event,id)" @mouseover="overBtn" @mouseout="outBtn"><span>已发布</span></span>
       <span class="includeBtn includeBtn_sl" 
         v-show="(level!=3)?true:false"
-        :class="((level==0||level==2)?(isInstructions=='0'?'':'grey'):((level==1)?(isInclude=='0'?'':'grey'):''))"
+        :class="((level==0||level==2)?(isInstructions=='0'?'':'grey'):((level==1||level==4)?(isInclude=='0'?'':'grey'):''))"
         :data-state="isInstructions" 
         :data-pid="instructionId" 
         :data-id="id" 
@@ -29,11 +30,11 @@
         {{(level==0||(level==2))?(isInstructions=='0'?'批示':'批示中'):((level==1)?(isInclude=='0'?'收录':'已收录'):false)}}
         </span> -->
         <img 
-        :src="(level==1)?((isInclude=='0')?'../../static/img/plus.png':'../../static/img/plus_grey.png'):'../../static/img/plus.png'" 
+        :src="(level==1||level==4)?((isInclude=='0')?'./static/img/plus.png':'./static/img/plus_grey.png'):'./static/img/plus.png'" 
         alt="" 
-        v-show="(level==0||level==2)?((isInstructions=='0')?true:false):((level==1)?true:false)">
+        v-show="(level==0||level==2)?((isInstructions=='0')?true:false):((level==1||level==4)?true:false)">
         <span>
-        {{(level==0||(level==2))?(isInstructions=='0'?'批示':'批示中'):((level==1)?(isInclude=='0'?'收录':'已收录'):false)}}
+        {{(level==0||(level==2))?(isInstructions=='0'?'批示':'批示中'):((level==1||level==4)?(isInclude=='0'?'收录':'已收录'):false)}}
         </span>
       </span>
       <!-- <span class="includeBtn" :class="isInstructions=='0'?'':'grey'" :data-state="isInstructions" :data-id="id" :data-pid="instructionId" :data-title="title" :data-i="number" @click="includeThis" @mouseover="canceInclude" @mouseout="includeThis_"><img src="../../static/img/plus.png" alt="" v-show="isInstructions=='0'?true:false"><span>{{isInstructions=='0'?'批示':'批示中'}}</span></span> -->
@@ -80,6 +81,35 @@ export default {
   methods:{
     doThis:function(){
 
+    },
+    clickBtn:function(e,id){
+      console.log(e);
+      e.stopPropagation();
+      e.preventDefault();
+      $.when(cancelArticle(id)).done(function(data){
+        if(data.state=="0"){
+          window.location.reload();
+        }
+        else{
+          alert(data.data);
+        }
+      })
+    },
+    outBtn:function(e){
+      var el=$(e.target).closest(".includeBtn");
+      var class_=el.hasClass('includeBtn_blue');
+      if(class_){
+        el.removeClass("includeBtn_blue").find("span").text("已发布");
+      }
+      else{
+      }
+    },
+    overBtn:function(e){
+      var el=$(e.target).closest(".includeBtn");
+      var class_=el.hasClass('includeBtn_blue');
+      if(!class_){
+        el.addClass("includeBtn_blue").find("span").text("取消发布");
+      }
     },
     releaseBtn(id){
       var that=this;
@@ -251,21 +281,26 @@ export default {
     this.id = this.$route.query.id;
     this.number=this.$route.query.index;
     this.edit=this.$route.query.edit;
-
-    if(this.edit=='0'){
+    if(this.edit=='0'){//已发布文章列表点击查看文章详情
       this.$nextTick(function(){
         $(".art_edit").removeClass("showBtn");
         $(".includeBtn").hide();
         $(".includeBtn_sl").show();
       })
     }
-    else{
-
+    else if(this.edit=='1'){
       localStorage.setItem("editor",JSON.stringify(this.datanew));
       this.$nextTick(function(){
         $(".art_edit").addClass("showBtn");
         $(".includeBtn").hide();
         $(".includeBtn_fb").show();
+      })
+    }
+    else{
+      this.$nextTick(function(){
+        $(".art_edit").removeClass("showBtn");
+        $(".includeBtn").hide();
+        $(".includeBtn_cfb").show();
       })
     }
     var that=this;
@@ -294,7 +329,7 @@ export default {
     if(this.level==0||this.level==2){
       this.btnState='批示';
     }
-    else if(this.level==1){
+    else if(this.level==1||this.level==4){
       this.btnState='收录';
     }
     else{}
@@ -367,6 +402,16 @@ export default {
       color: #0099cc;
       // color:#4183F0;
       cursor:pointer;
+    }
+    .includeBtn_cfb{
+      border:1px solid #cecece;
+      color: #cecece;
+    }
+    .includeBtn_blue{
+      background-color: #0099cc;
+      color:#fff;
+      // border-color:#0099cc;
+      // color:#0099cc;
     }
   }
   .content_bar{

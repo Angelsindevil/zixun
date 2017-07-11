@@ -87,9 +87,11 @@
         },
         // currentRow:'国家“111计划”基地5年评估一次，运行良好可滚动支持',
         currentRow:'',
-        userid:'001',
+        userid:'',
         method:'全部内容',
         type:'全部内容',
+        userSource:{},
+        userid:'',
       }
     },
     computed: {
@@ -194,6 +196,8 @@
     mounted() {
       // this.commonData=this.handlePreData(this.alltableData);
       var that=this;
+      this.userSource=JSON.parse(localStorage.getItem("userSource"));
+      this.userid=this.userSource?this.userSource.id:'';
       $.when(getAllArticles(this.userid,this.method,this.type,this.pageNo)).done(function(data){
         if(data.state=="0"){
           var res=data.data;

@@ -3,7 +3,7 @@
   <div class="test">
     <div class="rightBar">
       <p>平台管理-批示管理
-        <span>共计处理了<span>{{totalNum}}</span>份批示，今日收到批示和反馈<span>{{todayNum}}</span>份</span>
+        <span>共计<span>{{totalNum}}</span>份批示，今日收到批示和反馈<span>{{todayNum}}</span>份</span>
       </p>
       <!-- <div class="admin_ui_input">
         <input type="" name="" placeholder="搜索批示和反馈的内容">
@@ -83,7 +83,7 @@ export default {
         }
         ],
         userId:'d733ed4b5afd11e79ea400269e28ab11',
-        value: '0',
+        value: '5',
         input2: '',
         articles:[
         // {title:'国家“双一流”实施方案正式出台，预计2017年上半年公布名单',date:"2016/12/10",rowState:'0',btn_con:'流程已结束',instructionsId:'01'},
@@ -196,30 +196,32 @@ export default {
           $(that.$refs.rightBottom).children('p').text('点击加载更多批示');
         }
         // $(that.$refs.rightBottom).children('p').text('点击加载更多批示');
-        that.articles=res.results.map(function(value,index){
-          var btn_con;
-          if(value.rowState=='0'){
-            btn_con="流程已结束";
-          }
-          else if(value.rowState=='1'){
-            btn_con="新反馈"
-          }
-          else if(value.rowState=='2'){
-            btn_con="新批示"
-          }
-          else if(value.rowState=='3'){
-            btn_con="新分发"
-          }
-          else{}
-          return {
-            "title":value.title,
-            "date":value.date,
-            "rowState":value.rowState,
-            "btn_con":btn_con,
-            "instructionsId":value.instructionsId,
-          }
-        })
-        that.articlesAarry=that.articles;
+        if(res.results.length>0){
+          that.articles=res.results.map(function(value,index){
+            var btn_con;
+            if(value.rowState=='0'){
+              btn_con="流程已结束";
+            }
+            else if(value.rowState=='1'){
+              btn_con="新反馈"
+            }
+            else if(value.rowState=='2'){
+              btn_con="新批示"
+            }
+            else if(value.rowState=='3'){
+              btn_con="新分发"
+            }
+            else{}
+            return {
+              "title":value.title,
+              "date":value.date,
+              "rowState":value.rowState,
+              "btn_con":btn_con,
+              "instructionsId":value.instructionsId,
+            }
+          })
+          that.articlesAarry=that.articles;
+        }
       }
       else{
         if(that.pageNo==1){//只一页
@@ -234,6 +236,10 @@ export default {
     loadMore(){
       this.pageNo=this.pageNo+1;
       var that=this;
+      var height;
+      this.$nextTick(function(){
+        height=$(".rightContent").last().offset().top;
+      })
       // if(this.input2==""){
       //   $.when(getInstructionsList(that.userid,that.pageNo)).done(function(data){
       //     if(data.state=="0"){
@@ -248,6 +254,9 @@ export default {
         $.when(searchInstructionList(that.userid,that.input2,that.value,that.pageNo)).done(function(data){
           if(data.state=="0"){
             that.insertData(data);
+            that.$nextTick(function(){
+              $(document).scrollTop(height);
+            })
           }
           else{
             alert(data.data);
@@ -262,7 +271,7 @@ export default {
     this.userSource=JSON.parse(localStorage.getItem("userSource"));
     this.userid=this.userSource?this.userSource.id:'';
     this.level=this.userSource?this.userSource.level:'';
-    if(this.level==2||this.level==0){
+    if(this.level==2||this.level==0||this.level==4){
       this.$nextTick(function(){
         $(".addPsBtn").show();
       });

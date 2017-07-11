@@ -109,12 +109,13 @@
       articleId:'',
       instructionId:'',
       quill:'',
-      userId:'d733ed4b5afd11e79ea400269e28ab11',
-      userName:'系统管理员',//想一想 先存哪里去 登录的时候存
-      level:'0',//权限 一开始就存下来的 登录的时候存
       psObj:[],
       clrArr:[],
       fileFlag:false,
+      userSource:{},
+      level:'',//权限 一开始就存下来的 登录的时候
+      userId:'',
+      userName:'',//想一想 先存哪里去 登录的时候
     }
   },
   computed: {
@@ -202,7 +203,7 @@
         }
         else if(val.type=='1'){//分发弹窗
           this.currentRow=val.title;
-          if(this.level=='0'){//权限为管理员 分发处理人可选
+          if(this.level=='0'||this.level=='4'){//权限为管理员 分发处理人可选
             this.clDisabled=false;
             this.input3="";
           }
@@ -213,7 +214,7 @@
         }
         else if(val.type=='2'){//反馈弹窗
           this.currentRow=val.title;
-          if(this.level=='0'){//权限为管理员 反馈处理人可选
+          if(this.level=='0'||this.level=='4'){//权限为管理员 反馈处理人可选
             this.clDisabled=true;
             this.input3=this.userName;
           }
@@ -260,7 +261,7 @@
       }
     },
     solvePeople:function(){//处理人弹窗  反馈还是分发
-      if(this.level=="0"){//系统管理员无论反馈和分发 都弹窗 而且都默认选中自己
+      if(this.level=="0"||this.level=='4'){//系统管理员无论反馈和分发 都弹窗 而且都默认选中自己
         if(this.value=='1'){//分发
           $(".multiBox").addClass("showBtn");
           $(".printPs").removeClass("showBtn");
@@ -414,6 +415,10 @@
     // this.instructionId = this.$route.query.id;
     // tinymce.remove('textarea'); 
     // tinymce.init(obj);
+    this.userSource=JSON.parse(localStorage.getItem("userSource"));
+    this.level=this.userSource?this.userSource.level:'';
+    this.userId=this.userSource?this.userSource.id:'';
+    this.userName=this.userSource?this.userSource.username:'';
   }
 }
   // var obj={

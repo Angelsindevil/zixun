@@ -2,7 +2,7 @@
   <div class="report reportStyle">
     <div class="rightBar">
       <p>报告中心-收录管理：
-        <span>今日收录<span>136</span>篇，选入报告<span>12</span>篇</span>
+        <span>今日收录<span>{{totalNum}}</span>篇，选入报告<span>{{todayNum}}</span>篇</span>
       </p>
       <!-- <div>
         <input type="" name="" placeholder="搜索已收录的内容">
@@ -39,7 +39,7 @@
             <!-- </label> -->
             <el-checkbox  @change="checkItem($event,index)" class="checkItem" v-model="checkedList[index]"></el-checkbox>
             <span><span class="ellipsis titleEll">{{item.title}}</span> - <span class="dateStyle">{{item.date}}</span></span>
-            <span class="includeBtn_" :class="item.isGenerate==1?'grey':''" :data-id="item.id"><span>{{item.isGenerate==1?'已生成报告':'未生成报告'}}</span></span>
+            <span class="includeBtn_" :class="item.isGenerate==1?'grey':''" :data-id="item.articleId"><span>{{item.isGenerate==1?'已生成报告':'未生成报告'}}</span></span>
             <span class="includeBtn grey" @click="includeThis($event,item.isGenerate)" @mouseover="canceInclude" @mouseout="includeThis_"><img src="../../static/img/plus_grey.png" alt="" style="margin-bottom: -7px;"><span>已收录</span></span>
           </li>
           <!-- <li>
@@ -95,41 +95,41 @@ export default {
           label: '全部内容'
         }, {
           value: '1',
-          label: '已生成报告'
+          label: '未生成报告'
         }, {
           value: '2',
-          label: '未生成报告'
+          label: '已生成报告'
         }],
-        value: '2',
+        value: '1',
         num:0,
         tableData: {
-          results:[
+          list:[
             {
-              'id':'001',
+              'articleId':'001',
               'date':'2016-07-12',
               'isGenerate':'0',
               'title':"高等教育信息动态1-20161208-V01",
             },
             {
-              'id':'002',
+              'articleId':'002',
               'date':'2016-07-15',
               'isGenerate':'1',
               'title':"高等教育信息动态2-20161208-V02",
             },
             {
-              'id':'003',
+              'articleId':'003',
               'date':'2016-07-15',
               'isGenerate':'1',
               'title':"高等教育信息动态2-20161208-V02",
             },
             {
-              'id':'004',
+              'articleId':'004',
               'date':'2016-07-15',
               'isGenerate':'1',
               'title':"高等教育信息动态2-20161208-V02",
             },
             {
-              'id':'005',
+              'articleId':'005',
               'date':'2016-07-15',
               'isGenerate':'1',
               'title':"高等教育信息动态2-20161208-V02",
@@ -174,18 +174,18 @@ export default {
         $(".mask1").addClass("showBtn");
         $(".alertBox").addClass("showBtn");
 
-        console.log(storeObj);
+        // console.log(storeObj);
         this.$store.dispatch('changeReporter',{reportObj:storeObj}).then(function(resp){});//test
 
-        $.when(buildReporter(that.userid,that.article_id)).done(function(data){
-          if(data.state=="0"){
-            var results=data.data.results;
-            this.$store.dispatch('changeReporter',{reportObj:results}).then(function(resp){});
-          }
-          else{
-            // alert(data.data);
-          }
-        })
+        // $.when(buildReporter(that.userid,that.article_id)).done(function(data){
+        //   if(data.state=="0"){
+        //     var list=data.data.list;
+        //     this.$store.dispatch('changeReporter',{reportObj:list}).then(function(resp){});
+        //   }
+        //   else{
+        //     // alert(data.data);
+        //   }
+        // })
       }
     },
     checkAll:function(e){
@@ -293,8 +293,8 @@ export default {
       var len=that.articlesAarry.length;
       that.totalNum=res.totalNum;
       that.todayNum=res.todayNum;
-      if(res.results&&res.results.length!=0){
-        if(res.results.length<20){
+      if(res.list&&res.list.length!=0){
+        if(res.list.length<20){
           $(that.$refs.rightBottom).children('p').text('暂无更多历史收录内容');
           if(that.pageNo==1){
             that.articlesAarry=[];
@@ -305,15 +305,18 @@ export default {
           $(that.$refs.rightBottom).children('p').text('点击加载更多历史收录内容');
         }
         // $(that.$refs.rightBottom).children('p').text('点击加载更多批示');
-        that.articles=res.results.map(function(value,index){
+        that.articles=res.list.map(function(value,index){
           return {
-            "id":value.id,
+            "id":value.articleId,
             "title":value.title,
-            "date":value.date,
-            "isGenerate":value.isGenerate,
+            "date":value.createTime,
+            "isGenerate":value.status,
           }
         })
         that.articlesAarry=that.articles;
+        that.checkedList=that.articlesAarry.map(function(value,index){
+          return false;
+        })
       }
       else{
         if(that.pageNo==1){//只一页
@@ -327,10 +330,17 @@ export default {
     },
     loadMore(){
       this.pageNo=this.pageNo+1;
+      var height;
+      this.$nextTick(function(){
+        height=$(".rightContent").last().offset().top;
+      })
       var that=this;
       $.when(getIncludedSearch(that.userid,that.input2,that.value,that.pageNo)).done(function(data){
         if(data.state=="0"){
           that.insertData(data);
+          that.$nextTick(function(){
+            $(document).scrollTop(height);
+          })
         }
         else{
           alert(data.data);
@@ -345,18 +355,20 @@ export default {
     this.$nextTick(function(){
       matchMenu();
     })
-    this.articlesAarry=this.tableData.results;
-    this.checkedList=this.articlesAarry.map(function(value,index){
-      return false;
-    })
-    // $.when(getInstructionsList(that.userid,that.value,that.pageNo)).done(function(data){
-    //   if(data.state=='0'){
-    //     that.insertData(data);;
-    //   }
-    //   else{
-    //     // alert(data.data);
-    //   }
+
+    // this.articlesAarry=this.tableData.list;//test
+
+    // this.checkedList=this.articlesAarry.map(function(value,index){
+    //   return false;
     // })
+    $.when(getIncludedList(that.userid,that.value,that.pageNo)).done(function(data){
+      if(data.state=='0'){
+        that.insertData(data);;
+      }
+      else{
+        alert(data.data);
+      }
+    })
   }
 }
 </script>

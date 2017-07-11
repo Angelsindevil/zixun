@@ -88,3 +88,21 @@ export const changeWord=(store,payload)=>{//传入一个store参数 和store拥�
         resolve("ok");
     })
 }
+export const changeMesInfo=(store,payload)=>{//传入一个store参数 和store拥有相同的属性和方法，传入另一个参数msg，最终在mutations中赋值给state中的变量subjectid
+    return new Promise(function(resolve, reject) {
+        store.commit('changeMesInfo',{'mesObj':payload.mesObj});
+        resolve("ok");
+    })
+}
+export const clearMesInfo=(store)=>{//传入一个store参数 和store拥有相同的属性和方法，传入另一个参数msg，最终在mutations中赋值给state中的变量subjectid
+    return new Promise(function(resolve, reject) {
+        store.commit('clearMesInfo');
+        resolve("ok");
+    })
+}
+export const changeMesCount=(store,payload)=>{//传入一个store参数 和store拥有相同的属性和方法，传入另一个参数msg，最终在mutations中赋值给state中的变量subjectid
+    return new Promise(function(resolve, reject) {
+        store.commit('changeMesCount',{'mesCount':payload.mesCount});
+        resolve("ok");
+    })
+}

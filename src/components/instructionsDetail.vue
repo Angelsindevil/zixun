@@ -27,7 +27,7 @@
                 {{item.type=='0'?'批示内容':(item.type=='1'?'分发内容':(item.type=='2'?'反馈内容':''))}}
                 ：<span>{{item.content}}</span></span>
                 <!-- <span class="includeBtn grey"><span>无附件</span></span> -->
-                <a :href="item.link?item.link:false">
+                <a :href="item.link?item.link:false" target="blank">
                   <el-button type="text" :disabled="item.link?false:true" class="btn-pos btn-pos-1" size="small">{{item.link?'查看附件':'无附件'}}</el-button>
                 </a>
               </p>
@@ -223,7 +223,7 @@ export default {
       }
     })
     this.userSource=JSON.parse(localStorage.getItem("userSource"));
-    if(this.userSource&&this.userSource.level==0){
+    if(this.userSource&&(this.userSource.level==0||this.userSource.level==4)){
       this.$nextTick(function(){
         $(".psDown").children("li").eq(0).addClass("showBtn");
         $(".psDown").children("li").eq(2).addClass("showBtn");

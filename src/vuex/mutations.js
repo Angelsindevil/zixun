@@ -54,3 +54,18 @@ export const changeReporter= (state,payload) => {//将参数mes赋值给state的
 export const changeWord= (state,payload) => {//将参数mes赋值给state的变量subjectid 
 	state.wordObj=payload.wordObj;
 }
+export const changeMesInfo= (state,payload) => {//将参数mes赋值给state的变量subjectid 
+	state.mesObj.title=payload.title;
+	state.mesObj.area=payload.area;
+	state.mesObj.accept=payload.accept;
+	state.mesObj.send=payload.send;
+}
+export const clearMesInfo= (state,payload) => {//将参数mes赋值给state的变量subjectid 
+	state.mesObj.title='';
+	state.mesObj.area='';
+	state.mesObj.accept='';
+	state.mesObj.send='';
+}
+export const changeMesCount= (state,payload) => {//将参数mes赋值给state的变量subjectid 
+	state.mesCount=payload.mesCount;
+}

@@ -17,14 +17,15 @@
           <span>
             <router-link :to="{path:'/homePage/messageBox',query:{type:'1'}}">
               <img src="../../static/img/message.png" alt="">
-              <span class="red-dot">3</span>
+              <!-- <span class="red-dot">{{}}</span> -->
+              <span class="red-dot" ref='redMes'>{{xtNum}}</span>
             </router-link>
             <el-dropdown @command="showLoginBox">
               <span class="el-dropdown-link">
                 <img src="../../static/img/user.png" alt="">
               </span>
               <el-dropdown-menu slot="dropdown" class="topDown">
-                <el-dropdown-item class="item_border">{{account}}</el-dropdown-item>
+                <el-dropdown-item class="item_border">{{username}}</el-dropdown-item>
                 <!-- <el-dropdown-item>{{username}}</el-dropdown-item> -->
                 <el-dropdown-item command="changepw">修改密码</el-dropdown-item>
                 <el-dropdown-item style="display:none" command="resetpw">重置默认密码</el-dropdown-item>
@@ -103,6 +104,8 @@ import pwBox from '../components/pwBox.vue'
 import initpwBox from '../components/initpwBox.vue'
 import mesDetailBox from '../components/mesDetailBox.vue'
 import wordBox from '../components/word.vue'
+
+import {mapGetters} from 'vuex'
 export default {
   name: 'homePage',
   components: {
@@ -111,10 +114,33 @@ export default {
     return {
       keyword:'',
       userSource:{},
-      account:'系统',
-      username:'xitong'
+      account:'',
+      username:'',
+      xtNum:'',
     }
   },
+  computed: {
+    ...mapGetters({
+      mesCount: 'mesCount',
+    })
+  },
+  watch:{
+      mesCount:{
+        handler: function (val, oldVal) {
+          if(val!=''){
+            if(val!=0){
+              this.xtNum=val;
+              $(this.$refs.redMes).show();
+            }
+            else{
+              $(this.$refs.redMes).hide();
+            }
+          }
+        },
+        deep:true,
+        immediate: true,
+      },
+    },
   methods:{
     showTop(){
       $(document).scrollTop(0);
@@ -153,7 +179,7 @@ export default {
   },
   created(){
     this.userSource=JSON.parse(localStorage.getItem("userSource"));
-    if(this.userSource&&this.userSource.level==0){
+    if(this.userSource&&(this.userSource.level==0||this.userSource.level==4)){
       this.$nextTick(function(){
         $(".topDown").children("li").eq(2).addClass("showBtn");
       })
@@ -295,16 +321,17 @@ body{
         .red-dot{
           display:inline-block;
           background-color: #ff6666;
-          width:16px;
-          height:16px;
+          width:19px;
+          height:19px;
           text-align: center;
           color:#fff;
           font-size:10px;
           border-radius: 50%;
-          line-height: 16px;
+          line-height: 19px;
           position: absolute;
           left: 20px;
           top: 5px;
+          display:none;
         }
         .el-dropdown{
           cursor: pointer;

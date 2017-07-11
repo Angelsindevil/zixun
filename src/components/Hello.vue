@@ -66,7 +66,7 @@
           <li @click="changeColor" class="clickStyle">
               <router-link :to="{path:'/homePage/messageBox',query: {type:'1'}}">
               <!-- 系统消息 -->
-              <span class="redDot"><span>{{xtNum}}</span>系统消息</span>
+              <span class="redMes" ref='redMes'><span>{{xtNum}}</span>系统消息</span>
               </router-link>
           </li>
         </ul>
@@ -143,7 +143,7 @@ export default {
       psNum:'',
       xtNum:'',
       userid:'',
-      // url:'http://192.168.2.129:9000',
+      // url:'http://192.168.2.108:9000',
       url:'',
       // options: [
       // {
@@ -211,7 +211,12 @@ export default {
               $(that.$refs.redDot).children('span').hide();
             }
             else{
-              that.psNum=data.data;
+              if(data.data>30){
+                that.psNum='...';
+              }
+              else{
+                that.psNum=data.data;
+              }
               $(that.$refs.redDot).children('span').show();
             }
           }
@@ -220,6 +225,43 @@ export default {
           }
         }
     });
+    },
+    getMesRed(){
+      var that=this;
+      $.ajax({
+        url: that.url+"/api/message/messageCount",
+        type: "get",
+        // contentType: "application/json;",
+        // data:JSON.stringify({
+        //     "userId":that.userid,
+        // }),
+        data:{
+          "userId":that.userid,
+        },
+        success:function(data){
+          if(data.state=="0"){
+            if(data.data==0){
+              $(that.$refs.redMes).children('span').hide();
+            }
+            else{
+              console.log("11");
+              if(data.data>30){
+                that.xtNum='...';
+              }
+              else{
+                that.xtNum=data.data;
+              }
+              console.log(data.data);
+              // that.xtNum=data.data;
+              that.$store.dispatch('changeMesCount',{"mesCount":data.data}).then(function(resp){});
+              $(that.$refs.redMes).children('span').show();
+            }
+          }
+          else{
+            alert(data.data);
+          }
+        }
+      });
     }
   },
   created(){
@@ -242,11 +284,13 @@ export default {
         alert(data.data);
       }
     })
-    setInterval(this.getpsRed,3000000);
-    //可见菜单设置
+    setInterval(this.getpsRed,300000);
+    setInterval(this.getMesRed,300000);
+    // this.getMesRed();
+    // 可见菜单设置
     this.$nextTick(function(){
       if(this.userSource){
-        if(this.userSource.level==0){//系统管理员
+        if(this.userSource.level==0||this.userSource.level==4){//系统管理员
           $(".articleManage").addClass("showBtn");
           $(".articleManage").css("margin-top",'20px');
           $(".platManage").addClass("showBtn");
@@ -254,15 +298,20 @@ export default {
           $(".messageManage").children("li").eq(1).hide();
           $(".dataManage").addClass("showBtn");
         }
-        else if(this.userSource.level==1){//内容管理员
+        else{}
+        if(this.userSource.level==1||this.userSource.level==4){//内容管理员
           $(".contentManage").addClass("showBtn");
           $(".articleManage").addClass("showBtn");
           $(".reporterManage").addClass("showBtn");
           $(".messageManage").addClass("showBtn");
-          $(".messageManage").children("li").eq(2).hide();
+          if(this.userSource.level==1){
+            $(".messageManage").children("li").eq(2).hide();
+          }
+          else{}
           $(".dataManage").addClass("showBtn");
         }
-        else if(this.userSource.level==2||this.userSource.level==3){//批示用户
+        else{}
+        if(this.userSource.level==2||this.userSource.level==3){//批示用户
           $(".articleManage").css("margin-top",'20px');
           $(".articleManage").addClass("showBtn");
           $(".messageManage").addClass("showBtn");
@@ -272,7 +321,7 @@ export default {
         else{//普通用户
         }
       }
-    })
+    })//userful
 
   }
   // beforeMount(){
@@ -320,7 +369,7 @@ export default {
             padding:15px 0;
             width:100%;
             position: relative;
-            .redDot{
+            .redDot,.redMes{
               // display:none;
               position: relative;
               >span{

@@ -1,5 +1,5 @@
 i<template>
-  <div class="message">
+  <div class="message orgManage">
     <div class="rightBar">
       <p>
         组织信息
@@ -259,6 +259,12 @@ export default {
     }
     .el-table th{
       font-weight:500!important;
+    }
+  }
+  .orgManage{
+    .el-table__body-wrapper {
+      overflow: hidden!important;
+      position: relative;
     }
   }
   .selectStyle{

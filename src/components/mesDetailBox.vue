@@ -67,6 +67,10 @@
     },
     methods:{
       hideMesBox:function(){
+        this.filterData.title="";
+        this.filterData.sender="";
+        this.filterData.date="";
+        this.filterData.content=""; 
         $(".mask1,.mesDetailBox").removeClass("showBtn");
       },
     },

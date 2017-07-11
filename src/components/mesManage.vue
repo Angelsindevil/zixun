@@ -7,12 +7,12 @@
         <span class="mesTop">未读消息<span>{{todayNum}}</span>条</span>
       </p>
       <el-button class="btn_position" @click="showMesBox">发送新消息</el-button>
-      <!-- <el-input
+      <el-input
         placeholder="搜索消息标题"
         icon="search"
         v-model="input2"
         class="input_position" :on-icon-click="handleInputClick" @keyup.native.enter='handleInputClick'>
-      </el-input> -->
+      </el-input>
       <el-select v-model="value" placeholder="" @change="optionChangeHandler" class="selectStyle">
         <el-option
           v-for="item in options"
@@ -26,12 +26,12 @@
         <thead>
           <tr>
             <th style="width:50%">消息内容</th>
-            <th style="width:20%">接收时间</th>
+            <th style="width:20%">{{timeState}}</th>
             <th style="width:30%">发送人</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="item in filterArray" @click="showDetail(item.id)" :class="item.isRead=='1'?'grey':''">
+          <tr v-for="(item,index) in filterArray" @click="showDetail(item.id,index,$event)" :class="((item.isRead==1)&&(type=='1'))?'grey':''">
             <td><span class="oneLine">{{item.title}}</span></td>
             <td>{{item.receiveTime}}</td>
             <td>{{item.sender}}</td>
@@ -72,6 +72,8 @@ export default {
         type:'',
         userId:'',
         userSource:{},
+        username:'',
+        timeState:'接收时间',
         // testData:{
         //   list:[
         //      {
@@ -92,6 +94,7 @@ export default {
         //   totalNum:'139',
         //   todayNum:'12',
         // },
+
         pageNo:1,
         totalNum:'',
         todayNum:'',
@@ -120,10 +123,10 @@ export default {
         }
       })
     },
-    handleInputClick:function(val){
+    handleInputClick:function(){
       this.pageNo=1;
       var that=this;
-      $.when(getSearchMesList(this.userId,this.type,this.pageNo,val)).done(function(data){
+      $.when(getSearchMesList(this.userId,this.type,this.pageNo,that.input2)).done(function(data){
         if(data.state=="0"){
           that.insertData(data.data);
           // that.filterArray=data.data.list;有用
@@ -136,32 +139,52 @@ export default {
     showMesBox(){
       $(".mask1").addClass("showBtn");
       $(".mesBox").addClass("showBtn");
+      console.log(this.username);
+      // this.$store.dispatch('clearMesInfo').then(function(resp){});
     },
-    showDetail(id){
+    showDetail(id,index,e){
       $(".mask1").addClass("showBtn");
       $(".mesDetailBox").addClass("showBtn");
       this.$store.dispatch('changeMesId',{mesId:id}).then(function(resp){});
+      if(this.type=='1'){
+        var el=$(e.target).closest("tr");
+        if(this.value=='0'){
+          $(el).addClass("grey");
+        }
+        else if(this.value=='2'){
+          $(el).remove();
+        }
+      }
     },
     searchThis(){
       this.pageNo=1;
       this.type = this.$route.query.type;//type=0-消息管理（只有系统管理员可见），type=1-系统消息
       this.userSource=JSON.parse(localStorage.getItem("userSource"));
       this.userId=this.userSource?this.userSource.id:'';
+      this.username=this.userSource?this.userSource.username:'';
       if(this.type=='0'){//消息管理页面可以新增消息
         this.$nextTick(function(){
           this.titleTop="消息管理";
+          this.timeState="发送时间";
+          $(".input_position").show();
+          $(".selectStyle").hide();
           $(".btn_position").show();
           $(".mesTop").hide();
         })
       }
       else{//系统消息
         this.titleTop="系统消息";
+        this.timeState="接收时间";
+        $(".input_position").hide();
+        $(".selectStyle").show();
         this.$nextTick(function(){
           $(".btn_position").hide();
           $(".mesTop").show();
         })
       }
-      // this.filterArray=this.testData.list;
+
+      // this.filterArray=this.testData.list;//test
+
       var that=this;
       $.when(getMessageList(this.userId,this.type,this.pageNo,this.value)).done(function(data){
         if(data.state=="0"){
@@ -205,13 +228,19 @@ export default {
       }
     },
     loadMore(){
+      var height;
+      this.$nextTick(function(){
+        height=$(".rightContent").find('tbody tr').last().offset().top;
+      })
       this.pageNo=this.pageNo+1;
-      console.log(this.pageNo);
       var that=this;
       if(this.input2==""){
         $.when(getMessageList(this.userId,this.type,this.pageNo,this.value)).done(function(data){
           if(data.state=="0"){
             that.insertData(data.data);
+            that.$nextTick(function(){
+              $(document).scrollTop(height);
+            })
           }
           else{
             alert(data.data);
@@ -222,6 +251,9 @@ export default {
         $.when(getSearchMesList(this.userId,this.type,this.pageNo,this.input2)).done(function(data){
           if(data.state=="0"){
             that.insertData(data.data);
+            that.$nextTick(function(){
+              $(document).scrollTop(height);
+            })
           }
           else{
             alert(data.data);
@@ -263,7 +295,7 @@ export default {
       }
     }
     .btn_position{
-      right:150px!important;
+      right:265px!important;
     }
   }
   .rightContent{
@@ -379,6 +411,7 @@ export default {
       font-size:25px;
   }
   .selectStyle{
+    display:none;
     width: 120px;
     position: absolute;
     right: 10px;
@@ -387,6 +420,7 @@ export default {
   }
 
   .input_position{
+    display:none;
     width: 150px;
     position: absolute;
     right: 10px;
