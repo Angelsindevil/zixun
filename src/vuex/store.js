@@ -51,6 +51,10 @@ const state = {
       accept: '',
       send: '',
 	},
+	releaseObj:{
+		id:'',
+		type:'',
+	},
 	mesCount:'',
 }
 const store = new Vuex.Store({

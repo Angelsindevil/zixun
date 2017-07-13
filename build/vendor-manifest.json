@@ -1,0 +1,12 @@
+{
+  "name": "vendor_library",
+  "content": {
+    "./node_modules/vue/dist/vue.runtime.common.js": 1,
+    "./node_modules/process/browser.js": 2,
+    "./node_modules/vue-cookie/src/vue-cookie.js": 3,
+    "./node_modules/tiny-cookie/tiny-cookie.js": 4,
+    "./node_modules/.2.1.0@vue-echarts/dist/vue-echarts.js": 5,
+    "./node_modules/vuedraggable/dist/vuedraggable.js": 6,
+    "./node_modules/vuedraggable/node_modules/sortablejs/Sortable.js": 7
+  }
+}

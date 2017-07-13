@@ -26,7 +26,7 @@
           </el-row>
           <el-row :gutter="20">
             <el-col :span="6">
-              <el-form-item label="用户姓名：">
+              <el-form-item label="用户名称：">
                 <el-input v-model="form.name" :disabled="alreadyCancel"></el-input>
               </el-form-item>
             </el-col>
@@ -226,8 +226,9 @@
         else 
         {
           if(this.userid==""){//编辑用户的时候就有啦
+            var pw=md5(this.pwDefault);
             // $.when(addUsers('1',this.form.account,this.form.name,this.form.level,pw)).done(function(data){
-            $.when(addUsers(this.orgid,this.form.account,this.form.name,this.form.level,'')).done(function(data){
+            $.when(addUsers(this.orgid,this.form.account,this.form.name,this.form.level,pw)).done(function(data){
               if(data.state=="0"){
                 var res=data.data;
                 alert("新增用户成功！");
@@ -240,7 +241,8 @@
             })
           }
           else{
-            $.when(editUsers(this.userid,this.orgid,this.form.account,this.form.name,this.form.level,this.password)).done(function(data){
+            var pw_1=md5(this.password);
+            $.when(editUsers(this.userid,this.orgid,this.form.account,this.form.name,this.form.level,pw_1)).done(function(data){
               if(data.state=="0"){
                 var res=data.data;
                 alert("修改用户成功！");

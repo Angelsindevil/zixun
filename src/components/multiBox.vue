@@ -11,7 +11,7 @@
 	          :trigger-on-focus="false"
 	          @select="handleSelect"
 	        >
-	        	<el-button slot="append" icon="search"></el-button>
+	        	<el-button slot="append" icon="search" @click="handleIconSelect"></el-button>
 	        </el-autocomplete>
 		    <el-table
 		      ref="multipleTable"
@@ -112,11 +112,16 @@
 	      var results = queryString ? alltableData.filter(this.createFilter(queryString)) : alltableData;
 	      cb(results);
 	    },
+	    // createFilter(queryString) {
+	    //   return (restaurant) => {
+	    //     return (restaurant.value.indexOf(queryString.toLowerCase()) ===0);
+	    //   };
+	    // },
 	    createFilter(queryString) {
-	      return (restaurant) => {
-	        return (restaurant.value.indexOf(queryString.toLowerCase()) ===0);
-	      };
-	    },
+          return (restaurant) => {
+          	return (restaurant.value.search(queryString) !=-1);
+          };
+      	},
 	    handleSelect(item) {
 	      console.log(item.value);
 	      for (var i=0;i<this.commonData.length;i++) {
@@ -128,6 +133,19 @@
 	          //   this.commonSelHandler('.articleBox',i,item);
 	          // }
 	          this.commonSelHandler('.multiBox',i,item);
+	        }
+	      }
+	    },
+	    handleIconSelect(){
+	      for (var i=0;i<this.commonData.length;i++) {
+	        if(this.commonData[i].value==this.state2){
+	          // if(this.isSelect){
+	          //   this.commonSelHandler('.multiBox',i,item);
+	          // }
+	          // else{
+	          //   this.commonSelHandler('.articleBox',i,item);
+	          // }
+	          this.commonSelHandler('.multiBox',i,this.state2);
 	        }
 	      }
 	    },

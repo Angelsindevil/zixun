@@ -3,7 +3,7 @@
   <div class="loginPage" style="background-image: url('./static/img/bgImage.png');">
     <p class="topTips">
       <img src="../../static/img/logo.png" alt="">
-      <span>西安交通大学资讯平台</span> 
+      <span>西安交通大学高教信息平台</span> 
     </p>
   	<div class="mask"></div>
   	<div class="loginContainer">
@@ -106,6 +106,7 @@ export default {
 </script>
 
 <style lang="less">
+  @import '../../static/less/init.less'; 
   @import '../../static/less/loginPage.less';
   // background-image: url('./static/img/background_new.png');
   .loginPage{

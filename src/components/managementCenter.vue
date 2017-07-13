@@ -18,7 +18,7 @@
     <div class="rightContent">
       <div class="title_bar">
         <p>
-          <span><img src="../../static/img/edit_reporter.png" alt="">收到的批示和反馈</span>
+          <span><img src="../../static/img/edit_reporter.png" alt="">{{topTips}}</span>
           <el-button type="success" class="button_style addPsBtn" @click="showPSBox">发起新流程</el-button>
           <!-- <span class="includeBtn_ green">发起新流程</span> -->
           <el-select v-model="value" placeholder="" @change="optionChangeHandler">
@@ -101,6 +101,7 @@ export default {
         userSource:{},
         userid:'',
         level:'',
+        topTips:'',
     }
   },
   methods:{
@@ -185,7 +186,7 @@ export default {
       that.totalNum=res.totalNum;
       that.todayNum=res.todayNum;
       if(res.results&&res.results.length!=0){
-        if(res.results.length<20){
+        if(res.results.length<10){
           $(that.$refs.rightBottom).children('p').text('暂无更多批示');
           if(that.pageNo==1){
             that.articlesAarry=[];
@@ -197,7 +198,31 @@ export default {
         }
         // $(that.$refs.rightBottom).children('p').text('点击加载更多批示');
         if(res.results.length>0){
-          that.articles=res.results.map(function(value,index){
+          // that.articles=res.results.map(function(value,index){
+          //   var btn_con;
+          //   if(value.rowState=='0'){
+          //     btn_con="流程已结束";
+          //   }
+          //   else if(value.rowState=='1'){
+          //     btn_con="新反馈"
+          //   }
+          //   else if(value.rowState=='2'){
+          //     btn_con="新批示"
+          //   }
+          //   else if(value.rowState=='3'){
+          //     btn_con="新分发"
+          //   }
+          //   else{}
+          //   return {
+          //     "title":value.title,
+          //     "date":value.date,
+          //     "rowState":value.rowState,
+          //     "btn_con":btn_con,
+          //     "instructionsId":value.instructionsId,
+          //   }
+          // })
+          // that.articlesAarry=that.articles;
+          res.results.map(function(value,index){
             var btn_con;
             if(value.rowState=='0'){
               btn_con="流程已结束";
@@ -212,18 +237,18 @@ export default {
               btn_con="新分发"
             }
             else{}
-            return {
+            var item={
               "title":value.title,
               "date":value.date,
               "rowState":value.rowState,
               "btn_con":btn_con,
               "instructionsId":value.instructionsId,
             }
+            that.articlesAarry.push(item);
           })
-          that.articlesAarry=that.articles;
         }
       }
-      else{
+      else{   
         if(that.pageNo==1){//只一页
           $(that.$refs.rightBottom).children('p').text('暂无批示');
           that.articlesAarry=[];
@@ -238,7 +263,7 @@ export default {
       var that=this;
       var height;
       this.$nextTick(function(){
-        height=$(".rightContent").last().offset().top;
+        height=$(".rightContent ul").find('li').last().offset().top;
       })
       // if(this.input2==""){
       //   $.when(getInstructionsList(that.userid,that.pageNo)).done(function(data){
@@ -255,7 +280,7 @@ export default {
           if(data.state=="0"){
             that.insertData(data);
             that.$nextTick(function(){
-              $(document).scrollTop(height);
+              $(document).scrollTop(height-350);
             })
           }
           else{
@@ -271,7 +296,7 @@ export default {
     this.userSource=JSON.parse(localStorage.getItem("userSource"));
     this.userid=this.userSource?this.userSource.id:'';
     this.level=this.userSource?this.userSource.level:'';
-    if(this.level==2||this.level==0||this.level==4){
+    if(this.level==0||this.level==4){
       this.$nextTick(function(){
         $(".addPsBtn").show();
       });
@@ -280,6 +305,12 @@ export default {
       this.$nextTick(function(){
         $(".addPsBtn").hide();
       });
+    }
+    if(this.level==0||this.level==4){
+      this.topTips="批示管理";
+    }
+    else{
+      this.topTips="批示内容"
     }
     this.$nextTick(function(){
       matchMenu();

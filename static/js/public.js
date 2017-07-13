@@ -1,11 +1,14 @@
 function scrollFun(){
 	$(window).scroll(function(){ 
+		// console.log("111");
 		var height=$(document).scrollTop();
 		// if($(".showTop").css("display")=='block'){
 			if(height<500){
+				// console.log("out");
 				$(".showTop").removeClass("fadeIn").addClass("animated fadeOut");
 			}
 			else if(height>=500){
+				// console.log("In");
 				$(".showTop").show();
 				$(".showTop").removeClass("fadeOut").addClass("animated fadeIn");
 			}		
@@ -20,9 +23,11 @@ function matchMenu(){
 		$(".contentManage").find("li").eq(1).addClass('blue');
 	}//内容管理
 	if(hash.indexOf("contentAdd")!=-1){
+		console.log("11111111");
 		$(".contentManage").find("li").eq(2).addClass('blue');
 	}//内容新增
 	if(hash.indexOf("contentPublish")!=-1){
+		console.log("22222222");
 		$(".contentManage").find("li").eq(3).addClass('blue');
 	}//已发布内容
 	if(hash.indexOf("articleList")!=-1){

@@ -1,5 +1,5 @@
 <template>
-  <div class="message">
+  <div class="message messageStyle">
     <div class="rightBar">
       <p>
         消息中心-{{titleTop}}：
@@ -26,8 +26,8 @@
         <thead>
           <tr>
             <th style="width:50%">消息内容</th>
-            <th style="width:20%">{{timeState}}</th>
-            <th style="width:30%">发送人</th>
+            <th style="width:25%" class="timeStyle">{{timeState}}</th>
+            <th style="width:25%">发送人</th>
           </tr>
         </thead>
         <tbody>
@@ -239,7 +239,7 @@ export default {
           if(data.state=="0"){
             that.insertData(data.data);
             that.$nextTick(function(){
-              $(document).scrollTop(height);
+              $(document).scrollTop(height-350);
             })
           }
           else{
@@ -296,6 +296,9 @@ export default {
     }
     .btn_position{
       right:265px!important;
+    }
+    .timeStyle{
+      font-size: 13px;
     }
   }
   .rightContent{
@@ -421,7 +424,7 @@ export default {
 
   .input_position{
     display:none;
-    width: 150px;
+    width: 235px;
     position: absolute;
     right: 10px;
     top: 12px;
@@ -443,13 +446,13 @@ export default {
   .grey{
     color:#ccc;
   }
-  .selectStyle{
-    width: 120px;
-    position: absolute;
-    right: 10px;
-    top: 12px;
-    font-size: 12px;
-  }
+  // .selectStyle{
+  //   width: 120px;
+  //   position: absolute;
+  //   right: 10px;
+  //   top: 12px;
+  //   font-size: 12px;
+  // }
   .rightBottom{
     cursor:pointer;
     margin-top:15px;
@@ -464,6 +467,16 @@ export default {
     margin-bottom:15px;
     span{
       vertical-align:middle;
+    }
+  }
+  .messageStyle{
+    .selectStyle{
+      display:block;
+      width: 120px;
+      position: absolute;
+      right: 10px;
+      top: 12px;
+      font-size: 12px;
     }
   }
 </style>

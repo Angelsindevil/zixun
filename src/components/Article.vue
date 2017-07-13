@@ -76,6 +76,7 @@ export default {
       },
       userSource:{},
       level:'',
+      userid:'',
     }
   },
   methods:{
@@ -269,10 +270,10 @@ export default {
           this.showPSBox();
         }
         else{
-          el.find("span").text("已批示");
+          el.find("span").text("批示中");
           el.addClass("grey");
           el.find("img").remove();
-          this.$router.push({path:'/homePage/instructionsDetail',query: {id:pid}});
+          // this.$router.push({path:'/homePage/instructionsDetail',query: {id:pid}});
         }
       }
     },
@@ -281,6 +282,16 @@ export default {
     this.id = this.$route.query.id;
     this.number=this.$route.query.index;
     this.edit=this.$route.query.edit;
+    this.userSource=JSON.parse(localStorage.getItem("userSource"));
+    this.level=this.userSource?this.userSource.level:'';
+    this.userid=this.userSource?this.userSource.id:'';
+    if(this.level==0||this.level==2){
+      this.btnState='批示';
+    }
+    else if(this.level==1||this.level==4){
+      this.btnState='收录';
+    }
+    else{}
     if(this.edit=='0'){//已发布文章列表点击查看文章详情
       this.$nextTick(function(){
         $(".art_edit").removeClass("showBtn");
@@ -305,11 +316,24 @@ export default {
     }
     var that=this;
     if(this.id!=''){
-      $.when(getArticleDetail(that.id)).done(function(data){
+      $.when(getArticleDetail(that.id,this.userid)).done(function(data){
         if(data.state=="0"){
           var res=data.data;
+          var str='';
           localStorage.setItem("editor",JSON.stringify(res));
+          // console.log($.parseHTML(res.content));
+          // var content=$.parseHTML(res.content);
+          // for(var i=0;i<content.length;i++){
+          //   if(content[i].outerText){
+          //     str=str+content[i].outerText ;
+          //   }
+          //   else{
+          //     str=str+content[i].textContent ;
+          //   }
+          // }
+          // console.log(str);
           that.content=res.content;
+          // that.content=str;
           that.date=res.time;
           that.type=res.type;
           that.source=res.source;
@@ -317,22 +341,13 @@ export default {
           that.isInclude=res.isInclude;
           that.isInstructions=res.isInstructions;
           that.instructionId=res.instructionId;
+          that.isAdded=res.isAdded;
         }
         else{
           alert(data.data);
         }
       })
     }
-    this.userSource=JSON.parse(localStorage.getItem("userSource"));
-    this.level=this.userSource?this.userSource.level:'';
-    // this.userid=this.userSource?this.userSource.id:'';
-    if(this.level==0||this.level==2){
-      this.btnState='批示';
-    }
-    else if(this.level==1||this.level==4){
-      this.btnState='收录';
-    }
-    else{}
   },
 }
 </script>
@@ -422,7 +437,7 @@ export default {
         color:#656565;
         width: 100%;
         line-height: 35px;
-        text-indent: 2em;
+        // text-indent: 2em;
       }
     }
   }

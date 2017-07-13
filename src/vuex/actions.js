@@ -106,3 +106,9 @@ export const changeMesCount=(store,payload)=>{//传入一个store参数 和store
         resolve("ok");
     })
 }
+export const changeRelease=(store,payload)=>{//传入一个store参数 和store拥有相同的属性和方法，传入另一个参数msg，最终在mutations中赋值给state中的变量subjectid
+    return new Promise(function(resolve, reject) {
+        store.commit('changeRelease',{'id':payload.id,'type':payload.type});
+        resolve("ok");
+    })
+}

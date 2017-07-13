@@ -6,7 +6,7 @@
         <el-form ref="form" :model="form" label-width="100px">
           <el-row :gutter="20">
             <el-form-item label="初始密码：">
-            <el-input v-model="form.password" type="password"></el-input>
+            <el-input v-model="form.password" type="text"></el-input>
           </el-form-item>
         </el-row>
         </el-form>
@@ -28,14 +28,14 @@
       return {
         form: {
           password:'',
-          userSource:'',
-          userId:'',
         },
+        userSource:'',
+        userId:'',
       }
     },
     methods:{
       operateUser(){
-        var that=this;
+        var that=this; 
         $.when(changeDefaultpw(this.userId,this.form.password)).done(function(data){
           if(data.state==0){
             alert('初始密码设置成功！');
@@ -52,7 +52,7 @@
     created(){
       this.userSource=JSON.parse(localStorage.getItem("userSource"));
       this.userId=this.userSource?this.userSource.id:'';
-      this.form.password=this.userSource?this.userSource.pwDefault:'';
+      this.form.password=this.userSource?this.userSource.password:'';
     }
   }
 </script>

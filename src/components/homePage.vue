@@ -18,7 +18,8 @@
             <router-link :to="{path:'/homePage/messageBox',query:{type:'1'}}">
               <img src="../../static/img/message.png" alt="">
               <!-- <span class="red-dot">{{}}</span> -->
-              <span class="red-dot" ref='redMes'>{{xtNum}}</span>
+              <!-- <span class="red-dot" ref='redMes'>{{xtNum}}</span> -->
+              <span class="red-dot" ref='redMes'></span>
             </router-link>
             <el-dropdown @command="showLoginBox">
               <span class="el-dropdown-link">
@@ -82,6 +83,7 @@
     <initpwBox></initpwBox>
     <mesDetailBox></mesDetailBox>
     <wordBox></wordBox>
+    <typeBox></typeBox>
     <div class="mask mask1"></div>
     <div class="mask mask2"></div>
   </div>
@@ -89,27 +91,47 @@
 
 <script>
 import {scrollFun} from '../../static/js/public.js'
-import Hello from '../components/Hello.vue'
-import reportBox from '../components/reportBox.vue'
-import psBox from '../components/psBox.vue'
-import articleBox from '../components/articleBox.vue'
-import multiBox from '../components/multiBox.vue'
-import userBox from '../components/userBox.vue'
-import orgBox from '../components/orgBox.vue'
-import mesBox from '../components/mesBox.vue'
-import unitBox from '../components/unitBox.vue'
-import loginBox from '../components/loginBox.vue'
-import peopleBox from '../components/peopleBox.vue'
-import pwBox from '../components/pwBox.vue'
-import initpwBox from '../components/initpwBox.vue'
-import mesDetailBox from '../components/mesDetailBox.vue'
-import wordBox from '../components/word.vue'
-
 import {mapGetters} from 'vuex'
+
+// import Hello from '../components/Hello.vue'
+// import reportBox from '../components/reportBox.vue'
+// import psBox from '../components/psBox.vue'
+// import articleBox from '../components/articleBox.vue'
+// import multiBox from '../components/multiBox.vue'
+// import userBox from '../components/userBox.vue'
+// import orgBox from '../components/orgBox.vue'
+// import mesBox from '../components/mesBox.vue'
+// import unitBox from '../components/unitBox.vue'
+// import loginBox from '../components/loginBox.vue'
+// import peopleBox from '../components/peopleBox.vue'
+// import pwBox from '../components/pwBox.vue'
+// import initpwBox from '../components/initpwBox.vue'
+// import mesDetailBox from '../components/mesDetailBox.vue'
+// import wordBox from '../components/word.vue'
+
+const Hello = resolve => require(['../components/Hello.vue'], resolve)
+const reportBox = resolve => require(['../components/reportBox.vue'], resolve)
+const psBox = resolve => require(['../components/psBox.vue'], resolve)
+const articleBox = resolve => require(['../components/articleBox.vue'], resolve)
+const multiBox = resolve => require(['../components/multiBox.vue'], resolve)
+const userBox = resolve => require(['../components/userBox.vue'], resolve)
+const orgBox = resolve => require(['../components/orgBox.vue'], resolve)
+const mesBox = resolve => require(['../components/mesBox.vue'], resolve)
+const unitBox = resolve => require(['../components/unitBox.vue'], resolve)
+const loginBox = resolve => require(['../components/loginBox.vue'], resolve)
+const peopleBox = resolve => require(['../components/peopleBox.vue'], resolve)
+const pwBox = resolve => require(['../components/pwBox.vue'], resolve)
+const initpwBox = resolve => require(['../components/initpwBox.vue'], resolve)
+const mesDetailBox = resolve => require(['../components/mesDetailBox.vue'], resolve)
+const wordBox = resolve => require(['../components/word.vue'], resolve)
+const typeBox = resolve => require(['../components/typeChoose.vue'], resolve)
+
+
+
 export default {
   name: 'homePage',
   components: {
-    Hello,reportBox,psBox,articleBox,multiBox,userBox,peopleBox,mesBox,orgBox,unitBox,loginBox,initpwBox,pwBox,mesDetailBox,wordBox},
+    Hello,reportBox,psBox,articleBox,multiBox,userBox,peopleBox,mesBox,orgBox,unitBox,loginBox,initpwBox,pwBox,mesDetailBox,wordBox,typeBox},
   data () {
     return {
       keyword:'',
@@ -199,6 +221,7 @@ export default {
 <style lang="less">
 @import '../../static/less/init.less';
 @import '../../static/less/alertStyle.less';
+@import '../../static/css/animate.css';
 body{
   margin:0;
   position: relative;
@@ -321,16 +344,16 @@ body{
         .red-dot{
           display:inline-block;
           background-color: #ff6666;
-          width:19px;
-          height:19px;
+          width: 11px;
+          height: 11px;
           text-align: center;
-          color:#fff;
-          font-size:10px;
+          color: #fff;
+          font-size: 10px;
           border-radius: 50%;
           line-height: 19px;
           position: absolute;
-          left: 20px;
-          top: 5px;
+          left: 21px;
+          top: 8px;
           display:none;
         }
         .el-dropdown{

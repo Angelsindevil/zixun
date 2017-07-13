@@ -54,7 +54,7 @@
               <!-- <router-link to="/homePage/instructions"> -->
               <router-link to="/homePage/instructions">
               <!-- <el-badge :value="3" :max="10" class="item">我的批示</el-badge> -->
-                <span class="redDot" ref="redDot"><span>{{psNum}}</span>批示内容</span>
+                <span class="redDot" ref="redDot"><!-- <span>{{psNum}}</span> -->批示内容</span>
               </router-link>
           </li>
           <li @click="changeColor" class="clickStyle">
@@ -66,7 +66,7 @@
           <li @click="changeColor" class="clickStyle">
               <router-link :to="{path:'/homePage/messageBox',query: {type:'1'}}">
               <!-- 系统消息 -->
-              <span class="redMes" ref='redMes'><span>{{xtNum}}</span>系统消息</span>
+              <span class="redMes" ref='redMes'><span></span>系统消息</span>
               </router-link>
           </li>
         </ul>
@@ -88,7 +88,7 @@
           </li>
           <li @click="changeColor" class="clickStyle">
               <router-link to="/homePage/managementCenter">
-              <span class="redDot" ref="redDot"><span>{{psNum}}</span>批示管理</span>
+              <span class="redDot" ref="redDot"><span></span>批示管理</span>
               </router-link>
           </li>
         </ul>
@@ -162,9 +162,12 @@ export default {
   },
   methods:{
     changeColor:function(e){
-      var liItem=$(e.target).closest('li');
-      $(".clickStyle").removeClass("blue");
-      liItem.addClass("blue");
+      // var liItem=$(e.target).closest('li');
+      // $(".clickStyle").removeClass("blue");
+      // liItem.addClass("blue");
+      // $(document).scrollTop(0);
+      // $(document).animate(0);
+      $('html, body').animate({scrollTop: '0px'},500,'swing');
     },
     getpsRed(){
       var that=this;
@@ -284,9 +287,11 @@ export default {
         alert(data.data);
       }
     })
-    setInterval(this.getpsRed,300000);
-    setInterval(this.getMesRed,300000);
-    // this.getMesRed();
+    this.getpsRed();
+    this.getMesRed();
+    // setInterval(this.getpsRed,300000);
+    // setInterval(this.getMesRed,300000);
+    this.getMesRed();
     // 可见菜单设置
     this.$nextTick(function(){
       if(this.userSource){
@@ -296,19 +301,32 @@ export default {
           $(".platManage").addClass("showBtn");
           $(".messageManage").addClass("showBtn");
           $(".messageManage").children("li").eq(1).hide();
-          $(".dataManage").addClass("showBtn");
+          $(".dataManage").removeClass("showBtn");
+          if(this.userSource.level==0){
+            $(".reporterManage").addClass("showBtn newUl");
+            $(".reporterManage").children("li").eq(1).hide();
+            $(".reporterManage").children("li").eq(2).show();
+          }
+          else{
+            $(".reporterManage").removeClass("newUl");
+            $(".dataManage").addClass("showBtn");
+          }
         }
         else{}
         if(this.userSource.level==1||this.userSource.level==4){//内容管理员
           $(".contentManage").addClass("showBtn");
           $(".articleManage").addClass("showBtn");
-          $(".reporterManage").addClass("showBtn");
+          $(".reporterManage").addClass("showBtn newUl");
+          $(".reporterManage").children("li").eq(1).show();
+          $(".reporterManage").children("li").eq(2).show();
           $(".messageManage").addClass("showBtn");
           if(this.userSource.level==1){
             $(".messageManage").children("li").eq(2).hide();
+            $(".dataManage").removeClass("showBtn");
           }
-          else{}
-          $(".dataManage").addClass("showBtn");
+          else{
+            $(".reporterManage").removeClass("newUl");
+          }
         }
         else{}
         if(this.userSource.level==2||this.userSource.level==3){//批示用户
@@ -316,7 +334,10 @@ export default {
           $(".articleManage").addClass("showBtn");
           $(".messageManage").addClass("showBtn");
           $(".messageManage").children("li").eq(2).hide();
-          $(".dataManage").addClass("showBtn");
+          $(".reporterManage").addClass("showBtn newUl");
+          $(".reporterManage").children("li").eq(1).hide();
+          $(".reporterManage").children("li").eq(2).show();
+          $(".dataManage").removeClass("showBtn");
         }
         else{//普通用户
         }
@@ -373,18 +394,28 @@ export default {
               // display:none;
               position: relative;
               >span{
+                // position: absolute;
+                // // display: inline-block;
+                // width: 19px;
+                // height: 19px;
+                // border-radius: 50%;
+                // top: -10px;
+                // right: -10px;
+                // line-height: 19px;
+                // font-size: 12px;
+                // background-color: #ff6666;
+                // color: #fff;
+                // display:none;
                 position: absolute;
-                // display: inline-block;
-                width: 19px;
-                height: 19px;
+                width: 11px;
+                height: 11px;
                 border-radius: 50%;
-                top: -10px;
-                right: -10px;
+                top: -3px;
+                right: -5px;
                 line-height: 19px;
                 font-size: 12px;
                 background-color: #ff6666;
                 color: #fff;
-                display:none;
               }
             }
           }
@@ -416,6 +447,17 @@ export default {
         content:'';
         background-color: #aaa;
         height:1px;
+        position: absolute;
+        width:100%;
+        // left:20px;
+        // right:20px;
+        left:0;
+        bottom:-10px;
+      }
+      .newUl:after{
+        content:'';
+        background-color: #aaa;
+        height:0px;
         position: absolute;
         width:100%;
         // left:20px;

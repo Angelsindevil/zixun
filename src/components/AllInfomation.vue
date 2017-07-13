@@ -219,7 +219,7 @@ export default {
       this.articlesAarry=[];
       var that=this;
       if(this.keyword!=''&&this.keyword!=undefined){
-        $.when(searchArticle(that.keyword,that.pageNo)).done(function(data){
+        $.when(searchArticle(that.keyword,that.pageNo,this.userid)).done(function(data){
           if(data.state=="0"){
             // that.$nextTick(function(){
             //   $(".rightContent_").remove();
@@ -322,13 +322,13 @@ export default {
         if(class_){
           $.when(canceled(id,this.userid)).done(function(data){
             if(data.state=="0"){
+              el.removeClass("grey red").find("span").text("收录");
+              el.find("img").attr("src","./static/img/plus.png");
             }
             else{
               alert(data.data);
             }
           })
-          el.removeClass("grey red").find("span").text("收录");
-          el.find("img").attr("src","./static/img/plus.png");
         }
         else{
           $.when(included(id,this.userid)).done(function(data){
@@ -366,10 +366,10 @@ export default {
           this.showPSBox();
         }
         else{
-          el.find("span").text("已批示");
+          el.find("span").text("批示中");
           el.addClass("grey");
           el.find("img").remove();
-          this.$router.push({path:'/homePage/instructionsDetail',query: {id:pid}});
+          // this.$router.push({path:'/homePage/instructionsDetail',query: {id:pid}});
         }
       }
     },
@@ -438,7 +438,7 @@ export default {
       var that=this;
       // if(!this.flag){
         if(this.keyword!=''&&this.keyword!=undefined){
-          $.when(searchArticle(that.keyword,that.pageNo)).done(function(data){
+          $.when(searchArticle(that.keyword,that.pageNo,this.userid)).done(function(data){
             if(data.state=="0"){
               that.insertData(data); 
               that.flag=false;
@@ -530,7 +530,6 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="less">
 @import '../../static/less/init.less';
-@import '../../static/css/animate.css';
   .test{
     margin-bottom:65px;
     >a{

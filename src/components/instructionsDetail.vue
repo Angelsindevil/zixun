@@ -17,7 +17,7 @@
               {{item.type=='0'?'批示时间':(item.type=='1'?'分发时间':(item.type=='2'?'反馈时间':''))}}
               ：<span>{{item.date}}</span></span></p>
               <p class="grey_font" v-show="(item.type=='0'?true:false)">
-                <span>批示文章：<span>{{item.title}}</span> - <span>{{item.art_date}}</span></span>
+                <span>批示文章：<span class="ellipsis titleEll">{{item.title}}</span> - <span class="dateSmall">{{item.art_date}}</span></span>
                 <router-link :to="{ path: '/homePage/articleDetail', query: { id:item.articleId,edit:'0'}}">
                   <el-button type="primary" size="small" class="btn-pos">查看原文</el-button>
                 </router-link>
@@ -27,7 +27,8 @@
                 {{item.type=='0'?'批示内容':(item.type=='1'?'分发内容':(item.type=='2'?'反馈内容':''))}}
                 ：<span>{{item.content}}</span></span>
                 <!-- <span class="includeBtn grey"><span>无附件</span></span> -->
-                <a :href="item.link?item.link:false" target="blank">
+                <a :href="'http://192.168.2.108:9000/api/article/downloadAttachment?attachmentName=#/'+item.name" target="blank">
+                <!-- <a @click="download(item.name)"> -->
                   <el-button type="text" :disabled="item.link?false:true" class="btn-pos btn-pos-1" size="small">{{item.link?'查看附件':'无附件'}}</el-button>
                 </a>
               </p>
@@ -73,7 +74,7 @@
       </el-button>
       <el-dropdown-menu slot="dropdown" class="psDown">
         <el-dropdown-item command="ff" style="display:none;">分发</el-dropdown-item>
-        <el-dropdown-item command="fk">反馈</el-dropdown-item>
+        <el-dropdown-item command="fk" ref="feedback">{{feedback}}</el-dropdown-item>
         <el-dropdown-item command="gb" style="display:none;">关闭</el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
@@ -102,6 +103,7 @@ export default {
       psObj:[],
       articleName:'',
       dropDownState:false,
+      feedback:'',
       articlesFilter:[
       // {
       //     "type":'0',//批示模块
@@ -126,12 +128,14 @@ export default {
       // }
       ],
       userSource:{},
+      level:'',
     }
   },
   methods:{
     showSelect:function(command){
       console.log("instructionId");
       console.log(this.instructionId);
+      var that=this;
       if(command!='gb'){
         $(".mask1").addClass("showBtn");
         $(".psBox").addClass("showBtn");
@@ -151,14 +155,23 @@ export default {
         $.when(closeInstructions(this.instructionId)).done(function(data){
           if(data.state=='0'){
             alert("流程已关闭");
-            window.location.hash="#/managementCenter";
+            that.$router.push('/homePage/managementCenter');
           }
           else{
             alert(data.data);
           }
         })
       }
-    }
+    },
+    download(name){
+      $.when(downloadAnnex(name)).done(function(data){
+        if(data.state=='0'){
+        }
+        else{
+          alert(data.data);
+        }
+      })
+    },
   },
   mounted() {
     // this.instructionId = this.$route.query.id;
@@ -173,7 +186,7 @@ export default {
         var res=data.data;
         if(res.isEnd=="0"){
           that.dropDownState=true;
-          that.bottomTips='超过24个小时无新批示和反馈，流程已结束'
+          that.bottomTips='流程已结束'
         }
         else if(res.hasPassed){
           that.dropDownState=false;
@@ -223,6 +236,17 @@ export default {
       }
     })
     this.userSource=JSON.parse(localStorage.getItem("userSource"));
+    this.level=this.userSource?this.userSource.level:'';
+    console.log(this.level);
+    if(this.level==2){
+      // console.log("222");
+      // $(this.$refs.feedback).text("新批示");
+      this.feedback="新批示";
+    }
+    else{
+      this.feedback="反馈";
+      // $(this.$refs.feedback).text("反馈");
+    }
     if(this.userSource&&(this.userSource.level==0||this.userSource.level==4)){
       this.$nextTick(function(){
         $(".psDown").children("li").eq(0).addClass("showBtn");
@@ -474,9 +498,19 @@ export default {
     text-align: center;
     color:#666;
   }
+  .titleEll{
+    display: inline-block;
+    width: 65%;
+    vertical-align: middle;
+  }
+  .dateSmall{
+    font-size: 13px;
+  }
   .instructionsDetail{
     .btn_position{
+      position:absolute;
       right:20px;
+      top:12px;
     }
   }
 </style>

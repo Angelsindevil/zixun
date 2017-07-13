@@ -2,7 +2,7 @@
   <div class="psBox alertStyle">
     <div class="alertTop">信息批示<span @click="hidePSBox"><img src="../../static/img/cancel.png"></span></div>
     <div class="alertContent">
-      <el-button class="article_btn" @click="showAllArticle"><img src="../../static/img/report.png" alt="">批示文章：<span>{{currentRow}}</span></el-button>
+      <el-button class="article_btn" @click="showAllArticle"><img src="../../static/img/report.png" alt="">批示文章：<span class="ellipsis titleEll">{{currentRow}}</span></el-button>
       <div class="editContainer">
         <p class="ptitle">输入批示内容</p>
         <div class="editBox">
@@ -214,10 +214,10 @@
         }
         else if(val.type=='2'){//反馈弹窗
           this.currentRow=val.title;
-          if(this.level=='0'||this.level=='4'){//权限为管理员 反馈处理人可选
+          // if(this.level=='0'||this.level=='4'){//权限为管理员 反馈处理人可选
             this.clDisabled=true;
             this.input3=this.userName;
-          }
+          // }
           this.$nextTick(function(){
             $(".blueBot").show();
           })
@@ -327,6 +327,7 @@
         formData.append("type",'1');
         formData.append("psPeople",this.psObj[1]);
         formData.append("instructionId",this.instructionId);
+        formData.append("currentPeople",this.userId);
         if(this.selectArr.id&&this.selectArr.id.length>0){
           formData.append("clPeople",this.selectArr.id);
           if(delta.length==1){
@@ -474,6 +475,10 @@
 </script>
 <style lang="less">
 .psBox{
+  .titleEll{
+    display: inline-block;
+    width: 80%;
+  }
   .file_{
     opacity: 0;
     position: absolute;
@@ -487,4 +492,5 @@
     height:250px!important;
   }
 }
+
 </style>

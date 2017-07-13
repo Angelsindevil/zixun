@@ -1,8 +1,9 @@
 //以下用户管理
 // var url="http://192.168.2.108:9000";//ct
+// var url="http://192.168.2.144:8080";//ct
 // var url="http://192.168.2.129:9000";//bh
-// var url="127.0.0.1:9000";
-var url="";
+var url="127.0.0.1:9000";
+// var url="";
 function getAllUsers(){
 	var ajax = $.ajax({
         url: url+"/api/user/fetchAllUser",
@@ -84,7 +85,7 @@ function getAllArticles(userid,method,type,pageNo){
         // contentType: 'application/json;charset=UTF-8',
         type: "get",
         data:{
-            "userid":userid,
+            "userId":userid,
             "method":method,
             "type":type,
             "pageNo":pageNo,
@@ -104,12 +105,13 @@ function getArticleType(){
     });
     return ajax;
 }
-function getArticleDetail(id){//获取文章详情
+function getArticleDetail(id,userid){//获取文章详情
     var ajax = $.ajax({
         url: url+"/api/article/getContent",
         type: "get",
         data:{
             "id":id,
+            "userId":userid,
         }
 
     });
@@ -139,7 +141,7 @@ function included(id,userid){//收录
     });
     return ajax;
 }
-function searchArticle(keyword,pageNo){//收录
+function searchArticle(keyword,pageNo,userId){//收录
     var ajax = $.ajax({
         url: url+"/api/article/searchArticle",
         // contentType: "application/json; charset=UTF-8",
@@ -155,6 +157,9 @@ function searchArticle(keyword,pageNo){//收录
           "keyword":keyword,
           "pageNo":pageNo,
           "pageSize":20,
+          "type":'全部内容',
+          "method":'全部内容',
+          'userId':userId,
         },
         // dataType: "json",
 
@@ -164,6 +169,21 @@ function searchArticle(keyword,pageNo){//收录
 
 
 //批示相关
+function downloadAnnex(name){//下载附件
+    var ajax = $.ajax({
+        url: url+"/api/article/downloadAttachment",
+        type: "get",
+        // type: "post",
+        // contentType: "application/json;",
+        // data:JSON.stringify({
+        //     "attachmentName":name,
+        // })
+        data:{
+            "attachmentName":name,
+        }
+    });
+    return ajax;
+}
 function getpsFlag(id){//关闭批示
     var ajax = $.ajax({
         url: url+"/api/article/instructionChangeMark",
@@ -254,11 +274,16 @@ function getInstructionFlow(instructionId){//获取批示流程
 function loginPage(username,password){
   var ajax=$.ajax({
     url:url+'/api/user/login',
-    type:'get',
-    data:{
+    type:'post',
+    contentType: "application/json;",
+    // data:{
+    //   "password":password,
+    //   "account":username,
+    // },
+    data:JSON.stringify({
       "password":password,
       "account":username,
-    },
+    })
   })
   return ajax;
 }
@@ -275,12 +300,14 @@ function changePassword(id,password){
 }
 function changeDefaultpw(userId,pwDefault){
   var ajax=$.ajax({
-    url:url+'/api/user/login',
-    type:'get',
-    data:{
-      "userId":userId,
-      "pwDefault":pwDefault,
-    },
+    url:url+'/api/user/changeDefaultPassword',
+    // type:'get',
+    contentType: "application/json;",
+    type:'post',
+    data:JSON.stringify({
+      "id":userId,
+      "password":pwDefault,
+    }),
   })
   return ajax;
 }
@@ -289,8 +316,9 @@ function changeDefaultpw(userId,pwDefault){
 //组织
 function getOrgTree(){//获得组织树
   var ajax=$.ajax({
-    url:url+'/api/org/getOrgTree',
-    type:'get',
+    url:url+'/api/org/fetchOrgTreeListToJson',
+    contentType: "application/json;",
+    type:'post',
     data:{
     },
   })
@@ -473,6 +501,18 @@ function editArticle(id,type,source,link,title,date,text){//编辑文章
        "title":title,
        "time":date,
        "content":text,
+    }),
+  })
+  return ajax;
+}
+function editArticleType(id,type){//编辑类别
+  var ajax=$.ajax({
+    url:url+'/api/article/update',
+    type:'post',
+    contentType: "application/json;",
+    data:JSON.stringify({
+       "id":id,
+       "type":type,
     }),
   })
   return ajax;

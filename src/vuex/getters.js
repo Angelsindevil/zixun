@@ -29,3 +29,5 @@ export const wordObj=state=>state.wordObj//弹窗类型
 export const mesObj=state=>state.mesObj//弹窗类型
 
 export const mesCount=state=>state.mesCount//弹窗类型
+
+export const releaseObj=state=>state.releaseObj//弹窗类型

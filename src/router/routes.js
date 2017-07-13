@@ -17,6 +17,27 @@ import contentAdd from '../components/contentAdd'
 import orgManage from '../components/orgManage'
 import login from '../components/login'
 import homePage from '../components/homePage'
+
+// const AllInfomation = resolve => require(['../components/AllInfomation.vue'], resolve)
+// const Article = resolve => require(['../components/Article.vue'], resolve)
+// const IncludeList = resolve => require(['../components/IncludeList.vue'], resolve)
+// const reportList = resolve => require(['../components/reportList.vue'], resolve)
+// const messageBox = resolve => require(['../components/messageBox.vue'], resolve)
+// const mesManage = resolve => require(['../components/mesManage.vue'], resolve)
+// const DataStatistics = resolve => require(['../components/DataStatistics.vue'], resolve)
+// const instructions = resolve => require(['../components/instructions.vue'], resolve)
+// const feedback = resolve => require(['../components/feedback.vue'], resolve)
+// const test = resolve => require(['../components/test.vue'], resolve)
+// const managementCenter = resolve => require(['../components/managementCenter.vue'], resolve)
+// const userManage = resolve => require(['../components/userManage.vue'], resolve)
+// const instructionsDetail = resolve => require(['../components/instructionsDetail.vue'], resolve)
+// const contentManage = resolve => require(['../components/contentManage.vue'], resolve)
+// const contentPublish = resolve => require(['../components/contentPublish.vue'], resolve)
+// const contentAdd = resolve => require(['../components/contentAdd.vue'], resolve)
+// const orgManage = resolve => require(['../components/orgManage.vue'], resolve)
+// const login = resolve => require(['../components/login.vue'], resolve)
+// const homePage = resolve => require(['../components/homePage.vue'], resolve)
+
 const routes = [
   { path: '/login', component:login},
   // { path: '/', component:login},

@@ -1,5 +1,6 @@
 var path = require('path')
 var config = require('../config')
+var webpack = require('webpack')
 var utils = require('./utils')
 var projectRoot = path.resolve(__dirname, '../')
 
@@ -73,5 +74,11 @@ module.exports = {
         browsers: ['last 2 versions']
       })
     ]
-  }
+  },
+  plugins: [
+    new webpack.DllReferencePlugin({
+        context: path.resolve(__dirname, '..'),
+        manifest: require('./vendor-manifest.json')
+    }),
+  ]
 }

@@ -5,7 +5,7 @@
       <p>报告中心-报告列表：
         <span>共计生成<span>{{totalNum}}</span>篇报告</span>
       </p>
-      <el-button class="btn_position">
+      <el-button class="btn_position btnUpload">
         <input type="file" name="" class="file_" @change="linkChange">上传报告
       </el-button>
       <el-input
@@ -155,6 +155,7 @@ export default {
       userSource:{},
       userid:'',
       username:'',
+      level:'',
     }
   },
   methods:{
@@ -308,7 +309,7 @@ export default {
             // that.listFilter_2=res.list;
             that.insertData(data,that.type);
             that.$nextTick(function(){
-              $(document).scrollTop(height);
+              $(document).scrollTop(height-350);
             })
           }
           else{
@@ -385,12 +386,26 @@ export default {
     // var that=this;
     this.userSource=JSON.parse(localStorage.getItem("userSource"));
     this.username=this.userSource?this.userSource.username:'';
+    this.level=this.userSource?this.userSource.level:'';
     this.userid=this.userSource?this.userSource.id:'';
     console.log(this.userid);
-    // this.listFilter_1=this.listFilter_1;
     this.$nextTick(function(){
       matchMenu();
     })
+    if(this.level=='0'||this.level=='2'||this.level=='3'){
+      console.log("222");
+      this.$nextTick(function(){
+        $(".el-tabs__header").hide();
+        // $(".el-tabs__header").find(".el-tabs__item").eq(0).hide();
+        // $(".el-tabs__header").find(".el-tabs__item").eq(1).addClass("is-active");
+        // $(".el-tabs__header").find(".el-tabs__item").css("border-bottom","3px solid #20a0ff");
+        $(".el-tabs__content").find(".tab1").hide();
+        $(".el-tabs__content").find(".tab2").show();
+        $(".btnUpload").hide();
+        $(".delete").hide();
+      })
+    }
+    else{}
   },
   mounted(){
     var that=this;
@@ -430,6 +445,10 @@ export default {
     .btn_position{
       font-size: 13px;
       padding:10px 15px;
+      position: absolute;
+      right:265px;
+      top:13px;
+      color:#09f;
     }
     .rightContent{
       border:none;
@@ -568,49 +587,7 @@ export default {
       border-color:#FF6666;
       color:#FF6666;
     }
-    .admin_ui_input{
-      position:absolute;
-      right:20px;
-      top:15px;
-      left:auto;
-      background-color: #D2E5F5;
-      width: 230px;
-      display: inline-block;
-      line-height: 1;
-      border-radius:5px;
-    }
-    .admin_ui_input>input{
-      position: relative;
-      width: 100%;
-      height: 32px;
-      line-height:1;
-      font-size:12px;
-      padding: 6px 30px 6px 12px;
-      border: 1px solid #ccc!important;
-      border-radius: 0;
-      appearance: none;
-      -moz-appearance: none;
-      -webkit-appearance: none;
-      background-color: transparent;
-      margin-bottom:0;
-      color:#797979;
-      border-radius:5px;
-    }
-    .admin_ui_input:before{
-      position: absolute;
-      right: 8px;
-      top: 6px;
-      display: inline-block;
-      font: normal normal normal 14px/1 FontAwesome;
-      font-size: inherit;
-      text-rendering: auto;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      content:'\f002';
-      color:#ebebeb;
-      font-size:18px;
-    }
-    .input_position{
+    .rightBar .input_position{
       width: 230px;
       position: absolute;
       right: 10px;

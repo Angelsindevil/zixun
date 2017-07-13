@@ -69,3 +69,7 @@ export const clearMesInfo= (state,payload) => {//将参数mes赋值给state的�
 export const changeMesCount= (state,payload) => {//将参数mes赋值给state的变量subjectid 
 	state.mesCount=payload.mesCount;
 }
+export const changeRelease= (state,payload) => {//将参数mes赋值给state的变量subjectid 
+	state.releaseObj.id=payload.id;
+	state.releaseObj.type=payload.type;
+}

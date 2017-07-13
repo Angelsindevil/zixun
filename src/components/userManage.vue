@@ -6,7 +6,7 @@ i<template>
       </p>
       <el-button class="btn_position" @click="showUserBox">新增用户</el-button>
       <el-input
-        placeholder="搜索用户账号、用户姓名、所属组织"
+        placeholder="搜索用户账号、用户名称、所属组织"
         icon="search"
         v-model="input2"
         class="input_position" :on-icon-click="handleInputClick" @keyup.native.enter='handleInputClick'>
@@ -35,7 +35,7 @@ i<template>
         </el-table-column>
         <el-table-column
           prop="name"
-          label="用户姓名"
+          label="用户名称"
           width="20%"
           >
         </el-table-column>

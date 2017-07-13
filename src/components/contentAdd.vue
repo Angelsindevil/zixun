@@ -121,11 +121,62 @@ export default {
         txt:'',
         addId:'',
         initType:'',
+        isAdded:'',
     }
   },
+  beforeRouteLeave (to, from, next) {
+    console.log(this.form);
+    if(this.form.source!=""||this.form.link!=""||this.form.title!=""||this.form.date!=undefined||this.form.text!=""){
+      if(confirm("当前收录内容还未保存，是否退出该页面？")){
+        next(true);
+      }
+      else{
+        next(false);
+        this.$nextTick(function(){
+          console.log("111");
+          $(".clickStyle").removeClass("blue");
+          $(".leftMenu .contentManage").find(".clickStyle").eq(1).addClass('blue');
+          // $(".contentManage").find("li").eq(2).addClass('blue');
+        })
+      }
+    }
+    else{
+      next(true);
+    }
+    // 导航离开该组件的对应路由时调用
+    // 可以访问组件实例 `this`
+  },
+  // watch: {
+  //   $route (to, from) {
+  //       console.log("333");
+  //       if(from.hash === "/homePage/contentAdd") {
+  //         console.log("222");
+  //       }
+  //   }
+  // },
   methods:{
     handleInputClick:function(){},
     optionChangeHandler(){},
+    // beforeRouteLeave (to, from, next) {
+    //   if(this.form.source!=""||this.form.link!=""||this.form.title!=""||this.form.date!=""||this.form.text!=""){
+    //     if(confirm("当前收录内容还未保存，是否退出该页面？")){
+    //       alert("111");
+    //     }
+    //     else{
+    //     }
+    //   }
+    //   // 导航离开该组件的对应路由时调用
+    //   // 可以访问组件实例 `this`
+    // },
+    searchThis(){
+      var hash=this.$route.hash
+      // if(this.form.source=""||this.form.link=""||this.form.title=""||this.form.date=""||this.form.text=""){
+        // if(confirm("当前收录内容还未保存，是否退出该页面？")){
+        // }
+        // else{
+        // }
+      // }
+    },
     saveBtn(){
       console.log("saveBtn");
       this.txt=document.querySelector("#editor .ql-editor").innerHTML;
@@ -167,15 +218,24 @@ export default {
       that.form.link="";
       that.form.title="";
       that.form.date="";
+      that.form.text="";
       that.quill.setText("");
     },
     releaseBtn(id){
       this.txt=document.querySelector("#editor .ql-editor").innerHTML;
       var that=this;
-      if(this.id!=undefined){//编辑可直接发布
+      if(this.id!=undefined){//编辑可直接发布(编辑也要先报保存吧！)
         $.when(releaseArticle(id)).done(function(data){
           if(data.state=="0"){
             alert("文章发布成功！");
+            that.resetBtn();
+          }
+          else{
+            alert(data.data);
+          }
+        })
+        $.when(editArticle(this.id,this.form.type,this.form.source,this.form.link,this.form.title,this.form.date,this.txt)).done(function(data){
+          if(data.state=="0"){
             that.resetBtn();
           }
           else{
@@ -211,7 +271,15 @@ export default {
       theme: 'snow'
     });
     if(this.id!=undefined&&this.source!=undefined){
+      console.log(this.isAdded);
       // document.querySelector("#editor").innerHTML=this.source.content;
+      // if(this.isAdded==0){
+        // this.quill.setContents(this.source.content);
+      // }
+      // else if(this.isAdded==1){
+      //   this.quill.clipboard.dangerouslyPasteHTML(0, this.source.content);
+      // }
+      // else{}
       this.quill.clipboard.dangerouslyPasteHTML(0, this.source.content);
     }
     else{}
@@ -221,6 +289,19 @@ export default {
     this.$nextTick(function(){
       matchMenu();
     })
+    // this.beforeRouteLeave();
+    // this.$route.beforeRouteLeave((to, from, next) => {
+    //   if(this.form.source!=""||this.form.link!=""||this.form.title!=""||this.form.date!=""||this.form.text!=""){
+    //     if(confirm("当前收录内容还未保存，是否退出该页面？")){
+    //       alert("111");
+    //     }
+    //     else{
+    //       next(false);
+    //     }
+    //   }
+    //   // 导航离开该组件的对应路由时调用
+    //   // 可以访问组件实例 `this`
+    // })
     this.id = this.$route.query.id;
     console.log(this.id);
     if(this.id!=undefined){
@@ -232,6 +313,7 @@ export default {
         this.form.title=this.source.title;
         this.form.date=this.source.date;
         this.form.text=this.source.content;
+        this.isAdded=this.source.isAdded;
       }
     }
     else{
@@ -280,11 +362,24 @@ export default {
       border-top-right-radius: 3px;
       border-top-left-radius: 3px;
     }
-    .rightContent{
-      border:1px solid #eee;
-    }
     .rightBar{
+      height:60px;
+      width:100%;
+      background-color: #0099FF;
+      border-radius:8px;
       position: relative;
+      p{
+        line-height: 60px;
+        padding-left: 20px;
+        color:#fff;
+        font-size: 16px;
+        span{
+          vertical-align: middle;
+          color:#E4E4E4;
+          // font-size: 18px;
+          // font-size: 16px;
+        }
+      }
       .btn_position{
         width:80px;
         position: absolute;
@@ -296,22 +391,18 @@ export default {
         padding:11px 15px;
       }
     }
-    .title_bar{
-      padding:20px;
-    }
-    .editBox{
-      // border:1px solid rgba(0,0,0,0.2);
-      // border-bottom:none;
-      iframe{
-        height:450px!important;
+    .rightContent{
+      width:100%;
+      margin-top:15px;
+      border:1px solid #eee;
+      background-color: #fff;
+      border-radius:5px;
+      .title_bar{
+        padding:20px;
+        font-size:20px;
+        position: relative;
+        border-bottom:1px solid #eee;
       }
-      #editor{
-        min-height:400px;
-        // padding: 10px 20px;
-        line-height: 20px;
-      }
-      // border-radius:5px;
-
     }
     .el-form{
       height:auto;

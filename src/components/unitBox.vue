@@ -7,10 +7,10 @@
         class="inline-input"
         v-model="state2"
         :fetch-suggestions="querySearch"
-        :placeholder="phtext"
+        :placeholder="phtext" 
         :trigger-on-focus="false"
         @select="handleSelect"
-      ><el-button slot="append" icon="search"></el-button></el-autocomplete>
+      ><el-button slot="append" icon="search" @click="handleIconSelect"></el-button></el-autocomplete>
       <!-- <el-table
         class="article_table"
         :data="commonData"
@@ -208,28 +208,124 @@
         $(".mask2,.unitBox").removeClass("showBtn");
         $(".mask1").addClass("showBtn");
       },
-      querySearch(queryString, cb) {
-        var alltableData = this.alltableData;
-        var results = queryString ? alltableData.filter(this.createFilter(queryString)) : alltableData;
-        // 调用 callback 返回建议列表的数据
-        cb(results);
-      },
-      handleSelect(item) {
-        for(var i=0;i<this.nodeAll.length;i++){
-          if(item.value==this.nodeAll[i].name){
-            this.rootObj.expandAll(false);
-            this.rootObj.checkNode(this.nodeAll[i], true, true);
-            var node= this.nodeAll[i].getParentNode();
-            this.rootObj.expandNode(node, true, true, true);
-            this.state2="";
-          }
+      searchAndScrollToNode_(zTreeObj, str) {
+        var attrs = Array.prototype.slice.call(arguments, 2)
+
+        var nodes = zTreeObj.getNodesByFilter(function(node){
+          return attrs.some(function(attr){
+            return node[attr].indexOf(str) !== -1
+          })
+        }, false)
+        console.dir(nodes)
+        var node = nodes.slice(0,10).sort(function(item1, item2){
+          return item1.name.length - item2.name.length
+        })[0]
+
+        if (!node) {
+          alert('未找到相关数据');
+          return false 
         }
+        
+        var stack = [node], parentNode = node.getParentNode()
+        
+        while(parentNode) { 
+          stack.push(parentNode)
+          parentNode = parentNode.getParentNode()
+        }
+
+        stack.reverse().forEach(function(item){
+          zTreeObj.expandNode(item, true,false,false)
+        })
+        var $node = $('#'+ node.tId)
+        var $ztree = $node.parents('.ztree')
+        var $container = $node.parents('.ztree').parent()
+        
+        var offset = $ztree.children(":first-child").get(0).getBoundingClientRect()
+
+        $container.animate({
+          scrollTop: $node.get(0).getBoundingClientRect().top - (offset && offset.top)
+        }, 1000)
+        return true
+      },
+      // querySearch(queryString, cb) {
+      //   var alltableData = this.alltableData;
+      //   var results = queryString ? alltableData.filter(this.createFilter(queryString)) : alltableData;
+      //   // 调用 callback 返回建议列表的数据
+      //   cb(results);
+      // },
+      // querySearch(queryString, cb) {
+      //   var alltableData = this.commonData;
+      //   var results = queryString ? alltableData.filter(this.createFilter(queryString)) : alltableData;
+      //   cb(results);
+      // },
+      querySearch(queryString, cb) {
+        // console.log(this.nodeAll);
+        // var alltableData = this.nodeAll;
+        var alltableData=this.nodeAll.map(function(value,index){
+          return{
+            value:value.name,
+            i:index,
+            id:value.id,
+          }
+        })
+        // var alltableData = this.nodeAll;
+        var results = queryString ? alltableData.filter(this.createFilter(queryString)) : alltableData;
+        cb(results);
       },
       createFilter(queryString) {
         return (restaurant) => {
-          return (restaurant.value.indexOf(queryString.toLowerCase()) ===0);
+          return (restaurant.value.search(queryString) !=-1);
         };
       },
+      // handleSelect(item) {
+      //   console.log(item.value);
+      //   for (var i=0;i<this.commonData.length;i++) {
+      //     if(this.commonData[i].value==item.value){
+      //       // if(this.isSelect){
+      //       //   this.commonSelHandler('.multiBox',i,item);
+      //       // }
+      //       // else{
+      //       //   this.commonSelHandler('.articleBox',i,item);
+      //       // }
+      //       this.commonSelHandler('.multiBox',i,item);
+      //     }
+      //   }
+      // },
+      // commonSelHandler(selector,i,item){
+      //   this.$nextTick(function(){
+      //     $(selector).find(".article_table tbody").children("tr").removeClass("current-row");
+      //     $(selector).find(".article_table tbody").children("tr").eq(i).addClass("current-row");
+      //     var height=$(selector).find(".article_table tbody").children("tr").eq(i).position().top;
+      //     $(selector).find(".alertContent .el-table__body-wrapper").scrollTop(height)
+      //     $(selector).find(".article_table tbody").children("tr").eq(i).find(".el-checkbox__input").addClass("is-checked");
+      //     })
+      // },
+      handleSelect(item) {
+        for(var i=0;i<this.nodeAll.length;i++){
+          if(item.value==this.nodeAll[i].name){
+            // this.rootObj.expandAll(false);
+            this.rootObj.checkNode(this.nodeAll[i], true, true);
+            var node= this.nodeAll[i].getParentNode();
+            this.rootObj.expandNode(node, true, true, true);
+          }
+        }
+      },
+      handleIconSelect(){
+        console.log(this.state2);
+        for(var i=0;i<this.nodeAll.length;i++){
+          if(this.state2==this.nodeAll[i].name){
+            // this.rootObj.expandAll(false);
+            this.rootObj.checkNode(this.nodeAll[i], true, true);
+            var node= this.nodeAll[i].getParentNode();
+            this.rootObj.expandNode(node, true, true, true);
+          }
+        }
+      },
+      // createFilter(queryString) {
+      //   return (restaurant) => {
+      //     return (restaurant.value.indexOf(queryString.toLowerCase()) ===0);
+      //   };
+      // },
       submit(){
         this.orgid=this.rootObj.getCheckedNodes(true);//新增的时候，是默认第一个的。如果编辑页面，且没有勾选的情况下，显示userstate里面的
         this.$store.dispatch('changeUnitVal',{unitVal:this.orgid}).then(function(resp){});
