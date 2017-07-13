@@ -21,7 +21,7 @@
       	<span class="leftBot">
 	      </span>
 	      <span class="rightBot">
-	        <span class="bg_green" @click="hideUserBox(),operateUser()">确定</span> 
+	        <span class="bg_green" @click="operateUser">确定</span> 
         	<span @click="hideUserBox" class="bg_cancle">取消</span> 
 	      </span>
       </div>
@@ -44,15 +44,17 @@
     methods:{
       operateUser(){
         var pw1=md5(this.form.pwOld);
+        var that=this;
         var pw2;
         if(this.form.pwNew1!=this.form.pwNew2){
           alert("两次密码输入不一致！");
         }
         else{
           pw2=md5(this.form.pwNew2);
-          $.when(changePassword(this.userId,pw2)).done(function(data){
+          $.when(changePassword(this.userId,pw1,pw2)).done(function(data){
             if(data.state==0){
               alert('密码修改成功！');
+              that.hideUserBox();
             }
             else{
               alert(data.data);

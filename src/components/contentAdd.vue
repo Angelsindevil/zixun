@@ -125,15 +125,13 @@ export default {
     }
   },
   beforeRouteLeave (to, from, next) {
-    console.log(this.form);
-    if(this.form.source!=""||this.form.link!=""||this.form.title!=""||this.form.date!=undefined||this.form.text!=""){
+    if(this.form.source!=""||this.form.link!=""||this.form.title!=""||this.form.text!=""){
       if(confirm("当前收录内容还未保存，是否退出该页面？")){
         next(true);
       }
       else{
         next(false);
         this.$nextTick(function(){
-          console.log("111");
           $(".clickStyle").removeClass("blue");
           $(".leftMenu .contentManage").find(".clickStyle").eq(1).addClass('blue');
           // $(".contentManage").find("li").eq(2).addClass('blue');
@@ -148,9 +146,7 @@ export default {
   },
   // watch: {
   //   $route (to, from) {
-  //       console.log("333");
   //       if(from.hash === "/homePage/contentAdd") {
-  //         console.log("222");
   //       }
   //   }
   // },
@@ -178,7 +174,6 @@ export default {
       // }
     },
     saveBtn(){
-      console.log("saveBtn");
       this.txt=document.querySelector("#editor .ql-editor").innerHTML;
       var that=this;
       if(this.id!=undefined){//编辑啊
@@ -271,7 +266,6 @@ export default {
       theme: 'snow'
     });
     if(this.id!=undefined&&this.source!=undefined){
-      console.log(this.isAdded);
       // document.querySelector("#editor").innerHTML=this.source.content;
       // if(this.isAdded==0){
         // this.quill.setContents(this.source.content);
@@ -303,7 +297,6 @@ export default {
     //   // 可以访问组件实例 `this`
     // })
     this.id = this.$route.query.id;
-    console.log(this.id);
     if(this.id!=undefined){
       this.source=JSON.parse(localStorage.getItem("editor"));
       if(this.source){

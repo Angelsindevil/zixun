@@ -84,7 +84,6 @@ export default {
 
     },
     clickBtn:function(e,id){
-      console.log(e);
       e.stopPropagation();
       e.preventDefault();
       $.when(cancelArticle(id)).done(function(data){
@@ -321,7 +320,6 @@ export default {
           var res=data.data;
           var str='';
           localStorage.setItem("editor",JSON.stringify(res));
-          // console.log($.parseHTML(res.content));
           // var content=$.parseHTML(res.content);
           // for(var i=0;i<content.length;i++){
           //   if(content[i].outerText){
@@ -331,7 +329,6 @@ export default {
           //     str=str+content[i].textContent ;
           //   }
           // }
-          // console.log(str);
           that.content=res.content;
           // that.content=str;
           that.date=res.time;

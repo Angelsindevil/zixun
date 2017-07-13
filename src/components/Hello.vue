@@ -143,8 +143,8 @@ export default {
       psNum:'',
       xtNum:'',
       userid:'',
-      // url:'http://192.168.2.108:9000',
-      url:'',
+      url:'http://192.168.2.108:9000',
+      // url:'',
       // options: [
       // {
       //   value: '全部内容',

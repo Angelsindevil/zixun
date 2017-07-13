@@ -1,8 +1,8 @@
 //以下用户管理
-// var url="http://192.168.2.108:9000";//ct
+var url="http://192.168.2.108:9000";//ct
 // var url="http://192.168.2.144:8080";//ct
 // var url="http://192.168.2.129:9000";//bh
-var url="127.0.0.1:9000";
+// var url="127.0.0.1:9000";
 // var url="";
 function getAllUsers(){
 	var ajax = $.ajax({
@@ -287,14 +287,17 @@ function loginPage(username,password){
   })
   return ajax;
 }
-function changePassword(id,password){
+function changePassword(id,pwInit,pwModify){
   var ajax=$.ajax({
-    url:url+'/api/user/updateUser',
-    type:'get',
-    data:{
+    url:url+'/api/user/changePassword',
+    // type:'get',
+    type:'post',
+    contentType: "application/json;",
+    data:JSON.stringify({
+      "pwInit":pwInit,
       "id":id,
-      "password":password,
-    },
+      "pwModify":pwModify,
+    }),
   })
   return ajax;
 }

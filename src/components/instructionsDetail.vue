@@ -27,7 +27,7 @@
                 {{item.type=='0'?'批示内容':(item.type=='1'?'分发内容':(item.type=='2'?'反馈内容':''))}}
                 ：<span>{{item.content}}</span></span>
                 <!-- <span class="includeBtn grey"><span>无附件</span></span> -->
-                <a :href="'http://192.168.2.108:9000/api/article/downloadAttachment?attachmentName=#/'+item.name" target="blank">
+                <a :href="'http://192.168.2.108:9000/api/article/downloadAttachment?attachmentName='+item.name" target="blank">
                 <!-- <a @click="download(item.name)"> -->
                   <el-button type="text" :disabled="item.link?false:true" class="btn-pos btn-pos-1" size="small">{{item.link?'查看附件':'无附件'}}</el-button>
                 </a>
