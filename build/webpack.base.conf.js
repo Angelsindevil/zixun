@@ -1,4 +1,4 @@
-var path = require('path')
+covar path = require('path')
 var config = require('../config')
 var webpack = require('webpack')
 var utils = require('./utils')
@@ -13,7 +13,8 @@ var useCssSourceMap = cssSourceMapDev || cssSourceMapProd
 
 module.exports = {
   entry: {
-    app: './src/main.js'
+    app: './src/main.js',
+    'babel-polyfill': 'babel-polyfill',
   },
   output: {
     path: config.build.assetsRoot,

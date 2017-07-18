@@ -195,10 +195,13 @@ export default {
           }
         })
       }
+      else{
+        alert(data.data);
+      }
       that.propsArr=that.tableData.map(function(value){
         return JSON.stringify(value);
       })
-      that.filterData=that.tableData.slice(0,this.pageSize);
+      that.filterData=that.tableData.slice(0,that.pageSize);
     })
   }
 }

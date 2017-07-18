@@ -30,7 +30,8 @@
                 <!-- <el-dropdown-item>{{username}}</el-dropdown-item> -->
                 <el-dropdown-item command="changepw">修改密码</el-dropdown-item>
                 <el-dropdown-item style="display:none" command="resetpw">重置默认密码</el-dropdown-item>
-                <router-link to='/login'><el-dropdown-item>退出登录</el-dropdown-item></router-link>
+                <!-- <router-link to='/login'><el-dropdown-item>退出登录</el-dropdown-item></router-link> -->
+                 <el-dropdown-item command="logOut">退出登录</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </span>
@@ -139,6 +140,7 @@ export default {
       account:'',
       username:'',
       xtNum:'',
+      userId:'',
     }
   },
   computed: {
@@ -149,14 +151,12 @@ export default {
   watch:{
       mesCount:{
         handler: function (val, oldVal) {
-          if(val!=''){
-            if(val!=0){
-              this.xtNum=val;
-              $(this.$refs.redMes).show();
-            }
-            else{
-              $(this.$refs.redMes).hide();
-            }
+          if(val!=0){
+            this.xtNum=val;
+            $(this.$refs.redMes).show();
+          }
+          else{
+            $(this.$refs.redMes).hide();
           }
         },
         deep:true,
@@ -176,6 +176,15 @@ export default {
       }
       else if(command=="resetpw"){
         $(".mask1,.initpwBox").addClass("showBtn");
+      }
+      else if(command=="logOut"){
+        var that=this;
+        $.when(logOut(this.userId)).done(function(data){
+          if(data.state=="0"){
+            alert("退出登录成功！");
+            that.$router.push({path:'/login',query: {}});
+          }
+        })
       }
       else{}
     },
@@ -211,9 +220,17 @@ export default {
         $(".topDown").children("li").eq(2).removeClass("showBtn");
       })
     }
-    // this.account=this.userSource?this.userSource.account:'';
+    this.userId=this.userSource?this.userSource.id:'';
     this.username=this.userSource?this.userSource.username:'';
     scrollFun();
+    $.when(judgeUsers(this.userId)).done(function(data){
+      if(data.state=="0"){
+      }
+      else{
+        alert("用户未登录！")
+        that.$router.push({path:'/login',query: {}});
+      }
+    })
   }
 }
 </script>

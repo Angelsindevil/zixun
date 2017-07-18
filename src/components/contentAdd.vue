@@ -175,35 +175,48 @@ export default {
     },
     saveBtn(){
       this.txt=document.querySelector("#editor .ql-editor").innerHTML;
+      console.log(this.txt);
       var that=this;
-      if(this.id!=undefined){//编辑啊
-        $.when(editArticle(this.id,this.form.type,this.form.source,this.form.link,this.form.title,this.form.date,this.txt)).done(function(data){
-          if(data.state=="0"){
-            alert("已保存至内容筛选列表！");
-            that.resetBtn();
-            // that.form.type=that.initType;
-            // that.form.source="";
-            // that.form.link="";
-            // that.form.title="";
-            // that.form.date="";
-            // that.quill.setText("");
-            // that.addId=data.data.id;
-          }
-          else{
-            alert(data.data);
-          }
-        })
+      console.log(this.form.date);
+      if(this.form.title==""){
+        alert("请输入文章标题！");
       }
-      else{//新增
-        $.when(addArticle(this.form.type,this.form.source,this.form.link,this.form.title,this.form.date,this.txt)).done(function(data){
-          if(data.state=="0"){
-            alert("已保存至内容筛选列表！");
-            that.resetBtn();
-          }
-          else{
-            alert(data.data);
-          }
-        })
+      else if(this.form.date==""){
+        alert("还未选择日期！");
+      }
+      else if(this.txt=="<p><br></p>"){
+        alert("请输入文章内容！");
+      }
+      else{
+        if(this.id!=undefined){//编辑啊
+          $.when(editArticle(this.id,this.form.type,this.form.source,this.form.link,this.form.title,this.form.date,this.txt)).done(function(data){
+            if(data.state=="0"){
+              alert("已保存至内容筛选列表！");
+              that.resetBtn();
+              // that.form.type=that.initType;
+              // that.form.source="";
+              // that.form.link="";
+              // that.form.title="";
+              // that.form.date="";
+              // that.quill.setText("");
+              // that.addId=data.data.id;
+            }
+            else{
+              alert(data.data);
+            }
+          })
+        }
+        else{//新增
+          $.when(addArticle(this.form.type,this.form.source,this.form.link,this.form.title,this.form.date,this.txt)).done(function(data){
+            if(data.state=="0"){
+              alert("已保存至内容筛选列表！");
+              that.resetBtn();
+            }
+            else{
+              alert(data.data);
+            }
+          })
+        }
       }
     },
     resetBtn(){
@@ -219,42 +232,53 @@ export default {
     releaseBtn(id){
       this.txt=document.querySelector("#editor .ql-editor").innerHTML;
       var that=this;
-      if(this.id!=undefined){//编辑可直接发布(编辑也要先报保存吧！)
-        $.when(releaseArticle(id)).done(function(data){
-          if(data.state=="0"){
-            alert("文章发布成功！");
-            that.resetBtn();
-          }
-          else{
-            alert(data.data);
-          }
-        })
-        $.when(editArticle(this.id,this.form.type,this.form.source,this.form.link,this.form.title,this.form.date,this.txt)).done(function(data){
-          if(data.state=="0"){
-            that.resetBtn();
-          }
-          else{
-            alert(data.data);
-          }
-        })
+      if(this.form.title==""){
+        alert("请输入文章标题！");
       }
-      else{//新增 先保存再发布
-        $.when(addArticle(this.form.type,this.form.source,this.form.link,this.form.title,this.form.date,this.txt)).done(function(data){
-          if(data.state=="0"){
-            $.when(releaseArticle(data.data.id)).done(function(res){
-              if(res.state=="0"){
-                alert("文章发布成功！");
-                that.resetBtn();
-              }
-              else{
-                alert(res.data);
-              }
-            })
-          }
-          else{
-            alert(data.data);
-          }
-        })
+      else if(this.form.date==""){
+        alert("还未选择日期！");
+      }
+      else if(this.txt=="<p><br></p>"){
+        alert("请输入文章内容！");
+      }
+      else{
+        if(this.id!=undefined){//编辑可直接发布(编辑也要先报保存吧！)
+          $.when(releaseArticle(this.id)).done(function(data){
+            if(data.state=="0"){
+              alert("文章发布成功！");
+              that.resetBtn();
+            }
+            else{
+              alert(data.data);
+            }
+          })
+          $.when(editArticle(this.id,this.form.type,this.form.source,this.form.link,this.form.title,this.form.date,this.txt)).done(function(data){
+            if(data.state=="0"){
+              that.resetBtn();
+            }
+            else{
+              alert(data.data);
+            }
+          })
+        }
+        else{//新增 先保存再发布
+          $.when(addArticle(this.form.type,this.form.source,this.form.link,this.form.title,this.form.date,this.txt)).done(function(data){
+            if(data.state=="0"){
+              $.when(releaseArticle(data.data.id)).done(function(res){
+                if(res.state=="0"){
+                  alert("文章发布成功！");
+                  that.resetBtn();
+                }
+                else{
+                  alert(res.data);
+                }
+              })
+            }
+            else{
+              alert(data.data);
+            }
+          })
+        }
       }
     },
   },

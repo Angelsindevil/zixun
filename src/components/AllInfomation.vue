@@ -54,7 +54,7 @@
             <router-link :to="{ path: '/homePage/articleDetail', query: { id:item.id,index:index,edit:'0'}}">
               <div class="rightContent">
                 <p class="title_bar" style="padding-right: 160px;">
-                  <span class="ellipsis" style="display:block">{{item.title}}<span>
+                  <span class="ellipsis" style="display:block">{{item.title}}</span>
                 </p>       
                 <p class="title_content" v-html="item.summary">
                   <!-- {{item.summary}} -->

@@ -98,7 +98,7 @@ export default {
         pageNo:1,
         totalNum:'',
         todayNum:'',
-        titleTop:'消息管理'
+        titleTop:'消息管理',
         // category:'2',
       }
   },

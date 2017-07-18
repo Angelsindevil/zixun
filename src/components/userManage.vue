@@ -260,6 +260,7 @@ export default {
     },
   },
    created: function () {
+      var that=this;
       this.$nextTick(function(){
         matchMenu();
       })
@@ -268,9 +269,9 @@ export default {
       // this.propsArr=this.tableData.map(function(value){
       //   return JSON.stringify(value);
       // })//测试
+      // this.filterData=this.copyArr(this.tableData).slice(0,this.pageSize);
 
-      var that=this;
-      this.filterData=this.copyArr(this.tableData).slice(0,this.pageSize);
+
       $.when(getAllUsers()).done(function(data){
         if(data.state==0){
           var res=data.data;
@@ -296,10 +297,13 @@ export default {
             }
           })
         }
+        else{
+          alert(data.data);
+        }
         that.propsArr=that.tableData.map(function(value){
           return JSON.stringify(value);
         })
-        that.filterData=that.tableData.slice(0,this.pageSize);
+        that.filterData=that.tableData.slice(0,that.pageSize);
       })
    }
 }

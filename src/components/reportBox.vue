@@ -124,6 +124,7 @@
     mounted() {
     },
     created: function () {
+      console.log(this.fwLink);
       this.$nextTick(function(){
         matchMenu();
       })

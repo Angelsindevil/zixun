@@ -38,6 +38,10 @@
         //   content:'',
         // },
         filterData:{},
+        userId:'',
+        userSource:{},
+        // url:'http://192.168.2.129:9000',
+        url:'', 
       }
     },
     computed: {
@@ -54,6 +58,7 @@
             $.when(messageDetail(val)).done(function(data){
               if(data.state=="0"){
                 that.filterData=data.data;
+                that.getMesRed();
               }
               else{
                 alert(data.data);
@@ -73,10 +78,47 @@
         this.filterData.content=""; 
         $(".mask1,.mesDetailBox").removeClass("showBtn");
       },
+      getMesRed(){
+        var that=this;
+        $.ajax({
+          url: that.url+"/api/message/messageCount",
+          type: "get",
+          // contentType: "application/json;",
+          // data:JSON.stringify({
+          //     "userId":that.userid,
+          // }),
+          data:{
+            "userId":that.userId,
+          },
+          success:function(data){
+            if(data.state=="0"){
+              if(data.data==0){
+                // $(that.$refs.redMes).children('span').hide();
+              }
+              else{
+                console.log("11");
+                if(data.data>30){
+                  // that.xtNum='...';
+                }
+                else{
+                  // that.xtNum=data.data;
+                }
+                // that.xtNum=data.data;
+              }
+              that.$store.dispatch('changeMesCount',{"mesCount":data.data}).then(function(resp){});
+            }
+            else{
+              alert(data.data);
+            }
+          }
+        });
+      },
     },
     mounted(){
     },
     created(){
+      this.userSource=JSON.parse(localStorage.getItem("userSource"));
+      this.userId=this.userSource?this.userSource.id:'';
       // this.filterData=this.tableData;
       // $.when(messageDetail()).done(function(data){
       //   if(data.state=="0"){

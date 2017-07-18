@@ -23,7 +23,8 @@
               <img src="../../static/img/multi-report.png" alt="">
               <span class="title_new"><span class="ellipsis titleEll">{{item.title}}</span><span class="date_new">生成日期：<span>{{item.createTime}}</span></span></span>
               <img src="../../static/img/delete.png" alt="" class="delete" @click="delete_(item.id)" :data-id='item.id'>
-              <a :href="item.bulletinUrl" class="downloadBtn" target="blank">
+              <a :href="'http://'+fwLink+'/api/article/downloadAttachment?attachmentId='+item.bulletinUrl" target="blank" class="downloadBtn">
+              <!-- <a :href="item.bulletinUrl" class="downloadBtn" target="blank"> -->
                 <!-- <span class="includeBtn"> -->
                   <img src="../../static/img/download.png" alt="">
                   <!-- <span>下载报告</span> -->
@@ -59,7 +60,8 @@
               <img src="../../static/img/multi-report.png" alt="">
               <span class="title_new"><span class="ellipsis titleEll">{{item.title}}</span><span class="date_new">生成日期：<span>{{item.createTime}}</span></span></span>
               <img src="../../static/img/delete.png" alt="" class="delete" @click="delete_(item.id)" :data-id='item.id'>
-              <a :href="item.bulletinUrl" class="downloadBtn" target="blank">
+              <a :href="'http://'+fwLink+'/api/article/downloadAttachment?attachmentId='+item.bulletinUrl" target="blank" class="downloadBtn">
+              <!-- <a :href="item.bulletinUrl" class="downloadBtn" target="blank"> -->
                 <!-- <span class="includeBtn"> -->
                   <img src="../../static/img/download.png" alt="">
                   <!-- <span>下载报告</span> -->
@@ -156,6 +158,8 @@ export default {
       userid:'',
       username:'',
       level:'',
+      // fwLink:'',
+      fwLink:'192.168.2.108:9000',
     }
   },
   methods:{
@@ -175,8 +179,6 @@ export default {
     },
     handleClick(tab, event) {
       var that=this;
-      // console.log(tab, event);
-      console.log(tab.label);
       var pageNo=1;
       // if(that.type=='手工报告'){
       if(tab.label=='手工报告'){
@@ -228,7 +230,6 @@ export default {
         that.listFilter_1=[];
       }
       var pageNo=1;
-      console.log(that.type);
       $.when(searchReporter(that.userid,that.input2,that.type,pageNo)).done(function(data){
         if(data.state=="0"){
           // var res=data.data;
@@ -253,6 +254,7 @@ export default {
         this.file=file[0];
         this.linkName=file[0].name;
         formData.append("file",this.file);
+        formData.append("title",this.linkName);
         formData.append("userId",this.userid);
         if(confirm("你确认要上传报告  "+this.linkName)){
           $.when(uploadReporter(formData)).done(function(data){
@@ -323,7 +325,6 @@ export default {
       var that=this;
       var res=data.data;
       that.totalNum=res.totalNum;
-      console.log(res.list.length);
       if(res.list&&res.list.length!=0){
         if(res.list.length<10){
           $(that.$refs.rightBottom).children('p').text('暂无更多历史报告');
@@ -384,16 +385,15 @@ export default {
   },
   created(){
     // var that=this;
+    this.fwLink=window.location.host;//有用
     this.userSource=JSON.parse(localStorage.getItem("userSource"));
     this.username=this.userSource?this.userSource.username:'';
     this.level=this.userSource?this.userSource.level:'';
     this.userid=this.userSource?this.userSource.id:'';
-    console.log(this.userid);
     this.$nextTick(function(){
       matchMenu();
     })
     if(this.level=='0'||this.level=='2'||this.level=='3'){
-      console.log("222");
       this.$nextTick(function(){
         $(".el-tabs__header").hide();
         // $(".el-tabs__header").find(".el-tabs__item").eq(0).hide();

@@ -80,7 +80,6 @@
 	  },
 	  computed: {
 	    ...mapGetters({
-	      selectArr: 'selectArr',
 	      clearAll:'clearAll'
 	    })
 	  },

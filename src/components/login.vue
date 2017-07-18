@@ -63,7 +63,7 @@ export default {
           // that.$store.dispatch('changeUserSource',{userSource:data.data}).then(function(resp){});
           that.$router.push({path:'/homePage/articleList',query: { index: 0 ,type:'全部内容'}});
           localStorage.setItem("userSource",JSON.stringify(data.data));
-          localStorage.setItem("initPassword",data.pwDefault);
+          localStorage.setItem("initPassword",data.data.password);
         }
         else{
           alert(data.data);

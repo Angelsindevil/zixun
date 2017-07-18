@@ -82,6 +82,7 @@
         <!-- <span class="bg_blue printPs"><img src="../../static/img/print.png" alt="">打印批示</span>  -->
         <span @click="hidePSBox" class="bg_cancle">取消</span> 
       </span>
+    </div>
   </div>
 </template>
 <script>
@@ -286,6 +287,7 @@
       var that=this;
       if(this.file!=''&&this.fileFlag){
         formData.append("file",this.file);
+        formData.append("title",this.linkName);
       }
       else{
         formData.append("file",'');

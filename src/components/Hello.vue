@@ -128,8 +128,8 @@
     </div>
   </div>
 </template>
-
 <script>
+import {mapGetters} from 'vuex'
 export default {
   name: 'hello',
   data () {
@@ -143,8 +143,8 @@ export default {
       psNum:'',
       xtNum:'',
       userid:'',
-      url:'http://192.168.2.108:9000',
-      // url:'',
+      // url:'http://192.168.2.129:9000',
+      url:'', 
       // options: [
       // {
       //   value: '全部内容',
@@ -159,6 +159,26 @@ export default {
       //   label: '校内信息'
       // }],
     }
+  },
+  computed: {
+    ...mapGetters({
+      mesCount: 'mesCount',
+    })
+  },
+  watch:{
+    mesCount:{
+      handler: function (val, oldVal) {
+        if(val!=0){
+          this.xtNum=val;
+          $(this.$refs.redMes).children('span').show();
+        }
+        else{
+          $(this.$refs.redMes).children('span').hide();
+        }
+      },
+      deep:true,
+      immediate: true,
+    },
   },
   methods:{
     changeColor:function(e){
@@ -287,12 +307,13 @@ export default {
         alert(data.data);
       }
     })
+
     this.getpsRed();
     this.getMesRed();
-    // setInterval(this.getpsRed,300000);
-    // setInterval(this.getMesRed,300000);
-    this.getMesRed();
+    setInterval(this.getpsRed,300000);
+    setInterval(this.getMesRed,300000);
     // 可见菜单设置
+
     this.$nextTick(function(){
       if(this.userSource){
         if(this.userSource.level==0||this.userSource.level==4){//系统管理员
@@ -416,6 +437,7 @@ export default {
                 font-size: 12px;
                 background-color: #ff6666;
                 color: #fff;
+                display:none;
               }
             }
           }

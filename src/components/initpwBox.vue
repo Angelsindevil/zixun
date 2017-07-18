@@ -15,7 +15,7 @@
       	<span class="leftBot">
 	      </span>
 	      <span class="rightBot">
-	        <span class="bg_green" @click="hideUserBox(),operateUser()">确定</span> 
+	        <span class="bg_green" @click="operateUser">确定</span> 
         	<span @click="hideUserBox" class="bg_cancle">取消</span> 
 	      </span>
       </div>
@@ -39,6 +39,7 @@
         $.when(changeDefaultpw(this.userId,this.form.password)).done(function(data){
           if(data.state==0){
             alert('初始密码设置成功！');
+            that.hideUserBox();
             localStorage.setItem("initPassword",that.form.password);
           }
         })

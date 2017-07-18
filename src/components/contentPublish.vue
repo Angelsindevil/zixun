@@ -20,13 +20,17 @@
             <span>{{item.title}}<span>
           </p>  -->
           <p class="title_bar" style="padding-right: 160px;">
-            <span class="ellipsis" style="display:block">{{item.title}}<span>
+            <span class="ellipsis" style="display:block">{{item.title}}</span>
           </p>        
           <p class="title_bottom">
             <span>
-              <span class="bottom_item">来源：<span>{{item.source}}
+              <!-- <span class="bottom_item">来源：<span>{{item.source}}
               <span class="bottomLink ellipsis">（<span @click="goSomewhere">{{item.link}}</span>）</span>
-              </span></span>
+              </span></span> -->
+              <span class="bottom_item">来源：<span>{{item.source}}</span></span>
+             <!--  <span class="bottomLink ellipsis">（<span @click="goSomewhere">{{item.link}}</span>）</span>
+              </span></span> -->
+              <span class="bottom_item" @click="goSomewhere">来源链接</span>
               <span class="bottom_item">类别：<span>{{item.type}}</span></span>
               <!-- <span class="bottom_item">时间：<span>{{item.time}}</span></span> -->
               <span class="bottom_item">时间：<span>{{item.time}}</span></span>
@@ -160,7 +164,7 @@ export default {
     handleInputClick:function(){
       var that=this;
       that.pageNo=1;
-      $.when(releasedSearch(that.input2,that.pageNo)).done(function(data){
+      $.when(releasedSearch(that.userid,that.input2,that.pageNo)).done(function(data){
         if(data.state=="0"){
           that.articlesAarry=[];
           that.insertData(data.data);
@@ -191,7 +195,7 @@ export default {
         })
       }
       else{
-        $.when(releasedSearch(that.input2,that.pageNo)).done(function(data){
+        $.when(releasedSearch(that.userid,that.input2,that.pageNo)).done(function(data){
           if(data.state=="0"){
             that.insertData(data.data);
             that.$nextTick(function(){

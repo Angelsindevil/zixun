@@ -1,11 +1,12 @@
 //以下用户管理
-var url="http://192.168.2.108:9000";//ct
+// var url="http://192.168.2.108:9000";//ct
+// var url="http://192.168.2.173:8888";
 // var url="http://192.168.2.144:8080";//ct
 // var url="http://192.168.2.129:9000";//bh
-// var url="127.0.0.1:9000";
-// var url="";
+// var url="127.0.0.1:8080";
+var url="";
 function getAllUsers(){
-	var ajax = $.ajax({
+  var ajax = $.ajax({
         url: url+"/api/user/fetchAllUser",
         type: "get",
         data:{}
@@ -14,29 +15,29 @@ function getAllUsers(){
     return ajax;
 }
 function addUsers(orgid,account,username,level,password){
-	var ajax = $.ajax({
+  var ajax = $.ajax({
         url:url+ "/api/user/saveUser",
         type: "get",
         data:{
-        	"orgId":orgid,
-        	"account":account,
-        	"username":username,
-        	"level":level,
+          "orgId":orgid,
+          "account":account,
+          "username":username,
+          "level":level,
           "password":password
         }
     });
     return ajax;
 }
 function editUsers(id,orgid,account,username,level,password){
-	var ajax = $.ajax({
+  var ajax = $.ajax({
         url: url+"/api/user/updateUser",
         type: "get",
         data:{
-        	"id":id,
-        	"orgId":orgid,
-        	"account":account,
-        	"username":username,
-        	"level":level,
+          "id":id,
+          "orgId":orgid,
+          "account":account,
+          "username":username,
+          "level":level,
           "password":password,//重置的密码
           // "method":method,
         }
@@ -45,11 +46,11 @@ function editUsers(id,orgid,account,username,level,password){
     return ajax;
 }
 function cancelUsers(id){
-	var ajax = $.ajax({
+  var ajax = $.ajax({
         url: url+"/api/user/cancelUser",
         type: "get",
         data:{
-        	"id":id,
+          "id":id,
         }
 
     });
@@ -67,11 +68,11 @@ function excancelUsers(id){
     return ajax;
 }
 function deleteUsers(id){
-	var ajax = $.ajax({
+  var ajax = $.ajax({
         url: url+"/api/user/deleteUser",
         type: "get",
         data:{
-        	"id":id,
+          "id":id,
         }
 
     });
@@ -437,12 +438,12 @@ function deleteArticle(id){
   })
   return ajax;
 }
-function contentSearch(keyword,pageNo){//未发布内容搜索
+function contentSearch(userId,keyword,pageNo){//未发布内容搜索
   var ajax=$.ajax({
     url:url+'/api/article/searchArticle',
     type:'get',
     data:{
-      // "userId":userId,
+      "userId":userId,
       "keyword":keyword,
       "method":'contentManage',
       "pageNo":pageNo,
@@ -452,12 +453,12 @@ function contentSearch(keyword,pageNo){//未发布内容搜索
   })
   return ajax;
 }
-function releasedSearch(keyword,pageNo){//已发布内容搜索
+function releasedSearch(userId,keyword,pageNo){//已发布内容搜索
   var ajax=$.ajax({
     url:url+'/api/article/searchArticle',
     type:'get',
     data:{
-      // "userId":userId,
+      "userId":userId,
       "keyword":keyword,
       "method":'contentManage',
       "pageNo":pageNo,
@@ -632,6 +633,7 @@ function uploadReporter(formData){//新增批示
   var ajax = $.ajax({
       url: url+"/api/bulletin/uploadBulletin",
       type: "post",
+      contentType: "charset=UTF-8",
       data: formData,
       processData: false,
       contentType: false,
@@ -673,5 +675,45 @@ function deleteReporter(id){
       "id":id,
     },
   })
+  return ajax;
+}
+function logOut(userId){
+  var ajax=$.ajax({
+    url:url+'/users/mylogout',
+    type:'post',
+    contentType: "application/json;",
+    // data:{
+    //   "userId":userId,
+    // },
+    data:JSON.stringify({
+      "userId":userId,
+    })
+  })
+  return ajax;
+}
+function logOut(userId){//退出登录
+  var ajax=$.ajax({
+    url:url+'/users/mylogout',
+    type:'post',
+    contentType: "application/json;",
+    // data:{
+    //   "userId":userId,
+    // },
+    data:JSON.stringify({
+      "userId":userId,
+    })
+  })
+  return ajax;
+}
+function judgeUsers(userId){//判断用户是否登录
+  var ajax = $.ajax({
+      url: "/users/myauthenticated/",
+      type: "post",
+      // data:{
+      // }
+      data:JSON.stringify({
+        "userId":userId,
+      })
+  });
   return ajax;
 }
